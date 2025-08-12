@@ -137,7 +137,12 @@ async function loginUserController(req, res) {
       { expiresIn: "7d" }
     );
 
-    await redis.set(`refresh_token:${user.id}`, refresh_token, "EX", 7 * 24 * 60 * 60);
+    try{
+      const cretedRefreshLogin = await redis.set(`refresh_token:${user.id}`, refresh_token, "EX", 7 * 24 * 60 * 60);
+      console.log(cretedRefreshLogin)
+    } catch(err) {
+      return console.log("Erro ao criar guardar o refresh token [ LOGIN ]", err)
+    }
 
     if (platform === "mobile") {
       return res.status(200).json({
@@ -167,107 +172,91 @@ async function loginUserController(req, res) {
 
 
 async function refreshTokenController(req, res) {
-   const { userId, platform } = req.body
-   const token_mobile = req.headers.authorization
-   const token_web = req.cookies.access_token;
-   if(!["mobile", "web"].includes(platform)) {
-      return res.status(400).json({ 
-         message: "Plataforma inválida" 
+  const { userId, platform } = req.body;
+  const token_mobile = req.headers.authorization;
+  const token_web = req.cookies.refresh_token; 
+
+  if (!["mobile", "web"].includes(platform)) {
+    return res.status(400).json({ message: "Plataforma inválida" });
+  }
+
+  try {
+    let decoded;
+    let token;
+
+    if (platform === "mobile") {
+      if (!token_mobile) {
+        return res.status(400).json({ message: "Token não fornecido para mobile." });
+      }
+      token = token_mobile.replace("Bearer ", "");
+      decoded = jwt.verify(token, jwt_secret);
+    }
+
+    if (platform === "web") {
+      if (!token_web) {
+        return res.status(400).json({ message: "Token não fornecido para web." });
+      }
+      token = token_web;
+      decoded = jwt.verify(token, jwt_secret);
+    }
+
+    if (!decoded || !decoded.id) {
+      return res.status(401).json({ message: "Token inválido" });
+    }
+
+    if (decoded.id !== userId) {
+      return res.status(403).json({
+        message: "ID do token não corresponde ao id usuário fornecido",
       });
-   }
-   
-   try {
-      let decoded;
-      let token;
-      
-      if (platform === "mobile") {
-         if (!token_mobile) {
-            return res.status(400).json({ message: "Token não fornecido para mobile." });
-         }
-         token = token_mobile.replace("Bearer ", "");
-         decoded = jwt.verify(token, jwt_secret);
-      }
+    }
 
-      if (platform === "web") {
-         if (!token_web) {
-            return res.status(400).json({ message: "Token não fornecido para web." });
-         }
-         token = token_web; 
-         decoded = jwt.verify(token, jwt_secret);
-      }
+    const storedRefreshToken = await redis.get(`refresh_token:${userId}`);
+    if (!storedRefreshToken || storedRefreshToken !== token) {
+      return res.status(401).json({ message: "Refresh token inválido ou expirado." });
+    }
 
-      if (!decoded || !decoded.id) {
-         return res.status(401).json({ 
-            message: "Token inválido" 
-         });
-      }
+    const user = await findOneUser("", userId);
+    if (!user) {
+      return res.status(400).json({ message: "Usuário não encontrado" });
+    }
 
-      const user = await findOneUser("", userId)
-      if(!user){
-         return res.status(400).json({
-            message: "Usuário não encontrado"
-         })
-      }
+    const access_token = jwt.sign(
+      { id: user.id, email: user.email },
+      jwt_secret,
+      { expiresIn: "1d" }
+    );
+    const refresh_token = jwt.sign(
+      { id: user.id, email: user.email },
+      jwt_secret,
+      { expiresIn: "7d" }
+    );
 
-      if (decoded.id !== userId) {
-         return res.status(403).json({
-            message: "ID do token não corresponde ao id usuário fornecido"
-         });
-      }
-      const access_token = jwt.sign(
-            { id: user.id, email: user.email },
-            jwt_secret,
-            { expiresIn: "1d" }
-         );
-      const refresh_token = jwt.sign(
-         { id: user.id, email: user.email },
-         jwt_secret,
-         { expiresIn: "7d" }
-      );
+    await redis.set(`refresh_token:${userId}`, refresh_token, "EX", 7 * 24 * 60 * 60);
 
-      try {
-         await redis.del(`refresh_token:${userId}`);
-      } catch(err) {
-         console.error("Erro no delete do token",err)
-          return res.status(500).json({
-            message: "Erro no servidor"
-         })
-      }
-      try{
-         await redis.set(`refresh_token:${userId}`, refresh_token, "EX", 7 * 24 * 60 * 60);
-      } catch(err){
-         console.error("Erro ao setar o novo token", err)
-         return res.status(500).json({
-            message: "Erro no servidor"
-         })
-      }
+    if (platform === "mobile") {
+      return res.status(200).json({
+        message: "Sessão renovada com sucesso",
+        access_token,
+        refresh_token,
+      });
+    }
 
-      if(platform === "mobile") {
-        return res.status(200).json({
-            message: "Sessão renovada com sucesso",
-            access_token,
-            refresh_token,
-         });
-      }
-
-      if(platform === "web") {
-         res.cookie("refresh_token", refresh_token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-         });
-         return res.status(200).json({
-            message: "Sessão renovada com sucesso",
-            access_token,
-         });
-      }
-   } catch(err) {
-      console.error("Erro no refresh_token [ REFRESH TOKEN ]", err)
-      return res.status(500).json({
-         message: "Erro no servidor"
-      })
-   }  
+    if (platform === "web") {
+      res.cookie("refresh_token", refresh_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+      return res.status(200).json({
+        message: "Sessão renovada com sucesso",
+        access_token,
+      });
+    }
+  } catch (err) {
+    console.error("Erro no refresh_token [ REFRESH TOKEN ]", err);
+    return res.status(500).json({ message: "Erro no servidor" });
+  }
 }
 
 
@@ -276,8 +265,8 @@ async function logoutController(req, res) {
 
   if (!["mobile", "web"].includes(platform)) {
     return res.status(400).json({
-      message: "Plataforma inválida" 
-   });
+      message: "Plataforma inválida"
+    });
   }
 
   try {
@@ -286,9 +275,9 @@ async function logoutController(req, res) {
     if (platform === "mobile") {
       const tokenMob = req.headers.authorization;
       if (!tokenMob) {
-        return res.status(400).json({ 
-            message: "Token não fornecido" 
-         });
+        return res.status(400).json({
+          message: "Token não fornecido"
+        });
       }
       token = tokenMob.replace("Bearer ", "");
     }
@@ -296,9 +285,9 @@ async function logoutController(req, res) {
     if (platform === "web") {
       token = req.cookies.refresh_token;
       if (!token) {
-        return res.status(400).json({ 
-         message: "Token não fornecido"
-       });
+        return res.status(400).json({
+          message: "Token não fornecido"
+        });
       }
     }
 
@@ -306,12 +295,19 @@ async function logoutController(req, res) {
     try {
       decoded = jwt.verify(token, jwt_secret);
     } catch (err) {
-      return res.status(401).json({ 
-         message: "Token inválido" 
+      return res.status(401).json({
+        message: "Token inválido"
       });
     }
 
-    await redis.del(`refresh_token:${decoded.id}`);
+    try {
+      await redis.del(`refresh_token:${decoded.id}`);
+    } catch (err) {
+      console.error("Erro ao deletar o token", err);
+      return res.status(500).json({
+        message: "Erro no servidor"
+      });
+    }
 
     if (platform === "web") {
       res.clearCookie("refresh_token", {
@@ -321,17 +317,17 @@ async function logoutController(req, res) {
       });
     }
 
-    return res.status(200).json({ 
-      message: "Logout efetuado com sucesso!" 
-   });
+    return res.status(200).json({
+      message: "Logout efetuado com sucesso!"
+    });
   } catch (err) {
-
     console.error("Erro no logout", err);
-    return res.status(500).json({ 
-      message: "Erro no servidor [ LOGOUT USER ]" 
-   });
+    return res.status(500).json({
+      message: "Erro no servidor [ LOGOUT USER ]"
+    });
   }
 }
+
 
 
 
