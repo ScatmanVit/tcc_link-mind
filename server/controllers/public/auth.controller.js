@@ -270,8 +270,74 @@ async function refreshTokenController(req, res) {
    }  
 }
 
+
+async function logoutController(req, res) {
+  const { platform } = req.body;
+
+  if (!["mobile", "web"].includes(platform)) {
+    return res.status(400).json({
+      message: "Plataforma inválida" 
+   });
+  }
+
+  try {
+    let token;
+
+    if (platform === "mobile") {
+      const tokenMob = req.headers.authorization;
+      if (!tokenMob) {
+        return res.status(400).json({ 
+            message: "Token não fornecido" 
+         });
+      }
+      token = tokenMob.replace("Bearer ", "");
+    }
+
+    if (platform === "web") {
+      token = req.cookies.refresh_token;
+      if (!token) {
+        return res.status(400).json({ 
+         message: "Token não fornecido"
+       });
+      }
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, jwt_secret);
+    } catch (err) {
+      return res.status(401).json({ 
+         message: "Token inválido" 
+      });
+    }
+
+    await redis.del(`refresh_token:${decoded.id}`);
+
+    if (platform === "web") {
+      res.clearCookie("refresh_token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      });
+    }
+
+    return res.status(200).json({ 
+      message: "Logout efetuado com sucesso!" 
+   });
+  } catch (err) {
+
+    console.error("Erro no logout", err);
+    return res.status(500).json({ 
+      message: "Erro no servidor [ LOGOUT USER ]" 
+   });
+  }
+}
+
+
+
 export default {
    createUserController,
    loginUserController,
+   logoutController,
    refreshTokenController
 }
