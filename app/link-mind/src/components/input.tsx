@@ -1,42 +1,119 @@
-import { Text, View, TextInput, StyleSheet, TextInputProps } from "react-native"
-import { colors } from '@/styles/colors';
-// importar lib de icons
+import { Text, View, TextInput, StyleSheet, TextInputProps, TouchableOpacity } from "react-native";
+import { ComponentProps, useState, useRef, useEffect } from "react";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { colors } from "@/styles/colors";
 
-export type Input = TextInputProps & {
-   placeholder?: string
-   size?: number,
-   label?: string,
-} // depois estender uma lib de icons, para colocar dentro do input
+export type InputProps = TextInputProps & {
+  placeholder?: string;
+  size?: number,
+  label?: string,
+  error?: boolean,
+  icon?: ComponentProps<typeof FontAwesome6>["name"],
+  iconColor?: string,
+  secureTextEntry?: boolean,
+};
 
-export default function Input({placeholder, label, size, ...rest}: Input) {
-   return (
+
+export default function Input({
+  placeholder,
+  error,
+  label,
+  size = 16,
+  icon,
+  iconColor = colors.gray[100],
+  secureTextEntry = false,
+  ...rest
+}: InputProps) {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false)
+  const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    setHasError(error ?? false);
+  }, [error]);
+
+  function toggleShowPassword() {
+    setShowPassword(prev => !prev);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }
+
+  return (
       <View style={s.container}>
-         <Text style={[s.label, { fontSize: size}]}>
-            {label}
-         </Text>
-         <TextInput 
-            style={[s.input, { fontSize: size}]} 
-            placeholder={placeholder} 
-            placeholderTextColor={colors.gray[100]}
-            {...rest} // depois estender uma lib de icons, para colocar dentro do input
-         />
-      </View>
-   )
+    {label && <Text style={[s.label, { fontSize: size }]}>{label}</Text>}
+
+    <View
+      style={[
+        s.inputWrapper,
+        { borderColor: hasError ? colors.red[500] : colors.gray[500] },
+      ]}
+    >
+      {icon && (
+        <FontAwesome6
+          name={icon}
+          size={size}
+          color={iconColor}
+          style={s.icon}
+        />
+      )}
+
+      <TextInput
+        ref={inputRef}
+        style={[s.input, { fontSize: size, outline: "none" }]}
+        placeholder={placeholder}
+        underlineColorAndroid="transparent"
+        selectionColor={colors.green[200]}
+        secureTextEntry={secureTextEntry && !showPassword}
+        {...rest}
+      />
+
+      {secureTextEntry && (
+        <TouchableOpacity
+          onPress={toggleShowPassword}
+          style={s.eyeButton}
+          activeOpacity={0.7}
+        >
+          <FontAwesome6
+            name={showPassword ? "eye" : "eye-slash"}
+            size={size}
+            color={colors.gray[300]}
+          />
+        </TouchableOpacity>
+      )}
+    </View>
+  </View>
+  );
 }
 
 const s = StyleSheet.create({
   container: {
-    gap: 15,
-    width: '100%', 
+    gap: 6,
+    width: "100%",
   },
   label: {
     fontSize: 22,
+    color: colors.gray[200],
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: colors.gray[800],
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+  },
+  icon: {
+    marginRight: 8,
   },
   input: {
-    fontSize: 20,
-    borderRadius: 14,
-    backgroundColor: colors.gray[400],
-    padding: 16,
-    width: "100%", 
+    flex: 1,
+    color: colors.gray[100],
+    backgroundColor: "transparent",
+    paddingVertical: 18,
+    borderWidth: 0,
+  },
+  eyeButton: {
+    marginLeft: 8,
   },
 });
