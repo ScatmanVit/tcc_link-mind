@@ -1,17 +1,16 @@
-import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 export default function Separator() {
   return (
-    <View style={styles.container}>
-      <View style={styles.line} />
-      <Text style={styles.text}>OU</Text>
-      <View style={styles.line} />
+    <View style={s.container}>
+      <View style={s.line} />
+      <Text style={s.text}>OU</Text>
+      <View style={s.line} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",

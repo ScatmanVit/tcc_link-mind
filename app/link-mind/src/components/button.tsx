@@ -11,7 +11,7 @@ type ButtonProps = {
    onPress?: () => void
 }
 
-export default function ButtonApp({onPress, text, colorBack, color}: ButtonProps) {
+export default function ButtonApp({ onPress, text, colorBack, color }: ButtonProps) {
    return (
       <TouchableOpacity style={[s.ButtonSend, 
             { backgroundColor: 

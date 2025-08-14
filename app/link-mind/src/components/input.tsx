@@ -40,49 +40,49 @@ export default function Input({
   }
 
   return (
-      <View style={s.container}>
-    {label && <Text style={[s.label, { fontSize: size }]}>{label}</Text>}
+    <View style={s.container}>
+      {label && <Text style={[s.label, { fontSize: size }]}>{label}</Text>}
 
-    <View
-      style={[
-        s.inputWrapper,
-        { borderColor: hasError ? colors.red[500] : colors.gray[500] },
-      ]}
-    >
-      {icon && (
-        <FontAwesome6
-          name={icon}
-          size={size}
-          color={iconColor}
-          style={s.icon}
-        />
-      )}
-
-      <TextInput
-        ref={inputRef}
-        style={[s.input, { fontSize: size, outline: "none" }]}
-        placeholder={placeholder}
-        underlineColorAndroid="transparent"
-        selectionColor={colors.green[200]}
-        secureTextEntry={secureTextEntry && !showPassword}
-        {...rest}
-      />
-
-      {secureTextEntry && (
-        <TouchableOpacity
-          onPress={toggleShowPassword}
-          style={s.eyeButton}
-          activeOpacity={0.7}
-        >
+      <View
+        style={[
+          s.inputWrapper,
+          { borderColor: hasError ? colors.red[500] : colors.gray[500] },
+        ]}
+      >
+        {icon && (
           <FontAwesome6
-            name={showPassword ? "eye" : "eye-slash"}
+            name={icon}
             size={size}
-            color={colors.gray[300]}
+            color={iconColor}
+            style={s.icon}
           />
-        </TouchableOpacity>
-      )}
+        )}
+
+        <TextInput
+          ref={inputRef}
+          style={[s.input, { fontSize: size, outline: "none" }]}
+          placeholder={placeholder}
+          underlineColorAndroid="transparent"
+          selectionColor={colors.green[200]}
+          secureTextEntry={secureTextEntry && !showPassword}
+          {...rest}
+        />
+
+        {secureTextEntry && (
+          <TouchableOpacity
+            onPress={toggleShowPassword}
+            style={s.eyeButton}
+            activeOpacity={0.7}
+          >
+            <FontAwesome6
+              name={showPassword ? "eye" : "eye-slash"}
+              size={size}
+              color={colors.gray[300]}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
-  </View>
   );
 }
 

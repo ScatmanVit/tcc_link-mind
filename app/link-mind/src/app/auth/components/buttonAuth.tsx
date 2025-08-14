@@ -11,8 +11,14 @@ type ButtonAuthProps = {
 
 export default function ButtonAuth({ icon, title, onPress }: ButtonAuthProps) {
   return (
-    <TouchableOpacity style={s.container} onPress={onPress} activeOpacity={0.7}>
-      <Text style={s.title}>{title}</Text>
+    <TouchableOpacity 
+      style={s.container} 
+      onPress={onPress} 
+      activeOpacity={0.7}
+    >
+      <Text style={s.title}>
+        {title}
+      </Text>
       {icon && <FontAwesome6 name={icon} size={24} color="#000" style={s.icon} />}
     </TouchableOpacity>
   );
