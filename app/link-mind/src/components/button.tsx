@@ -13,10 +13,13 @@ type ButtonProps = {
 
 export default function ButtonApp({ onPress, text, colorBack, color }: ButtonProps) {
    return (
-      <TouchableOpacity style={[s.ButtonSend, 
+      <TouchableOpacity
+         activeOpacity={0.8} 
+         onPress={onPress}
+         style={[s.ButtonSend, 
             { backgroundColor: 
                colorBack ? colorBack 
-                  : colors.green[300] }]} activeOpacity={0.1} onPress={onPress}>
+                  : colors.green[300] }]}>
          <Text style={[s.ButtonSendText, 
             { color: 
                color ? color

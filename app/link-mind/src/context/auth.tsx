@@ -8,9 +8,10 @@ type User = {
 };
 
 type AuthContextType = {
-  user?: User | undefined
+  user?: User,
   signUp: (data: Omit<User, "status">) => void,
-  isLogged: (user: Omit<User, "status">) => void
+  isLogged: (user: Omit<User, "status"> | undefined) => void,
+  Logout: () => void
 };
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -30,16 +31,18 @@ export default function AuthProvider({children}: any){
       }
    }
 
-   function isLogged(userLogged: Omit<User, "status">) {
+   function isLogged(userLogged: Omit<User, "status"> | undefined) {
       if (!userLogged || !userLogged.email || !userLogged.name) {
          router.push("/auth/register");
-         return;
       }
-      router.push("/(tabs)/provisional");
+   }
+
+   function Logout() {
+      setUser(undefined)
    }
 
    return (
-      <AuthContext.Provider value={{signUp, isLogged, user}}>
+      <AuthContext.Provider value={{signUp, isLogged, user, Logout}}>
          {children}
       </AuthContext.Provider>
    )

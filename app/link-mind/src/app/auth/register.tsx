@@ -8,13 +8,17 @@ import ButtonApp from '@/components/button'
 
 import { AuthContext } from '@/src/context/auth'
 import { useForm, Controller } from "react-hook-form";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { colors } from "@/src/styles/colors";
 
 
 export default function Register() {
   const { signUp, isLogged, user } = useContext(AuthContext)
   
+  /* usar lib react-native-modal para mostrar modal que "reage" 
+  com os erros do react-hook-form pra pessoa ver o que errado*/
+  const [modalVisible, setModalVisible] = useState<boolean>(false)  
+
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       name: "",
@@ -30,14 +34,14 @@ export default function Register() {
     platform: "mobile" 
   }) {
     try {
-      const res = await axios.post(
-        "https://tcc-link-mind.onrender.com/linkmind/auth/cadastro",
-        data
-      );
-      console.log("Usuário cadastrado com sucesso!", res.data);
-      return res.data;
+        const res = await axios.post(
+          "https://tcc-link-mind.onrender.com/linkmind/auth/cadastro",
+          data
+        );
+        console.log("Usuário cadastrado com sucesso!", res.data);
+        return res.data;
     } catch (err: any) {
-      console.error("Erro no cadastro", err?.response?.data?.message || err.message);
+        console.error("Erro no cadastro", err?.response?.data?.message || err.message);
     }
   }
 
@@ -70,7 +74,6 @@ export default function Register() {
           rules={{ required: "Nome é obrigatório" }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
-              label="Nome"
               icon="user"
               value={value}
               onBlur={onBlur}
@@ -94,7 +97,6 @@ export default function Register() {
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
-            label="Email"
             icon="envelope"
             value={value}
             onBlur={onBlur}
@@ -116,7 +118,6 @@ export default function Register() {
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
-            label="Senha"
             icon="lock"
             value={value}
             onBlur={onBlur}
@@ -159,11 +160,12 @@ const s = StyleSheet.create({
   content: { 
     flex:1,
     backgroundColor: colors.gray[950], 
-    alignItems: "center" 
+    alignItems: "center",
+    justifyContent: "center" 
   },
   header:{
     width: '100%',
-    marginTop: 7,
+    marginVertical: 100,
     marginBottom: 6,
     flexDirection: "row",
     justifyContent: "center",
@@ -177,8 +179,8 @@ const s = StyleSheet.create({
    width: '95%',
    height: '95%',
    justifyContent: "flex-start",
-   paddingHorizontal: 20,
-   gap: 12
+   paddingHorizontal: 15,
+   gap: 16
   },
   errorText: {
    color: colors.red[500],
