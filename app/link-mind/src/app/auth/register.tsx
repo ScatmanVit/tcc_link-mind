@@ -1,23 +1,22 @@
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Text, Button } from "react-native";
 import axios from 'axios'
 
-import Input from "@/components/input";
-import Separator from '@/components/separator'
-import ButtonAuth from "./components/buttonAuth";
+import ModalAlert from "@/components/Modal/modalAlert"
 import ButtonApp from '@/components/button'
+import Separator from '@/components/separator'
+import Input from "@/components/input";
 
-import { AuthContext } from '@/src/context/auth'
-import { useForm, Controller } from "react-hook-form";
 import { useContext, useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { AuthContext } from '@/src/context/auth'
 import { colors } from "@/src/styles/colors";
-
+ 
 
 export default function Register() {
   const { signUp, isLogged, user } = useContext(AuthContext)
   
-  /* usar lib react-native-modal para mostrar modal que "reage" 
-  com os erros do react-hook-form pra pessoa ver o que errado*/
   const [modalVisible, setModalVisible] = useState<boolean>(false)  
+  const [registerButton, setRegisterButton] = useState<boolean>(false)
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
@@ -25,7 +24,7 @@ export default function Register() {
       email: "",
       password: ""
     }
-  }); 
+  });
 
   async function registerUser(data: { 
     name: string; 
@@ -45,20 +44,34 @@ export default function Register() {
     }
   }
 
-  function onSubmit(data: any) {
+  async function onSubmit(data: any) {
     signUp({
       name: data.name,
       email: data.email
-    });
-
-    registerUser(data)
+    })
+    const registerSuccess = await registerUser(data)
+    if(registerSuccess){
+      setRegisterButton(true)
+    }
   }
 
   useEffect(() => {
+    let timeout: any
     if (user) {
-      isLogged(user);
-    }   
-  }, [])
+      timeout = setTimeout(() => {
+        isLogged(user);
+      }, 900);
+    } 
+
+    return () => {
+      clearTimeout(timeout)
+      setRegisterButton(false)
+    }
+  }, [registerButton])
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
 
   return (
     <View style={s.content}>
@@ -114,7 +127,7 @@ export default function Register() {
         name="password"
         rules={{
           required: "Senha é obrigatória",
-          minLength: { value: 8, message: "Mínimo 8 caracteres" },
+          minLength: { value: 8, message: "mínimo 8 caracteres" },
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
@@ -137,19 +150,11 @@ export default function Register() {
 
       <Separator/>
 
-      <View style={s.buttonGoogle}>
-         <ButtonAuth 
-          title="Entrar com Google" 
-          icon="google" 
-          onPress={() => console.log("clicou")} 
-        />
-      </View>
-
       <ButtonApp 
         text="Entrar sem conta"
         colorBack={colors.gray[800]}
         color={colors.gray[50]}
-        // onPress={} mostrar modal de aviso, e depois do accept redirecionar
+        onPress={toggleModal}
       />
       </View>
     </View>
@@ -181,16 +186,5 @@ const s = StyleSheet.create({
    justifyContent: "flex-start",
    paddingHorizontal: 15,
    gap: 16
-  },
-  errorText: {
-   color: colors.red[500],
-   alignSelf: "flex-start",
-   marginLeft: 10,
-   marginBottom: 10,
-  },
-  buttonGoogle: {
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center"
   }
 });

@@ -1,33 +1,30 @@
-import { StyleSheet, Text, View, Image, Alert } from 'react-native';
-import { useContext, useEffect, useState } from 'react';
+import { StyleSheet, View, Image } from 'react-native';
+import { useContext, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios'
 
 import { AuthContext } from '@/src/context/auth';
 
-import ButtonAuth from './components/buttonAuth';
 import ButtonApp from '@/src/components/button';
 import Separator  from '@/components/separator';
 import Input from '@/src/components/input';
 import { colors } from '@/src/styles/colors';
+import { useRouter } from 'expo-router';
 
 
 export default function Login() {
-  
+  const router = useRouter()
+
   type userLogin = {
-    name: string,
     email: string,
-    password?: string,
-    platform: "mobile"
-    google_id?: string,
-    id_token?: string
+    password: string
   }
-  
+
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
   const { signUp, user } = useContext(AuthContext)
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
-      name: '',
       email: '',
       password: ''
     }
@@ -36,69 +33,52 @@ export default function Login() {
   async function userLogin({ 
       email,
       password, 
-      platform 
     }: userLogin) {
     try {
         const res = await axios.post(
             "https://tcc-link-mind.onrender.com/linkmind/auth/login",{
-            email: email,
-            password: password,
-            platform: platform
+            email,
+            password,
+            platform: "mobile"
           }
         );
         console.log("Usuário Logado com sucesso!", res.data)
         return res.data
     } catch(err: any) {
-        console.error("Erro no cadastro", err?.response?.data?.message || err.message);
+        console.error("Erro no Login", err?.response?.data?.message || err.message);
     }
   }
 
-  async function userLoginWithGoogle() {
-    // login com o google ( quando feito, da pra replicar na tela de cadastro )
-    userLogin({
-      name: "comida",
-      email: "legal",
-      platform: "mobile",
-      google_id: "asdasdas",
-      id_token: "asasdasd"
-    }) // contruir o objeto de email e nome para enviar pro bd com os dados do de retorno do google
-  }
 
   async function onSubmitLogin(data: any) {
-      signUp(data);
-      await userLogin(data)
+      const loginSuccess = await userLogin(data)
+      if(loginSuccess){
+        signUp({
+          name: loginSuccess?.nameUser,
+          email: data.email
+        })
+        // router.push('/tabs/provisional')
+      }
   }
 
 
   return (
     <View style={s.container}>  
+      {/* chamar o modal de alerta depois */}
       <View style={s.header}>
         <Image source={require("../../../assets/images/icon.png")} style={s.image_header}/>
       </View>
       <View style={s.content}>
         <Controller
           control={control}
-          name="name"
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                icon="user"
-                value={value}
-                onBlur={onBlur}
-                placeholder="Email"
-                onChangeText={onChange}
-                error={errors.name ? true : false}
-                placeholderTextColor={colors.gray[400]}
-              />
-            )
-          }
-        />
-
-        
-        <Controller
-          control={control}
           name="email"
-          rules={{ required: true }}
+          rules={{
+            required: "Email é obrigatório",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Email inválido",
+            },
+          }}
           render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 icon="envelope"
@@ -116,13 +96,16 @@ export default function Login() {
         <Controller
           control={control}
           name='password'
-          rules={{ required: true }}
+          rules={{
+            required: "Senha é obrigatória",
+            minLength: { value: 8, message: "mínimo 8 caracteres" },
+          }}
           render={({ field: { onBlur, onChange, value }}) => (
               <Input
                 icon="lock"
                 value={value}
                 onBlur={onBlur}
-                placeholder="Senha"
+                placeholder='Senha'
                 secureTextEntry={true}
                 onChangeText={onChange}
                 error={errors.password ? true : false}
@@ -136,11 +119,6 @@ export default function Login() {
             onPress={handleSubmit(onSubmitLogin)}
           />
           <Separator/>
-          <ButtonAuth
-            title="Logar com o Google"
-            icon='google'
-            onPress={() => console.log("clicou")}
-          />
           <ButtonApp
             text="Entrar sem conta"
             colorBack={colors.gray[800]}

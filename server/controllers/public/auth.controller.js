@@ -92,6 +92,7 @@ async function loginUserController(req, res) {
         message: "Login efetuado com sucesso!",
         access_token,
         refresh_token,
+        nameUser: user.name
       });
     }
 

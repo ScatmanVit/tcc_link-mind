@@ -27,7 +27,6 @@ export default function AuthProvider({children}: any){
             email: email,
             status: "ATIVO"
          })
-         router.push('/auth/login')
       }
    }
 
@@ -35,6 +34,7 @@ export default function AuthProvider({children}: any){
       if (!userLogged || !userLogged.email || !userLogged.name) {
          router.push("/auth/register");
       }
+      router.push('/auth/login')
    }
 
    function Logout() {
