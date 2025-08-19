@@ -1,41 +1,22 @@
+import { captalize, findOneUser, formatEmail } from "../../utils/utils.js"
 import UserService from "../../services/public/public.routes.js"
 import redis from '../../config/redis.js'
-import { captalize, findOneUser, formatEmail, verifyGoogleToken, isValidJwt } from "../../utils/utils.js"
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
 
 const jwt_secret = process.env.JWT_SECRET
 
 async function createUserController(req, res) {
-   const { name, email, password, google_id, id_token } = req.body
+   const { name, email, password } = req.body
    
-    if (google_id) {
-      if (!id_token) {
+   if (!name || !email || !password) {
          return res.status(400).json({ 
-            message: "ID Token Google obrigatório" 
-         });
-      }
-      const payload_google = await verifyGoogleToken(id_token);
-      if (!payload_google || payload_google.sub !== google_id) {
-         return res.status(401).json({ 
-            message: "Identificador Google inválido" 
-         });
-      }
-      if (!name || !email) {
-         return res.status(400).json({ 
-            message: "Dados não recebidos, por favor preencha todos os campos" 
-         });
-      }
-   } else {
-      if (!name || !email || !password) {
-         return res.status(400).json({ 
-            message: "Dados não recebidos, por favor preencha todos os campos" 
-         });
-      }
-   }
+          message: "Dados não recebidos, por favor preencha todos os campos" 
+      });
+    }
 
    let hashPassword;
-   if (!google_id && password) {
+   if (password) {
       const salt = await bcrypt.genSalt(10);
       hashPassword = await bcrypt.hash(password, salt);
    }
@@ -50,8 +31,7 @@ async function createUserController(req, res) {
       await UserService.createUserService({
          name: name, 
          email: formatEmail(email),
-         password: hashPassword,
-         google_id: google_id
+         password: hashPassword
       })
       return res.status(201).json({ 
          message: `Conta criada! Seja muito bem-vindo ${captalize(name)}.`  
@@ -65,45 +45,14 @@ async function createUserController(req, res) {
 }
 
 async function loginUserController(req, res) {
-  const { email, password, google_id, id_token, platform } = req.body;
-
-  if (google_id) {
-    if (!id_token || !email) {
+  const { email, password, platform } = req.body;
+  if (!email || !password || !platform) {
       return res.status(400).json({
         message: "Dados não recebidos, por favor preencha todos os campos."
       });
-    }
-    if (!isValidJwt(id_token)) {
-      return res.status(400).json({ 
-         message: "ID Token inválido ou mal formado." 
-      });
-    }
-  } else {
-    if (!email || !password) {
-      return res.status(400).json({
-        message: "Dados não recebidos, por favor preencha todos os campos."
-      });
-    }
   }
 
   try {
-    if (google_id) {
-      let payload_google;
-      try {
-        payload_google = await verifyGoogleToken(id_token);
-      } catch (err) {
-         return res.status(401).json({ 
-            message: "Falha na verificação do token Google." 
-         });
-      }
-
-      if (!payload_google || payload_google.sub !== google_id) {
-        return res.status(401).json({ 
-         message: "Identificador Google inválido" 
-      });
-      }
-    }
-
     const user = await findOneUser(formatEmail(email), "");
     if (!user) {
       return res.status(400).json({ 
@@ -111,19 +60,13 @@ async function loginUserController(req, res) {
       });
     }
 
-    if (!google_id && user.password) {
+    if (user.password) {
       const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return res.status(401).json({ 
-         message: "Credenciais inválidas, senha" 
-      });
+        if (!isMatch) {
+          return res.status(401).json({ 
+          message: "Credenciais inválidas." 
+        });
       }
-    }
-
-    if (google_id && user.google_id !== google_id) {
-      return res.status(401).json({ 
-         message: "Credenciais inválidas, google_id" 
-      });
     }
 
     const access_token = jwt.sign(
@@ -137,11 +80,11 @@ async function loginUserController(req, res) {
       { expiresIn: "7d" }
     );
 
-    try{
+    try {
       const cretedRefreshLogin = await redis.set(`refresh_token:${user.id}`, refresh_token, "EX", 7 * 24 * 60 * 60);
       console.log(cretedRefreshLogin)
     } catch(err) {
-      return console.log("Erro ao criar guardar o refresh token [ LOGIN ]", err)
+      return console.log("Erro ao criar/guardar o refresh token [ LOGIN ]", err)
     }
 
     if (platform === "mobile") {
@@ -166,7 +109,9 @@ async function loginUserController(req, res) {
     }
   } catch (err) {
     console.error("Ocorreu um erro no servidor, [ LOGIN USER ]", err);
-    return res.status(500).json({ message: "Ocorreu um erro no servidor" });
+    return res.status(500).json({ 
+      message: "Ocorreu um erro no servidor" 
+    });
   }
 }
 
@@ -177,7 +122,9 @@ async function refreshTokenController(req, res) {
   const token_web = req.cookies.refresh_token; 
 
   if (!["mobile", "web"].includes(platform)) {
-    return res.status(400).json({ message: "Plataforma inválida" });
+    return res.status(400).json({ 
+      message: "Plataforma inválida" 
+    });
   }
 
   try {
@@ -186,7 +133,9 @@ async function refreshTokenController(req, res) {
 
     if (platform === "mobile") {
       if (!token_mobile) {
-        return res.status(400).json({ message: "Token não fornecido para mobile." });
+        return res.status(400).json({ 
+          message: "Token não fornecido para mobile." 
+        });
       }
       token = token_mobile.replace("Bearer ", "");
       decoded = jwt.verify(token, jwt_secret);

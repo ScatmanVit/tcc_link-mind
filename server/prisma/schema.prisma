@@ -13,7 +13,6 @@ model User {
   email       String      @unique
   password    String?
   createdAt   DateTime    @default(now()) @db.Timestamptz(6)
-  google_id   String?     @unique
   links       Link[]
   eventos     Evento[]
   compras     Compra[]
