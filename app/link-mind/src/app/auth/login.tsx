@@ -20,7 +20,6 @@ export default function Login() {
     password: string
   }
 
-  const [modalVisible, setModalVisible] = useState<boolean>(false)
   const { signUp, user } = useContext(AuthContext)
 
   const { control, handleSubmit, formState: { errors } } = useForm({
@@ -40,7 +39,7 @@ export default function Login() {
             email,
             password,
             platform: "mobile"
-          }
+          } 
         );
         console.log("Usuário Logado com sucesso!", res.data)
         return res.data

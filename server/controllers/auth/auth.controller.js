@@ -162,12 +162,16 @@ async function refreshTokenController(req, res) {
 
     const storedRefreshToken = await redis.get(`refresh_token:${userId}`);
     if (!storedRefreshToken || storedRefreshToken !== token) {
-      return res.status(401).json({ message: "Refresh token inválido ou expirado." });
+      return res.status(401).json({ 
+        message: "Refresh token inválido ou expirado." 
+      });
     }
 
     const user = await findOneUser("", userId);
     if (!user) {
-      return res.status(400).json({ message: "Usuário não encontrado" });
+      return res.status(400).json({ 
+        message: "Usuário não encontrado" 
+      });
     }
 
     const access_token = jwt.sign(
@@ -205,7 +209,9 @@ async function refreshTokenController(req, res) {
     }
   } catch (err) {
     console.error("Erro no refresh_token [ REFRESH TOKEN ]", err);
-    return res.status(500).json({ message: "Erro no servidor" });
+    return res.status(500).json({ 
+      message: "Erro no servidor" 
+    });
   }
 }
 
@@ -277,9 +283,6 @@ async function logoutController(req, res) {
     });
   }
 }
-
-
-
 
 export default {
    createUserController,

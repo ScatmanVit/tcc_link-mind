@@ -1,14 +1,14 @@
-import PublicRoutes from '../routes/public/public.routes.js'
+import AuthRoutes from '../routes/auth/auth.routes.js'
 import cookieParser from 'cookie-parser';
 import express from 'express'
 import cors from 'cors'// para ambiente de desenvolvimeto, será configurado futuramente
 
 const app = express()
 
-app.use(cookieParser())
 app.use(cors())
+app.use(cookieParser())
 app.use(express.json()) 
-// rotas futuramente aqui
-app.use('/linkmind', PublicRoutes)
+
+app.use('/linkmind', AuthRoutes)
 
 export default app

@@ -1,4 +1,4 @@
-import AuthControllers from '../../controllers/public/auth.controller.js'
+import AuthControllers from '../../controllers/auth/auth.controller.js'
 import Route from 'express'
 const route = Route()
 

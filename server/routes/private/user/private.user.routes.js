@@ -5,7 +5,6 @@ const route = Route()
 
 // rotas privadas aqui
 
-// logout
 // profile
 // demias rotas 
 
