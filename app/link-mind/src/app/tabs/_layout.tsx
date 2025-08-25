@@ -6,15 +6,15 @@ export default function TabsLayout(){
    return (
       <Tabs
          screenOptions={{
-            headerShown: true,
+            headerShown: false,
             tabBarActiveTintColor: colors.green[300],
             tabBarInactiveTintColor: colors.gray[400],
          }}
       >
          <Tabs.Screen
-            name="links"
+            name="home"
             options={{
-               title: "links",
+               title: "home",
                tabBarIcon: ({ color, size }) => (
                   <Ionicons name="home-outline" color={color} size={size}/>
                )

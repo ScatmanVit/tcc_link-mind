@@ -1,6 +1,6 @@
 import { StyleSheet, View, Image } from 'react-native';
-import { useContext, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useContext } from 'react';
 import axios from 'axios'
 
 import { AuthContext } from '@/src/context/auth';
@@ -20,7 +20,7 @@ export default function Login() {
     password: string
   }
 
-  const { signUp, user } = useContext(AuthContext)
+  const { signUp } = useContext(AuthContext)
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
@@ -56,7 +56,7 @@ export default function Login() {
           name: loginSuccess?.nameUser,
           email: data.email
         })
-        // router.push('/tabs/provisional')
+        router.replace('/tabs/home')
       }
   }
 

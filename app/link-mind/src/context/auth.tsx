@@ -34,7 +34,7 @@ export default function AuthProvider({children}: any){
       if (!userLogged || !userLogged.email || !userLogged.name) {
          router.push("/auth/register");
       }
-      router.push('/auth/login')
+      router.replace('/auth/login')
    }
 
    function Logout() {
