@@ -28,9 +28,8 @@ export default function Register() {
 
   async function registerUser(data: { 
     name: string; 
-    email: string; 
-    password: string,
-    platform: "mobile" 
+    email: string;
+    password: string;
   }) {
     try {
         const res = await axios.post(
