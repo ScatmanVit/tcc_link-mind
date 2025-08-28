@@ -74,15 +74,18 @@ model Newsletter {
 }
 
 model Link {
-  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId      String      @db.Uuid
-  user        User        @relation(fields: [userId], references: [id])
-  categoriaId String      @db.Uuid
-  categoria   Categoria   @relation(fields: [categoriaId], references: [id])
-  estadoId    String      @db.Uuid
-  estado      Estado      @relation(fields: [estadoId], references: [id])
-  // Campos específicos do link aqui
+  id              String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String      @db.Uuid
+  user            User        @relation(fields: [userId], references: [id])
+  categoriaId     String      @db.Uuid
+  categoria       Categoria   @relation(fields: [categoriaId], references: [id])
+  estadoId        String?     @db.Uuid
+  estado          Estado?      @relation(fields: [estadoId], references: [id])
+  title           String      
+  link            String      @unique
+  description     String?
   tagRelacionadas TagRelacionada[]
+  notification    String?
 }
 
 model Evento {

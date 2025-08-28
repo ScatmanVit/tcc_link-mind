@@ -1,5 +1,5 @@
 import { captalize, findOneUser, formatEmail } from "../../utils/utils.js"
-import UserService from "../../services/public/public.routes.js"
+import UserAuthService from "../../services/public/public.routes.js"
 import redis from '../../config/redis.js'
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
@@ -28,7 +28,8 @@ async function createUserController(req, res) {
             message: "Já existe um usuário cadastrado nesse email" 
          })
       }
-      await UserService.createUserService({
+      await UserAuthService
+    .createUserService({
          name: name, 
          email: formatEmail(email),
          password: hashPassword
