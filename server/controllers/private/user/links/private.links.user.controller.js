@@ -1,14 +1,12 @@
 import PrivateUserService from '../../../../services/private/user/links/private.links.user.service.js'
 import { findOneUser } from '../../../../utils/utils.js'
-import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const jwt_secret = process.env.JWT_SECRET
 
 async function links_create_Controller_POST(req, res) {
     try {
-        const userId = req.user?.id // vem do middleware auth
+        const userId = req.user?.id
         if (!userId) {
             return res.status(401).json({
                 error: "Usuário não autenticado. Token inválido ou ausente."
@@ -34,9 +32,9 @@ async function links_create_Controller_POST(req, res) {
             description,
             categoriaId,
             estadoId,
+            idUser: userId,
             notification,
             tagsRelacionadas,
-            idUser: userId
         })
 
         if (newLink?.error) {
@@ -55,7 +53,7 @@ async function links_create_Controller_POST(req, res) {
     }
 }
 
-
+ 
 async function links_list_Controller_GET(req, res){
     const userId = req.user?.id
     try {
@@ -68,7 +66,7 @@ async function links_list_Controller_GET(req, res){
                 error: "Não existe usuário com esse ID para listar os Links."
             })
         }
-        const linksUser = await PrivateUserService.links_LIST(token.id)
+        const linksUser = await PrivateUserService.links_LIST(userId)
         if(linksUser?.error) {
             return res.status(400).json({
                  error: linksUser.error 

@@ -2,40 +2,47 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient()
 
-async function links_CREATE(dataNewLink){
-    const {    
-        title, 
-        link, 
-        description, 
-        categoriaId, 
-        estadoId,
-        idUser,
-        notification,
-        tagsRelacionadas
-    } = dataNewLink
+async function links_CREATE(dataNewLink) {
+  const {     
+    title, 
+    link, 
+    description, 
+    categoriaId, 
+    estadoId,
+    idUser,
+    notification,
+    tagsRelacionadas
+  } = dataNewLink
 
-    if(!idUser) return { 
-        error: "Id do usuário não fornecido para a criação do novo link" 
+  if (!idUser) {
+    return { error: "Id do usuário não fornecido para a criação do novo link" }
+  }
+
+  try {
+    const data = {
+      title,
+      link,
+      userId: idUser,
+      description: description || null,
+      notification: notification || null,
     }
-    try {
-        const newLink = await prisma.link.create({
-            data: {
-                name: title,
-                link: link,
-                description: description ? description : null,
-                categoriaId: categoriaId ? categoriaId : null,
-                estadoId: estadoId ? estadoId : null,
-                tagsRelacionadas: tagsRelacionadas ? tagsRelacionadas : null,
-                notification: notification ? notification : null
-            }
-        })
-        return newLink
-    } catch(err){
-        console.error(err)
-        return {
-            error: "Não foi possível criar o novo link"
-        }
+
+    if (categoriaId) data.categoriaId = categoriaId
+    if (estadoId) data.estadoId = estadoId
+    if (tagsRelacionadas && tagsRelacionadas.length) {
+      data.tagRelacionadas = {
+        connect: tagsRelacionadas.map(id => ({ id }))
+      }
     }
+
+    const newLink = await prisma.link.create({ data })
+    return newLink
+  } catch (err) {
+    console.error(err)
+    return {
+        error: "Não foi possível criar o novo link" 
+    }
+  }
 }
 
 async function links_LIST(idUser){
@@ -64,7 +71,9 @@ async function links_LIST(idUser){
         }
     }
 }
+
 export default {
     links_LIST,
     links_CREATE
+    // ta quase lá, só falta o update e o delete
 }

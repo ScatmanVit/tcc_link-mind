@@ -4,7 +4,8 @@ import auth from '../../../../middlewares/user/middlewares.user.js'
 import Route from 'express'
 const route = Route()
 
-route.get("/links", auth, PrivateUserController.links_list_Controller_GET)
+route.post('/links/create', auth, PrivateUserController.links_create_Controller_POST)
+route.get('/links/list', auth, PrivateUserController.links_list_Controller_GET)
 
 export default route
 

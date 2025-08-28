@@ -6,7 +6,12 @@ const jwt_secret = process.env.JWT_SECRET
 
 function auth(req, res, next){
     try {
-        const token = req.headers.authorization // isso se for mobile, separar lógica depois, pra padronizar a chegada do id no controller
+    let token
+        if (req.cookies?.token) {
+            token = req.cookies.token 
+        } else {
+            token = req.headers.authorization
+        }
         if (!token) {
             return res.status(401).json({
                 error: "Acesso negado"
