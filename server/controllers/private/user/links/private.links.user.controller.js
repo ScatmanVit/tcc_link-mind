@@ -19,13 +19,16 @@ async function links_create_Controller_POST(req, res) {
                 error: "Usuário não encontrado. Não é possível criar link."
             })
         }
+
         const { title, link, description, categoriaId, estadoId, notification, tagsRelacionadas } = req.body
 
         if (!title || !link) {
             return res.status(400).json({
-                error: "Campos obrigatórios não fornecidos: título e link."
+                error: "Campos obrigatórios não fornecidos."
             })
         }
+
+
         const newLink = await PrivateUserService.links_CREATE({
             title,
             link,
@@ -42,6 +45,7 @@ async function links_create_Controller_POST(req, res) {
         }
 
         return res.status(201).json({
+            success: true,
             message: "Link criado com sucesso!",
             link: newLink
         })
@@ -53,7 +57,51 @@ async function links_create_Controller_POST(req, res) {
     }
 }
 
- 
+
+async function links_delete_Controller_DELETE(req, res){
+    const linkId = req.params.id
+    const idUser = req.user?.id
+
+    try {
+        if (!linkId || !idUser) {
+            return res.status(400).json({
+                message: "Id do link e do usuário não foram fornecidos"
+            })
+        }
+        const userExist = await findOneUser("", idUser)
+        if (!userExist) {
+            return res.status(404).json({
+                error: "Não existe usuário com esse ID para o link."
+            })
+        }
+
+        const linkDeleted = await PrivateUserService.link_DELETE(linkId, idUser)
+
+        if (linkDeleted.error) {
+            return res.status(400).json({
+                message: linkDeleted.error
+            })
+        }
+        if (linkDeleted) {
+            return res.status(200).json({
+                success: true,
+                message: "Link deletado com sucesso!"
+            })
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "Link não encontrado"
+            })
+        }
+    } catch(err) {
+        console.error("Ocorreu um erro no servidor [ DELETE LINK ]", err)
+            return res.status(500).json({
+                error: "Ocorreu um erro no servidor"
+        })
+    }
+
+}
+
 async function links_list_Controller_GET(req, res){
     const userId = req.user?.id
     try {
@@ -74,6 +122,7 @@ async function links_list_Controller_GET(req, res){
         } 
         
         return res.status(200).json({ 
+            success: true,
             message: "Links do usuário obtidos com sucesso!", linksUser
         })
     } catch(err) {
@@ -86,5 +135,6 @@ async function links_list_Controller_GET(req, res){
 
 export default {
     links_create_Controller_POST,
-    links_list_Controller_GET
+    links_list_Controller_GET,
+    links_delete_Controller_DELETE
 }

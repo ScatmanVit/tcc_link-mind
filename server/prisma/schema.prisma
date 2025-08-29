@@ -82,7 +82,7 @@ model Link {
   estadoId        String?     @db.Uuid
   estado          Estado?     @relation(fields: [estadoId], references: [id])
   title           String      
-  link            String      @unique
+  link            String      
   description     String?
   tagRelacionadas TagRelacionada[]
   notification    String?
