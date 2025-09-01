@@ -84,7 +84,7 @@ async function links_delete_Controller_DELETE(req, res) {
 
 		if (linkDeleted.error) {
 			return res.status(400).json({
-				message: linkDeleted.error
+				error: linkDeleted.error
 			})
 		}
 		if (linkDeleted) {
