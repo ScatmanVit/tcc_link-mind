@@ -12,6 +12,7 @@ async function sendEmailResetPassword_Controller(req, res) {
         })
     }
     try {
+        console.log("ok")
         const userExist = await findOneUser(formatEmail(email), "")
         if(!userExist) {
             return res.status(404).json({

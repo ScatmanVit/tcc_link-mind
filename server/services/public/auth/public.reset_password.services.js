@@ -68,7 +68,9 @@ async function sendEmailResetPassword_Service(data) {
 }
 
 async function resetPassword_Service() {
-
+  return { 
+            success: true 
+        }
 }
 
 export default {
