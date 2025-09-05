@@ -1,9 +1,11 @@
 import { Stack } from 'expo-router'
 
-export default function HomeStackLayout() {
+export default function LinksStackLayout() {
   /* quando eu tiver as outras telas eu
        defino as outras telas aqui diretamente com o Stack.screen */
   return (
-    <Stack/> 
+    <Stack screenOptions={{
+      headerShown: false
+    }}/> 
   )
 }

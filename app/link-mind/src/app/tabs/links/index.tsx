@@ -1,10 +1,10 @@
 import { Text, View } from 'react-native'
 
-export default function IndexHome(){
+export default function LinksIndex(){
    return (
       <View>
          <Text>
-            testando INDEX HOME DA HOME STACK
+            testando LINKS A HOME/INDEX DA PASTA LINKS
          </Text>
       </View>
    )

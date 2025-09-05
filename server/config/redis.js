@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const redis = new Redis(process.env.REDIS, {
-  tls: undefined, 
+  tls: {},
   connectTimeout: 5000,
   enableOfflineQueue: false,
 })

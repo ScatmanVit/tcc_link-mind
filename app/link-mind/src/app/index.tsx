@@ -14,7 +14,7 @@ export default function Index() {
 
    useEffect(() => {
       if (mounted && user && user.email && user.name) {
-         router.replace('/tabs/home') 
+         router.replace('/tabs/links') 
       }
    }, [mounted, user])
 
