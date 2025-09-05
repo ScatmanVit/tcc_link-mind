@@ -13,17 +13,17 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@emailjs/browser": "^4.4.1",
+    "@emailjs/nodejs": "^5.0.2",
     "@prisma/client": "^6.13.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "google-auth-library": "^10.2.1",
     "ioredis": "^5.7.0",
     "jsonwebtoken": "^9.0.2",
-    "redis": "^5.8.0"
+    "redis": "^5.8.0",
+    "resend": "^6.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.10",
