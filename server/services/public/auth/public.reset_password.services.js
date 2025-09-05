@@ -3,8 +3,10 @@ import { Resend } from 'resend';
 import dotenv from 'dotenv'
 dotenv.config()
 
+const api_key_resed = process.env.RESEND_KEY_API
+
 const prisma = new PrismaClient()
-const resend = new Resend('re_XvXKfhf9_E5oZA3pEkF9U9KeVz6WrFPQc');
+const resend = new Resend(api_key_resed);
 
 async function sendEmailResetPassword_Service(data) {
     const { email, urlResetPassword } = data
