@@ -1,8 +1,9 @@
+import ResetPasswordPage from './auth/ResetPasswordPage'
 
 function App() {
   return (
     <>
-      <h1>teste</h1>
+      <ResetPasswordPage/>
     </>
   )
 }

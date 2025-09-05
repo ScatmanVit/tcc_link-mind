@@ -10,7 +10,7 @@ app.use(cors())
 app.use(cookieParser())
 app.use(express.json()) 
 
-app.use('/linkmind', AuthRoutes)
-app.use('/linkmind', UserLinkPrivateRoutes) 
+app.use('/api/v1/linkmind', AuthRoutes)
+app.use('/api/v1/linkmind', UserLinkPrivateRoutes) 
 
 export default app
