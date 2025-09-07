@@ -22,9 +22,9 @@ async function sendEmailResetPassword_Controller(req, res) {
         const tokenResetPassword = jwt.sign(
 			{ id: userExist.id, email: userExist.email },
 			jwt_secret,
-			{ expiresIn: "15m" }
+			{ expiresIn: "15m" }   
 		);
-        const urlResetPassword = `https://linkmind.com/reset-password?token=${tokenResetPassword}`
+        const urlResetPassword = `https://tcc-link-mind-ncqzwm8h9-vitors-projects-16a44ae6.vercel.app/reset-password?token=${tokenResetPassword}`
         const resSendEmail = await UserServiceResetPassword
             .sendEmailResetPassword_Service({ 
                 email, 
@@ -33,9 +33,10 @@ async function sendEmailResetPassword_Controller(req, res) {
         if (resSendEmail?.error) {
             return res.status(400).json({
                 errorExplain: "Ocorreu um erro no servidor",
-                error: resSendEmail.error.message
+                error: resSendEmail.error
             })
         }
+        console.log(resSendEmail.error)
         return res.status(200).json({
             success: true,
             message: `O seu email de recuperação já foi enviado ${captalize(userExist.name)}!`
