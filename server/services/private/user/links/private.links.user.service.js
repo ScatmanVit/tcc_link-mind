@@ -111,7 +111,10 @@ async function links_UPDATE(dataUptdatedink) {
 		return linkUpdated
 	} catch (err) {
 		if (err.code === 'P2025') {
-			return { error: "O link que você tentou alterar não existe"}
+			return { 
+				error: "O link que você tentou alterar não existe",
+				statusCode: 404
+			}
 		}
 		console.error(err)
 		return {

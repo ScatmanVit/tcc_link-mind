@@ -138,7 +138,7 @@ async function links_update_Controller_UPDATE(req, res) {
 			newNotification
 		})
 		if (linkUpdated.error) {
-			return res.status(400).json({
+			return res.status(linkUpdated.statusCode || 500).json({
 				message: linkUpdated.error
 			})
 		}

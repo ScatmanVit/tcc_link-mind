@@ -14,23 +14,34 @@ const ResetPasswordPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        setMessage("");
+
+        if (!newPassword || !confirmPassword) {
+            setMessage("Preencha todos os campos.");
+            return;
+        }
         if (newPassword !== confirmPassword) {
             setMessage("As senhas não coincidem.");
             return;
         }
 
         setLoading(true);
+
         try {
             const response = await axios.post(
                 "https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/reset-password",
-                {
-                    token,
-                    newPassword,
-                }
+                { token, newPassword, },
+                { timeout: 5000 } 
             );
             setMessage(response.data.message || "Senha redefinida com sucesso!");
+            setNewPassword("");
+            setConfirmPassword("");
         } catch (error: any) {
-            setMessage(error.response?.data?.error || "Erro ao redefinir senha.");
+            if (axios.isAxiosError(error)) {
+                setMessage(error.response?.data?.error || "Erro ao redefinir senha.");
+            } else {
+                setMessage("Erro inesperado ao redefinir senha.");
+            }
         } finally {
             setLoading(false);
         }
@@ -46,6 +57,7 @@ const ResetPasswordPage: React.FC = () => {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     style={styles.input}
+                    disabled={loading}
                 />
                 <input
                     type="password"
@@ -53,12 +65,21 @@ const ResetPasswordPage: React.FC = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     style={styles.input}
+                    disabled={loading}
                 />
                 <button type="submit" style={styles.button} disabled={loading}>
                     {loading ? "Redefinindo..." : "Redefinir Senha"}
                 </button>
             </form>
-            {message && <p style={styles.message}>{message}</p>}
+            {message && (
+                <p style={{
+                        ...styles.message,
+                        color: message.includes("sucesso") ? "green" : "#d9534f",
+                    }}
+                >
+                    {message}
+                </p>
+            )}
         </div>
     );
 };
@@ -94,6 +115,5 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     message: {
         marginTop: "15px",
-        color: "#d9534f",
     },
 };

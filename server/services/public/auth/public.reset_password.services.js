@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Resend } from 'resend';
+import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -12,7 +13,8 @@ async function sendEmailResetPassword_Service(data) {
     const { email, urlResetPassword } = data
     if (!email || !urlResetPassword) {
         return { 
-            error: "Informações não fornecidas para envio do email para recuperação de senha." 
+            error: "Informações não fornecidas para envio do email para recuperação de senha.",
+            statusCode: 400 
         }
     }
     try {
@@ -52,7 +54,7 @@ async function sendEmailResetPassword_Service(data) {
         });
         if (res?.error) {
             return {
-                error: res.error 
+                error: res.error
             }
         }
         console.log("Email enviado com sucesso")
@@ -67,10 +69,37 @@ async function sendEmailResetPassword_Service(data) {
     }
 }
 
-async function resetPassword_Service() {
-  return { 
-            success: true 
+async function resetPassword_Service(email, newPassword) {
+    if (!email || !newPassword) {
+        return {
+            error: "Email ou senha não recebidos.",
+            statusCode: 400
         }
+    }
+    try {
+        const salt = await bcrypt.genSalt(10);
+		const hashPassword = await bcrypt.hash(newPassword, salt);
+        await prisma.user.update({
+            where: {
+                email: email
+            },
+            data: {
+                password: hashPassword
+            }
+        })
+        return { success: true }
+    } catch(err) {
+        if (err.code === 'P2025') {
+            return {
+                error: "Não foi possível redefinir a sua senha ou encontrar a anterior",
+                statusCode: 404
+            }
+        }
+        console.log(err)
+        return {
+            error: "Ocorreu um erro ao redefinir a sua senha."
+        }
+    }
 }
 
 export default {

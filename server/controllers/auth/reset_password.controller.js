@@ -31,7 +31,7 @@ async function sendEmailResetPassword_Controller(req, res) {
                 urlResetPassword 
             })
         if (resSendEmail?.error) {
-            return res.status(400).json({
+            return res.status(resSendEmail.statusCode || 500).json({
                 errorExplain: "Ocorreu um erro no servidor",
                 error: resSendEmail.error
             })
@@ -50,7 +50,39 @@ async function sendEmailResetPassword_Controller(req, res) {
 }
 
 async function resetPassword_Controller(req, res) {
-
+    const { token, newPassword } = req.body
+    if (!token || !newPassword) {
+        return res.status(400).json({
+            error: "Nova senha ou token não recebidos."
+        })
+    }
+    try {
+        let decoded
+        try {
+            decoded = jwt.verify(token, jwt_secret);
+        } catch(err) {
+            return res.status(401).json({ 
+                error: "Token inválido ou expirado" 
+            });
+        }
+        const resResetPassword = await UserServiceResetPassword
+            .resetPassword_Service(formatEmail(decoded.email), newPassword)
+        if (resResetPassword?.error) {
+            return res.status(resResetPassword.statusCode || 500).json({
+                error: resResetPassword.error
+            })
+        }
+        console.log(resResetPassword.error)
+        return res.status(200).json({
+            success: true,
+            message: "Sua senha foi redefinida! Já pode efetuar o login novamente com sua nova senha."
+        })
+    } catch(err) {
+        console.error("Ocorreu um erro no servidor, [ RESET PASSWORD ]", err)
+        return res.status(500).json({
+            error: "Ocorreu um erro no servidor."
+        })
+    }
 }
 
 export default {
