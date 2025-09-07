@@ -24,7 +24,7 @@ async function sendEmailResetPassword_Controller(req, res) {
 			jwt_secret,
 			{ expiresIn: "15m" }   
 		);
-        const urlResetPassword = `https://tcc-link-mind-ncqzwm8h9-vitors-projects-16a44ae6.vercel.app/reset-password?token=${tokenResetPassword}`
+        const urlResetPassword = `https://tcc-link-mind-kappa.vercel.app/reset-password?token=${tokenResetPassword}`
         const resSendEmail = await UserServiceResetPassword
             .sendEmailResetPassword_Service({ 
                 email, 
@@ -46,7 +46,7 @@ async function sendEmailResetPassword_Controller(req, res) {
         return res.status(500).json({
             error: "Ocorreu um erro no servidor."
         })
-    }
+    } 
 }
 
 async function resetPassword_Controller(req, res) {
