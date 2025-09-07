@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
+import "./reset-password.css";
 
 const ResetPasswordPage: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -13,7 +14,6 @@ const ResetPasswordPage: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         setMessage("");
 
         if (!newPassword || !confirmPassword) {
@@ -30,9 +30,10 @@ const ResetPasswordPage: React.FC = () => {
         try {
             const response = await axios.post(
                 "https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/reset-password",
-                { token, newPassword, },
-                { timeout: 5000 } 
+                { token, newPassword },
+                { timeout: 5000 }
             );
+
             setMessage(response.data.message || "Senha redefinida com sucesso!");
             setNewPassword("");
             setConfirmPassword("");
@@ -47,16 +48,18 @@ const ResetPasswordPage: React.FC = () => {
         }
     };
 
+    const isSuccess = message.toLowerCase().includes("sucesso");
+
     return (
-        <div style={styles.container}>
+        <div className="reset-password-container">
             <h2>Redefinir Senha</h2>
-            <form onSubmit={handleSubmit} style={styles.form}>
+            <form onSubmit={handleSubmit} className="reset-password-form">
                 <input
                     type="password"
                     placeholder="Nova senha"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    style={styles.input}
+                    className="reset-password-input"
                     disabled={loading}
                 />
                 <input
@@ -64,18 +67,22 @@ const ResetPasswordPage: React.FC = () => {
                     placeholder="Confirmar nova senha"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    style={styles.input}
+                    className="reset-password-input"
                     disabled={loading}
                 />
-                <button type="submit" style={styles.button} disabled={loading}>
+                <button
+                    type="submit"
+                    className="reset-password-button"
+                    disabled={loading}
+                >
                     {loading ? "Redefinindo..." : "Redefinir Senha"}
                 </button>
             </form>
             {message && (
-                <p style={{
-                        ...styles.message,
-                        color: message.includes("sucesso") ? "green" : "#d9534f",
-                    }}
+                <p
+                    className={`reset-password-message ${
+                        isSuccess ? "success" : "error"
+                    }`}
                 >
                     {message}
                 </p>
@@ -85,35 +92,3 @@ const ResetPasswordPage: React.FC = () => {
 };
 
 export default ResetPasswordPage;
-
-const styles: { [key: string]: React.CSSProperties } = {
-    container: {
-        maxWidth: "400px",
-        margin: "50px auto",
-        padding: "20px",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        fontFamily: "Arial, sans-serif",
-    },
-    form: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-    },
-    input: {
-        padding: "10px",
-        fontSize: "16px",
-    },
-    button: {
-        padding: "10px",
-        fontSize: "16px",
-        backgroundColor: "#007bff",
-        color: "#fff",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer",
-    },
-    message: {
-        marginTop: "15px",
-    },
-};

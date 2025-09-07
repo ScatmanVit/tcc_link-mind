@@ -36,7 +36,6 @@ async function sendEmailResetPassword_Controller(req, res) {
                 error: resSendEmail.error
             })
         }
-        console.log(resSendEmail.error)
         return res.status(200).json({
             success: true,
             message: `O seu email de recuperação já foi enviado ${captalize(userExist.name)}!`
@@ -72,7 +71,6 @@ async function resetPassword_Controller(req, res) {
                 error: resResetPassword.error
             })
         }
-        console.log(resResetPassword.error)
         return res.status(200).json({
             success: true,
             message: "Sua senha foi redefinida! Já pode efetuar o login novamente com sua nova senha."

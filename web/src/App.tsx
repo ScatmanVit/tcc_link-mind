@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
-import ResetPasswordPage from './auth/ResetPasswordPage';
+import ResetPasswordPage from './auth/reset-password/ResetPasswordPage';
 import HomePage from './pages/HomePage';
 
 
