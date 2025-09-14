@@ -1,189 +1,213 @@
-import { View, StyleSheet, Image, Text, Button } from "react-native";
-import axios from 'axios'
-
-import ModalAlert from "@/components/Modal/modalAlert"
-import ButtonApp from '@/components/button'
-import Separator from '@/components/separator'
-import Input from "@/components/input";
-
-import { useContext, useEffect, useState } from "react";
+import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+import axios from 'axios';
+import { useContext, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { AuthContext } from '@/src/context/auth'
+import { useRouter } from "expo-router";
+
+import ModalAlert from "@/components/Modal/modalAlert";
+import ButtonApp from '@/components/button';
+import Input from "@/components/input";
+import { AuthContext } from '@/src/context/auth';
 import { colors } from "@/src/styles/colors";
- 
+
+type FormData = {
+	name: string;
+	email: string;
+	password: string;
+};
 
 export default function Register() {
-  const { signUp, isLogged, user } = useContext(AuthContext)
-  
-  const [modalVisible, setModalVisible] = useState<boolean>(false)  
-  const [registerButton, setRegisterButton] = useState<boolean>(false)
+	const { signUp } = useContext(AuthContext);
+	const router = useRouter();
 
-  const { control, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: {
-      name: "",
-      email: "",
-      password: ""
-    }
-  });
+	const [modalVisible, setModalVisible] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [feedbackMessage, setFeedbackMessage] = useState<string>()
 
-  async function registerUser(data: { 
-    name: string; 
-    email: string;
-    password: string;
-  }) {
-    try {
-        const res = await axios.post(
-          "https://tcc-link-mind.onrender.com/linkmind/auth/cadastro",
-          data
-        );
-        console.log("Usuário cadastrado com sucesso!", res.data);
-        return res.data;
-    } catch (err: any) {
-        console.error("Erro no cadastro", err?.response?.data?.message || err.message);
-    }
-  }
+	const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
+		defaultValues: {
+			name: "",
+			email: "",
+			password: ""
+		}
+	});
 
-  async function onSubmit(data: any) {
-    signUp({
-      name: data.name,
-      email: data.email
-    })
-    const registerSuccess = await registerUser(data)
-    if(registerSuccess){
-      setRegisterButton(true)
-    }
-  }
+	async function registerUser(data: FormData) {
+		try {
+			const res = await axios.post(
+				"https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/cadastro",
+				data
+			);
+			console.log("Usuário cadastrado com sucesso!", res.data);
+			return res.data;
+		} catch (err: any) {
+			setFeedbackMessage(err?.response?.data?.error || 'Ocorreu um erro. Por favor, tente novamente mais tarde.');
+			console.error("Erro no cadastro", err?.response?.data?.message || err.message);
+			return null;
+		}
+	}
 
-  useEffect(() => {
-    let timeout: any
-    if (user) {
-      timeout = setTimeout(() => {
-        isLogged(user);
-      }, 900);
-    } 
+	async function onSubmit(data: FormData) {
+		setLoading(true);
+		const result = await registerUser(data);
+		setLoading(false);
 
-    return () => {
-      clearTimeout(timeout)
-      setRegisterButton(false)
-    }
-  }, [registerButton])
+		if (result) {
+			signUp({ name: data.name, email: data.email });
+			router.replace('/tabs/links');
+		} else {
+			console.log("Ocorreu um erro ao registrar no servidor.");
+		}
+	}
 
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
-  };
+	function onInvalid() {
+		setModalVisible(true);
+	}
 
-  return (
-    <View style={s.content}>
-      <View style={s.header}>
-        <Image source={require("../../../assets/images/icon.png")} style={s.image_header}/>
-    
-      </View>
+	function toggleModal() {
+		setModalVisible(!modalVisible);
+	}
 
-      <View style={s.container}>
-         <Controller
-          control={control}
-          name="name"
-          rules={{ required: "Nome é obrigatório" }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              icon="user"
-              value={value}
-              onBlur={onBlur}
-              placeholder="Nome"
-              onChangeText={onChange}
-              error={errors.name ? true : false}
-              placeholderTextColor={colors.gray[400]}
-          />
-        )}
-      />
+	return (
+		<View style={s.content}>
+			<ModalAlert
+				errors={errors}
+				toggleModal={toggleModal}
+				modalVisible={modalVisible}
+			/>
+			<View style={s.header}>
+				<Image source={require("../../../assets/images/icon.png")} style={s.image_header} />
+			</View>
 
-      <Controller
-        control={control}
-        name="email"
-        rules={{
-          required: "Email é obrigatório",
-          pattern: {
-            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: "Email inválido",
-          },
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            icon="envelope"
-            value={value}
-            onBlur={onBlur}
-            placeholder="Email"
-            onChangeText={onChange}
-            error={errors.email ? true : false}
-            placeholderTextColor={colors.gray[400]}
+			<View style={s.container}>
+				<Controller
+					control={control}
+					name="name"
+					rules={{ required: "obrigatório" }}
+					render={({ field: { onChange, onBlur, value } }) => (
+						<Input
+							icon="user"
+							value={value}
+							onBlur={onBlur}
+							placeholder="Nome"
+							onChangeText={onChange}
+							error={!!errors.name}
+							placeholderTextColor={colors.gray[400]}
+						/>
+					)}
+				/>
+				<Controller
+					control={control}
+					name="email"
+					rules={{
+						required: "inválido ou não foi fornecido",
+						pattern: {
+							value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+							message: "inválido ou não fornecido",
+						},
+					}}
+					render={({ field: { onChange, onBlur, value } }) => (
+						<Input
+							icon="envelope"
+							value={value}
+							onBlur={onBlur}
+							placeholder="Email"
+							onChangeText={onChange}
+							error={!!errors.email}
+							placeholderTextColor={colors.gray[400]}
+						/>
+					)}
+				/>
+				<Controller
+					control={control}
+					name="password"
+					rules={{
+						required: "inválida ou não foi fornecida",
+						minLength: { 
+							value: 8, message: "mínimo 8 caracteres"
+						},
+					}}
+					render={({ field: { onChange, onBlur, value } }) => (
+						<Input
+							icon="lock"
+							value={value}
+							onBlur={onBlur}
+			 				placeholder="Senha"
+							secureTextEntry={true}
+							onChangeText={onChange}
+							error={!!errors.password}
+							placeholderTextColor={colors.gray[400]}
+						/>
+					)}
+				/>
+				<View
+					style={s.forgotPasswordButton}
+				>
+					<Text style={s.forgotPasswordText}>
+						Já tem cadastro?  
+					</Text>
+					<TouchableOpacity onPress={() => router.push('/auth/login')}>
+						<Text style={s.signupLink}>Clique aqui</Text>
+					</TouchableOpacity>
+				</View>
 
-          />
-        )}
-      />
-
-      <Controller
-        control={control}
-        name="password"
-        rules={{
-          required: "Senha é obrigatória",
-          minLength: { value: 8, message: "mínimo 8 caracteres" },
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            icon="lock"
-            value={value}
-            onBlur={onBlur}
-            placeholder="Senha"
-            secureTextEntry={true}
-            onChangeText={onChange}
-            error={errors.password ? true : false}
-            placeholderTextColor={colors.gray[400]}
-          />
-        )}
-      />
-      
-      <ButtonApp 
-        text="Cadastre-se"
-        onPress={handleSubmit(onSubmit)}
-      />
-
-      <Separator/>
-
-      <ButtonApp 
-        text="Entrar sem conta"
-        colorBack={colors.gray[800]}
-        color={colors.gray[50]}
-        onPress={toggleModal}
-      />
-      </View>
-    </View>
-  );
+				{feedbackMessage && <Text style={s.feedbackText}>{feedbackMessage}</Text>}
+					
+				<ButtonApp
+					text={loading ? "Carregando..." : "Cadastre-se"}
+					colorBack={loading ? colors.gray[400] : undefined}
+					onPress={handleSubmit(onSubmit, onInvalid)}
+				/>
+			</View>
+		</View>
+	);
 }
 
 const s = StyleSheet.create({
-  content: { 
-    flex:1,
-    backgroundColor: colors.gray[950], 
-    alignItems: "center",
-    justifyContent: "center" 
-  },
-  header:{
-    width: '100%',
-    marginVertical: 100,
-    marginBottom: 6,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  image_header: {
-    width: 100,
-    height: 100
-  },
-  container: {
-   width: '95%',
-   height: '95%',
-   justifyContent: "flex-start",
-   paddingHorizontal: 15,
-   gap: 16
-  }
+	content: {
+		flex: 1,
+		backgroundColor: colors.gray[950],
+		alignItems: "center",
+		justifyContent: "center",
+		gap: 40
+	},
+	header: {
+		width: '100%',
+		marginTop: 200,
+		marginBottom: 6,
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	image_header: {
+		width: 100,
+		height: 100
+	},
+	container: {
+		width: '95%',
+		height: '95%',
+		justifyContent: "flex-start",
+		paddingHorizontal: 15,
+		gap: 16
+	},
+	forgotPasswordButton: {
+		flexDirection: 'row',
+        justifyContent: 'flex-end',
+        marginTop: -3,
+		marginBottom: 12,
+		gap:5
+	},
+	forgotPasswordText: {
+		color: colors.gray[400]
+	},
+	signupLink: {
+        color: colors.gray[400],
+        fontWeight: 'bold',
+        textDecorationLine: 'underline',
+    },
+	feedbackText: {
+        color: colors.green[300],
+        textAlign: 'center',
+        fontSize: 16,
+    },
 });

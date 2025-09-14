@@ -8,15 +8,15 @@ export default function Index() {
    const { user } = useContext(AuthContext)
    const [mounted, setMounted] = useState<boolean>(false)
 
-   useEffect(() => {
-      setMounted(true)
-   }, [])
+   // useEffect(() => {
+   //    setMounted(true)
+   // }, [])
 
-   useEffect(() => {
-      if (mounted && user && user.email && user.name) {
-         router.replace('/tabs/links') 
-      }
-   }, [mounted, user])
+   // useEffect(() => {
+   //    if (mounted && user && user.email && user.name) {
+   //       router.replace('/tabs/links') 
+   //    }
+   // }, [mounted, user])
 
    return <Register />
 }

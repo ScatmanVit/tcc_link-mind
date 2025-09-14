@@ -11,7 +11,7 @@ async function createUserController(req, res) {
 
 	if (!name || !email || !password) {
 		return res.status(400).json({
-			message: "Dados não recebidos, por favor preencha todos os campos"
+			error: "Dados não recebidos, por favor preencha todos os campos"
 		});
 	}
 
@@ -25,7 +25,7 @@ async function createUserController(req, res) {
 		const userExist = await findOneUser(formatEmail(email), "")
 		if (userExist) {
 			return res.status(400).json({
-				message: "Já existe um usuário cadastrado nesse email"
+				error: "Já existe um usuário cadastrado nesse email"
 			})
 		}
 		await UserAuthService
@@ -40,7 +40,7 @@ async function createUserController(req, res) {
 	} catch (err) {
 		console.error("Ocorreu um erro no servidor, [ CREATE USER ] ", err)
 		return res.status(500).json({
-			message: "Ocorreu um erro no servidor"
+			error: "Ocorreu um erro no servidor"
 		})
 	}
 }
@@ -49,7 +49,7 @@ async function loginUserController(req, res) {
 	const { email, password, platform } = req.body;
 	if (!email || !password || !platform) {
 		return res.status(400).json({
-			message: "Dados não recebidos, por favor preencha todos os campos."
+			error: "Dados não recebidos, por favor preencha todos os campos."
 		});
 	}
 
@@ -57,7 +57,7 @@ async function loginUserController(req, res) {
 		const user = await findOneUser(formatEmail(email), "");
 		if (!user) {
 			return res.status(400).json({
-				message: "Não foi encontrado um usuário com esse E-mail"
+				error: "Não foi encontrado um usuário com esse E-mail"
 			});
 		}
 
@@ -65,7 +65,7 @@ async function loginUserController(req, res) {
 			const isMatch = await bcrypt.compare(password, user.password);
 			if (!isMatch) {
 				return res.status(401).json({
-					message: "Credenciais inválidas."
+					error: "Credenciais inválidas."
 				});
 			}
 		}
@@ -93,7 +93,7 @@ async function loginUserController(req, res) {
 				message: "Login efetuado com sucesso!",
 				access_token,
 				refresh_token,
-				nameUser: user.name
+				nameUser: captalize(user.name)
 			});
 		}
 
@@ -112,7 +112,7 @@ async function loginUserController(req, res) {
 	} catch (err) {
 		console.error("Ocorreu um erro no servidor, [ LOGIN USER ]", err);
 		return res.status(500).json({
-			message: "Ocorreu um erro no servidor"
+			error: "Ocorreu um erro no servidor"
 		});
 	}
 }
