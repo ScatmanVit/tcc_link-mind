@@ -16,7 +16,7 @@
 }
 
 .sticky-col {
-  position: -webkit-sticky; /* Para Safari */
+  position: -webkit-sticky;
   position: sticky;
   right: 0;
   background: var(--panel);

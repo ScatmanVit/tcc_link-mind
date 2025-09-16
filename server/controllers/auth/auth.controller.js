@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken'
 const jwt_secret = process.env.JWT_SECRET
 
 async function createUserController(req, res) {
-	const { name, email, password } = req.body
+	const { name, email, password, role } = req.body
 
 	if (!name || !email || !password) {
 		return res.status(400).json({
@@ -32,7 +32,8 @@ async function createUserController(req, res) {
 			.createUserService({
 				name: name,
 				email: formatEmail(email),
-				password: hashPassword
+				password: hashPassword, 
+				role: role
 			})
 		return res.status(201).json({
 			message: `Conta criada! Seja muito bem-vindo ${captalize(name)}.`
@@ -124,62 +125,61 @@ async function refreshTokenController(req, res) {
 	const token_web = req.cookies.refresh_token;
 
 	if (!["mobile", "web"].includes(platform)) {
-		return res.status(400).json({
-			message: "Plataforma inválida"
-		});
+		return res.status(400).json({ message: "Plataforma inválida" });
 	}
 
 	try {
-		let decoded;
 		let token;
+		let decoded;
 
 		if (platform === "mobile") {
 			if (!token_mobile) {
-				return res.status(400).json({
-					message: "Token não fornecido para mobile."
-				});
+				return res.status(400).json({ error: "Token não fornecido para mobile." });
 			}
 			token = token_mobile.replace("Bearer ", "");
-			decoded = jwt.verify(token, jwt_secret);
-		}
-
-		if (platform === "web") {
+		} else {
 			if (!token_web) {
-				return res.status(400).json({ message: "Token não fornecido para web." });
+				return res.status(400).json({ error: "Token não fornecido para web." });
 			}
 			token = token_web;
+		}
+
+
+		try {
 			decoded = jwt.verify(token, jwt_secret);
+		} catch (err) {
+			if (err.name === "TokenExpiredError") {
+				return res.status(401).json({ error: "Refresh token expirado" });
+			}
+			return res.status(401).json({ error: "Refresh token inválido" });
 		}
 
 		if (!decoded || !decoded.id) {
-			return res.status(401).json({ message: "Token inválido" });
+			return res.status(401).json({ error: "Token inválido" });
 		}
 
 		if (decoded.id !== userId) {
 			return res.status(403).json({
-				message: "ID do token não corresponde ao id usuário fornecido",
+				error: "ID do token não corresponde ao id do usuário fornecido",
 			});
 		}
 
 		const storedRefreshToken = await redis.get(`refresh_token:${userId}`);
 		if (!storedRefreshToken || storedRefreshToken !== token) {
-			return res.status(401).json({
-				message: "Refresh token inválido ou expirado."
-			});
+			return res.status(401).json({ error: "Refresh token inválido ou expirado." });
 		}
 
 		const user = await findOneUser("", userId);
 		if (!user) {
-			return res.status(400).json({
-				message: "Usuário não encontrado"
-			});
+			return res.status(400).json({ error: "Usuário não encontrado" });
 		}
 
 		const access_token = jwt.sign(
 			{ id: user.id, email: user.email },
 			jwt_secret,
-			{ expiresIn: "1d" }
+			{ expiresIn: "15m" }
 		);
+
 		const refresh_token = jwt.sign(
 			{ id: user.id, email: user.email },
 			jwt_secret,
@@ -192,7 +192,6 @@ async function refreshTokenController(req, res) {
 			return res.status(200).json({
 				message: "Sessão renovada com sucesso",
 				access_token,
-				refresh_token,
 			});
 		}
 
@@ -210,9 +209,7 @@ async function refreshTokenController(req, res) {
 		}
 	} catch (err) {
 		console.error("Erro no refresh_token [ REFRESH TOKEN ]", err);
-		return res.status(500).json({
-			message: "Erro no servidor"
-		});
+		return res.status(500).json({ message: "Erro no servidor" });
 	}
 }
 
@@ -222,7 +219,7 @@ async function logoutController(req, res) {
 
 	if (!["mobile", "web"].includes(platform)) {
 		return res.status(400).json({
-			message: "Plataforma inválida"
+			error: "Plataforma inválida"
 		});
 	}
 
@@ -232,8 +229,8 @@ async function logoutController(req, res) {
 		if (platform === "mobile") {
 			const tokenMob = req.headers.authorization;
 			if (!tokenMob) {
-				return res.status(400).json({
-					message: "Token não fornecido"
+				return res.status(401).json({
+					error: "Token não fornecido"
 				});
 			}
 			token = tokenMob.replace("Bearer ", "");
@@ -242,8 +239,8 @@ async function logoutController(req, res) {
 		if (platform === "web") {
 			token = req.cookies.refresh_token;
 			if (!token) {
-				return res.status(400).json({
-					message: "Token não fornecido"
+				return res.status(401).json({
+					error: "Token não fornecido"
 				});
 			}
 		}
@@ -253,7 +250,7 @@ async function logoutController(req, res) {
 			decoded = jwt.verify(token, jwt_secret);
 		} catch (err) {
 			return res.status(401).json({
-				message: "Token inválido"
+				error: "Token inválido"
 			});
 		}
 
@@ -262,7 +259,7 @@ async function logoutController(req, res) {
 		} catch (err) {
 			console.error("Erro ao deletar o token", err);
 			return res.status(500).json({
-				message: "Erro no servidor"
+				error: "Erro no servidor"
 			});
 		}
 
@@ -280,7 +277,7 @@ async function logoutController(req, res) {
 	} catch (err) {
 		console.error("Erro no logout", err);
 		return res.status(500).json({
-			message: "Erro no servidor [ LOGOUT USER ]"
+			error: "Erro no servidor [ LOGOUT USER ]"
 		});
 	}
 }

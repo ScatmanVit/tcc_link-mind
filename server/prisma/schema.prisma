@@ -7,12 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String
   email       String      @unique
   password    String
   createdAt   DateTime    @default(now()) @db.Timestamptz(6)
+  role        Role        @default(USER)
   links       Link[]
   eventos     Evento[]
   compras     Compra[]

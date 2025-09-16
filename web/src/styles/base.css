@@ -1,13 +1,10 @@
 :root {
   --bg: #0a0a0a;
-  /* preto profundo */
   --panel: #0f1514;
   --text: #e6fff9;
   --muted: #a8d5cb;
   --cyan: #00ffff;
-  /* ciano */
   --moss: #7aa07a;
-  /* verde musgo leve */
   --border: rgba(0, 255, 255, 0.25);
   --shadow: 0 8px 30px rgba(0, 255, 200, 0.08);
 }
