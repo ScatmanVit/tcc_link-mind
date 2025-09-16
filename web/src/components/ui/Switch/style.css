@@ -1,0 +1,31 @@
+.switch {
+    position: relative;
+    width: 44px;
+    height: 26px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(0, 255, 255, 0.06);
+    cursor: pointer;
+    transition: background .12s ease;
+}
+
+.switch.on {
+    background: rgba(122, 160, 122, 0.35);
+    border-color: rgba(122, 160, 122, 0.7);
+}
+
+.switch .knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--cyan);
+    transition: left .18s ease;
+}
+
+.switch.on .knob {
+    left: 22px;
+    background: #baffea;
+}
