@@ -3,6 +3,8 @@
     { "source": "/(.*)", "destination": "/" }
   ],
   "build": {
-    "installCommand": "pnpm install"
+    "installCommand": "pnpm install",
+    "command": "pnpm run build",
+    "outputDirectory": "dist"
   }
 }
