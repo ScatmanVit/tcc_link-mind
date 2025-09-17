@@ -8,7 +8,7 @@ import Spinner from '@/components/ui/Spinner'
 import EmailModal from '@/features/users/components/EmailModal'
 import { useAuth } from '@/context/AuthContext'
 
-const initialUsers = [
+const initialUsersExample = [
 	{ id: 1, name: 'Ada Lovelace', email: 'ada@example.com', is_active: true },
 	{ id: 2, name: 'Grace Hopper', email: 'grace@example.com', is_active: true },
 	{ id: 3, name: 'Margaret Hamilton', email: 'margaret@example.com', is_active: false },
@@ -76,7 +76,7 @@ export default function UsersPage() {
 	useEffect(() => {
 		setIsLoading(true)
 		setTimeout(() => {
-			setUsers(initialUsers)
+			setUsers(initialUsersExample)
 			setIsLoading(false)
 		}, 800)
 	}, [])

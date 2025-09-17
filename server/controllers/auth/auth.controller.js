@@ -72,12 +72,12 @@ async function loginUserController(req, res) {
 		}
 
 		const access_token = jwt.sign(
-			{ id: user.id, email: user.email },
+			{ id: user.id, email: user.email, role: user.role },
 			jwt_secret,
 			{ expiresIn: "1d" }
 		);
 		const refresh_token = jwt.sign(
-			{ id: user.id, email: user.email },
+			{ id: user.id, email: user.email, role: user.role },
 			jwt_secret,
 			{ expiresIn: "7d" }
 		);
@@ -175,13 +175,13 @@ async function refreshTokenController(req, res) {
 		}
 
 		const access_token = jwt.sign(
-			{ id: user.id, email: user.email },
+			{ id: user.id, email: user.email, role: user.role },
 			jwt_secret,
 			{ expiresIn: "15m" }
 		);
 
 		const refresh_token = jwt.sign(
-			{ id: user.id, email: user.email },
+			{ id: user.id, email: user.email, role: user.role },
 			jwt_secret,
 			{ expiresIn: "7d" }
 		);

@@ -1,8 +1,5 @@
 import PrivateUserService from '../../../../services/private/user/links/private.links.user.service.js'
 import { findOneUser } from '../../../../utils/utils.js'
-import dotenv from 'dotenv'
-dotenv.config()
-
 
 async function links_create_Controller_POST(req, res) {
 	const userId = req.user?.id
