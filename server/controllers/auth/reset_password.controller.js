@@ -1,4 +1,4 @@
-import UserServiceResetPassword from '../../services/public/auth/public.reset_password.services.js'
+import UserServiceResetPassword from '../../services/auth/auth.reset_password.services.js'
 import { captalize, findOneUser, formatEmail } from "../../utils/utils.js"
 import jwt from 'jsonwebtoken'
  

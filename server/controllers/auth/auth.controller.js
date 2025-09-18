@@ -1,5 +1,5 @@
 import { captalize, findOneUser, formatEmail } from "../../utils/utils.js"
-import UserAuthService from "../../services/public/auth/public.auth.services.js"
+import UserAuthService from "../../services/auth/auth.services.js"
 import redis from '../../config/redis.js'
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken'
 const jwt_secret = process.env.JWT_SECRET
 
 async function createUserController(req, res) {
-	const { name, email, password, role } = req.body
+	const { name, email, password } = req.body
 
 	if (!name || !email || !password) {
 		return res.status(400).json({
@@ -32,8 +32,7 @@ async function createUserController(req, res) {
 			.createUserService({
 				name: name,
 				email: formatEmail(email),
-				password: hashPassword, 
-				role: role
+				password: hashPassword
 			})
 		return res.status(201).json({
 			message: `Conta criada! Seja muito bem-vindo ${captalize(name)}.`

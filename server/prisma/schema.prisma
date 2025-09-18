@@ -19,6 +19,7 @@ model User {
   password    String
   createdAt   DateTime    @default(now()) @db.Timestamptz(6)
   role        Role        @default(USER)
+  status      Boolean     @default(true)
   links       Link[]
   eventos     Evento[]
   compras     Compra[]
