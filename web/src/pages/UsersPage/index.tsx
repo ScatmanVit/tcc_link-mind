@@ -2,6 +2,7 @@ import './style.css'
 
 import listUsers from '@/services/admin/admin.listUsers'
 import createUser from '@/services/admin/admin.createUser'
+import deleteUser from '@/services/admin/admin.deleteUser'
 
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -36,6 +37,8 @@ function ActionsModal({
 	onEmail: (user: User) => void
 	onDelete: (id: string) => void
 }) {
+	const { access_token } = useAuth()
+
 	if (!user) return null
 
 	const handleEdit = () => {
@@ -48,10 +51,27 @@ function ActionsModal({
 		onClose()
 	}
 
-	const handleDelete = () => {
-		onDelete(user.id)
-		onClose()
+	async function handleDelete() {
+		if (!access_token || !user?.id) {
+			console.log("Sem token ou ID para usar")
+			return null
+		}
+		try {
+			const response = await deleteUser(access_token, user.id);
+			if (response) {
+				onClose()
+				setTimeout(() => {
+					onDelete(user.id)
+				}, 500)
+				console.log("Usuário deletado:", response);
+			}
+		
+		} catch (err: any) {
+			console.error(err.message || "Deu erro ao deletar")
+		}
 	}
+
+
 
 	return (
 		<Modal open={!!user} onClose={onClose} title={`Ações para ${user.name}`}>
@@ -78,11 +98,8 @@ export default function UsersPage() {
 	const { logout, access_token } = useAuth()
 	const [searchParams, setSearchParams] = useSearchParams();
 
-
 	const page = searchParams.get("page") || "1";
 	const limit = searchParams.get("limit") || "25";
-
-
 	useEffect(() => {
 		setIsLoading(true);
 
@@ -94,20 +111,18 @@ export default function UsersPage() {
 			try {
 				const data = await listUsers(page, limit, access_token);
 				setUsers(data.users);
-				console.log(data.users)
-				setError(undefined);
 			} catch (err: any) {
-				setError(err.message);
+				console.error(err);
 			} finally {
 				setIsLoading(false);
 			}
 		}
 
 		fetchUsers();
-	}, [page, limit]);
+	}, [searchParams]);
 
 	function handleNextPage() {
-		
+
 		setSearchParams({
 			page: (Number(page) + 1).toString(), limit
 		});
@@ -119,8 +134,8 @@ export default function UsersPage() {
 		})
 	}
 
-	async function handleDeleteUser() {
-
+	function handleDeleteUser(id: string) {
+		setUsers(prevUsers => prevUsers.filter(u => u.id !== id));
 	}
 
 	async function handleUpdateUser() {
@@ -256,12 +271,12 @@ function UserFormModal({ open, onClose, user }: {
 			return;
 		}
 
-		if (!emailRef.current || 
-			!nameRef.current || 
-			!passwordRef.current || 
+		if (!emailRef.current ||
+			!nameRef.current ||
+			!passwordRef.current ||
 			!roleRef.current) {
-				setError("Por favor preencha todos os campos necessários");
-				return;
+			setError("Por favor preencha todos os campos necessários");
+			return;
 		}
 
 		const dataUser = {
@@ -278,7 +293,9 @@ function UserFormModal({ open, onClose, user }: {
 				// await onUpdate(user.id, dataUser);
 			} else {
 				const newUser = await createUser(dataUser, access_token);
-				console.log(newUser.user)
+				if (!!newUser) {
+					console.log("Usuário criado ou alterado corretamente")
+				}
 			}
 			setError("");
 			onClose();
@@ -311,7 +328,7 @@ function UserFormModal({ open, onClose, user }: {
 					<span>
 						Status
 					</span>
-					  <select
+					<select
 						value={isStatus ? "true" : "false"}
 						onChange={(e) => setIsStatus(e.target.value === "true")}
 					>

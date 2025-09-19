@@ -42,8 +42,7 @@ export default async function loginUser({ email, password, login }: LoginAdm) {
 			}
             
 			login(access_token, email);
-			console.log("Login bem-sucedido:", access_token, email);
-			return null;
+			return true
 		} else {
 			throw new Error(errorMessage || "Login falhou");
 		}
@@ -53,7 +52,6 @@ export default async function loginUser({ email, password, login }: LoginAdm) {
 			throw new Error(err.response.data.error);
 		}
 		if (err instanceof Error) {
-			console.log("Erro propagado:", err.message);
 			throw err;
 		}
 		console.log("Erro desconhecido no login:", err);

@@ -5,10 +5,12 @@ import auth from '../middlewares/middlewares.auth.js'
 import AuthRoutes from '../routes/auth/auth.routes.js'
 import cookieParser from 'cookie-parser';
 import express from 'express'
+import helmet from 'helmet'
 import cors from 'cors'// para ambiente de desenvolvimeto, será configurado futuramente
 
 const app = express()
 
+app.use(helmet())
 app.use(cors())
 app.use(cookieParser())
 app.use(express.json()) 
@@ -21,6 +23,6 @@ app.post('/api/v1/linkmind/check-admin', auth, isAdmin, (req, res) => {
         seccess: true,
         message: "Usuário é admin"
     })
-} )
+})
 
 export default app

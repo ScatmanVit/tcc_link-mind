@@ -72,8 +72,10 @@ export default function Login() {
 		setLoading(true);
 		setError(null);
 		try {
-			await loginUser({email, password, login});
-			navigate("/users");
+			const res = await loginUser({email, password, login});
+			if (res) {
+				navigate("/users");
+			}
 		} catch (err: any) {
 			console.log("chegou a mensagem: ", err.message)
 			setError(err.message);

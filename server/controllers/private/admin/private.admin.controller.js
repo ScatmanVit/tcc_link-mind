@@ -62,6 +62,7 @@ async function list_Admin_Controller_LIST(req, res) {
                 error: users.error
             })
         } else {
+            let usersSafe
             return res.status(200).json({
                 success: true,
                 message: users.length == 0 
@@ -69,7 +70,9 @@ async function list_Admin_Controller_LIST(req, res) {
                                 : "Usuários listados com sucesso!",
                 users: users.length == 0 
                             ? [] 
-                            : users
+                            : usersSafe = users.map(
+                                ({ password, ...rest }) => rest
+                            )               
             })
         }
     } catch (err) {

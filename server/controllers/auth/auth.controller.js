@@ -82,8 +82,7 @@ async function loginUserController(req, res) {
 		);
 
 		try {
-			const cretedRefreshLogin = await redis.set(`refresh_token:${user.id}`, refresh_token, "EX", 7 * 24 * 60 * 60);
-			console.log(cretedRefreshLogin)
+			await redis.set(`refresh_token:${user.id}`, refresh_token, "EX", 7 * 24 * 60 * 60);
 		} catch (err) {
 			return console.log("Erro ao criar/guardar o refresh token [ LOGIN ]", err)
 		}
