@@ -4,16 +4,12 @@ import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { useState, useEffect } from "react";
 
-export default function EmailModal({
-	open,
-	onClose,
-	user,
-}: {
+export default function EmailModal({ open, onClose, user }: {
 	open: boolean;
 	onClose: () => void;
 	user: any | null;
 }) {
-	const [subject, setSubject] = useState("Mensagem do ERP Veloz");
+	const [subject, setSubject] = useState("Comunicado Link Mind");
 	const [message, setMessage] = useState("Olá!");
 	const [loading, setLoading] = useState(false);
 
@@ -27,14 +23,12 @@ export default function EmailModal({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setLoading(true);
-
 		console.log("Enviando email (simulado):", {
 			userId: user?.id,
 			subject,
 			message,
 		});
-		await new Promise((resolve) => setTimeout(resolve, 700));
-
+		await new Promise((resolve) => setTimeout(resolve, 700))
 		setLoading(false);
 		onClose();
 	};

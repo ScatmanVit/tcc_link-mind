@@ -1,8 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import Login from "@/pages/Login";
-import UsersPage from '@/features/users/UsersPage'
-import ResetPasswordPage from '@/auth/reset-password'
+import UsersPage from '@/pages/UsersPage'
+import ResetPasswordPage from '@/auth/ResetPassword'
 
 /*  Aqui vou fazer a validação do token para sempre ter certeza de que tenho o access
 	token válido e que se o access token tiver expirado, irei chamar a rota refresh-token para
@@ -18,8 +18,8 @@ import ResetPasswordPage from '@/auth/reset-password'
 	    de "Sessão expirada" amigável
 */
 function RequireAuth({ children }: { children: JSX.Element }) {
-	const { token } = useAuth()
-	if (!token) {
+	const { access_token } = useAuth()
+	if (!access_token) {
 		return <Navigate to="/login" replace />
 	}
 	return children

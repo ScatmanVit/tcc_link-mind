@@ -1,8 +1,6 @@
 .field {
-  display:
-    flex;
-  flex-direction:
-    column;
+  display: flex;
+  flex-direction: column;
   gap: 6px;
 }
 
@@ -14,6 +12,15 @@
 .input {
   background: #0b100f;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--text);
+  outline: none;
+}
+
+.input-error {
+  background: #0b100f;
+  border: 1px solid var(--error);
   border-radius: 10px;
   padding: 10px 12px;
   color: var(--text);
