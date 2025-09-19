@@ -145,4 +145,4 @@ export default {
     delete_Admin_Service_DELETE,
     update_Admin_service_UPDATE,
     list_Admin_Service_LIST
-}
+} 

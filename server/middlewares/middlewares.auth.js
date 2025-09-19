@@ -11,6 +11,7 @@ function auth(req, res, next) {
 			token = req.cookies.token
 		} else {
 			token = req.headers.authorization
+			console.log(token)
 		}
 		if (!token) {
 			return res.status(401).json({

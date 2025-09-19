@@ -65,10 +65,10 @@ async function list_Admin_Controller_LIST(req, res) {
             return res.status(200).json({
                 success: true,
                 message: users.length == 0 
-                                ? []
+                                ? `Não há ${limit} ou ao menos 1 usuário cadastrado.`
                                 : "Usuários listados com sucesso!",
                 users: users.length == 0 
-                            ? `Não há ${limit} ou ao menos 1 usuário(s) cadastrado(s).` 
+                            ? [] 
                             : users
             })
         }
@@ -130,7 +130,6 @@ async function update_Admin_Controller_UPDATE(req, res) {
         newRole,
         newStatus
     } = req.body
-    console.log(req.body)
     try {
         let hashedPassword
         if (newPassword) {
@@ -177,19 +176,6 @@ export default {
     delete_Admin_Controller_DELETE,
     list_Admin_Controller_LIST
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
