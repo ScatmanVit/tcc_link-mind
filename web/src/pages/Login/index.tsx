@@ -1,62 +1,83 @@
 import "./style.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import loginUser from '@/services/admin/admin.login'
 
 export default function Login() {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [errorEmail, setErrorEmail] = useState(false)
+	const [errorPassword, SetErrorPassword] = useState(false)
 	const { login } = useAuth();
 	const navigate = useNavigate();
 
 
-	async function loginUser(email: string, password: string) {
-		try {
-			const res = await axios.post(
-				"http://localhost:3000/api/v1/linkmind/auth/login",
-				{ email, password, platform: "web" }
-			);
-
-			const access_token = res.data.access_token;
-			const errorMessage = res.data.error || res.data.message || null;
-
-			if (access_token) {
-				login(access_token, email);
-				return null; 
+	useEffect(() => {
+		if (email != "" && password != "") {
+			if(!email && !password) {
+				setError("Por favor preencha todos os campos")
+				setErrorEmail(true)
+				SetErrorPassword(true)
+				setLoading(false);
+				return
+			} 
+			if (!email) {
+				setError("Por favor insira um email.")
+				setErrorEmail(true)
+				setLoading(false);
+				return
 			} else {
-				return errorMessage || "Login falhou";
+				setErrorEmail(false)
+				setError("")
 			}
-		} catch (err: any) {
-			if (err.response) {
-				return err.response.data.error || "Erro no login";
+			if (!email.includes("@")) {
+				setError("Por favor insira um email válido");
+				setErrorEmail(true)
+				SetErrorPassword(false)
+				setLoading(false);
+				return;
 			} else {
-				return err.message || "Erro desconhecido";
+				setErrorEmail(false)
+				setError("")
+			}
+			if(!password) {
+				setError("Por favor insira uma senha.")
+				SetErrorPassword(true)
+				setLoading(false);
+				return
+			} else {
+				setError("")
+				SetErrorPassword(false)
+			}
+			if (password.length < 8) {
+				setError("A senha deve conter no mínimo 8 caracteres.")
+				setLoading(false);
+				SetErrorPassword(true)
+				setErrorEmail(false)
+				return
+			} else {
+				SetErrorPassword(false)
+				setError("")
 			}
 		}
-	}
+	}, [email, password])
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setLoading(true);
 		setError(null);
-
-		if (!email.includes("@")) {
-			setError("Por favor insira um email válido");
-			setLoading(false);
-			return;
+		try {
+			await loginUser({email, password, login});
+			navigate("/users");
+		} catch (err: any) {
+			console.log("chegou a mensagem: ", err.message)
+			setError(err.message);
 		}
-		const errorMessage = await loginUser(email, password);
-		if (errorMessage) {
-			setError(errorMessage);
-		} else {
-			navigate("/users", { replace: true });
-		}
-
 		setLoading(false);
 	};
 
@@ -74,12 +95,14 @@ export default function Login() {
 						label="Email"
 						type="email"
 						value={email}
+						error={errorEmail}
 						onChange={(e) => setEmail(e.target.value)}
 					/>
 					<Input
 						label="Senha"
 						type="password"
 						value={password}
+						error={errorPassword}
 						onChange={(e) => setPassword(e.target.value)}
 					/>
 					{error && (
