@@ -27,16 +27,12 @@ export default async function loginUser({ email, password, login }: LoginAdm) {
 						}
 					}
 				);
-
-				console.log("Resposta check-admin:", isAdmin.data);
 			} catch (err: any) {
 				if (err.response?.data?.error) {
-					console.log("Erro do servidor:", err.response.data.error);
-					throw new Error(err.response.data.error);
+					throw new Error(err.response.data.error) || "Erro no servidor";
 				} else if (err instanceof Error) {
 					throw err;
 				} else {
-					console.log("Erro desconhecido no login:", err);
 					throw new Error("Erro desconhecido ao fazer login");
 				}
 			}
