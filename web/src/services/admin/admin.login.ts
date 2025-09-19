@@ -5,13 +5,13 @@ type LoginAdm = {
 	password: string,
 	login: (access_token: string, email: string) => void
 }
-
+ 
 export default async function loginUser({ email, password, login }: LoginAdm) {
     try {
 		const res = await axios.post(
 			"http://localhost:3000/api/v1/linkmind/auth/login",
 			{ email, password, platform: "web" }
-		);
+		)
 
 		const access_token = res.data.access_token;
 		const errorMessage = res.data.error || res.data.message || null;
