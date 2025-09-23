@@ -101,7 +101,7 @@ async function delete_Admin_Controller_DELETE(req, res) {
         const userDeleted = await PrivateAdminService
                 .delete_Admin_Service_DELETE(idUser)
         if (userDeleted?.error) {
-            return res.status(linkUpdated.statusCode || 500).json({
+            return res.status(userDeleted.statusCode || 500).json({
                 error: userDeleted.error
             })
         } else {

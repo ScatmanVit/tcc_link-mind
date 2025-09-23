@@ -1,8 +1,9 @@
 import './style.css'
 
 import listUsers from '@/services/admin/admin.listUsers'
-import createUser from '@/services/admin/admin.createUser'
+import createUser, { type CreateUserResponse } from '@/services/admin/admin.createUser'
 import deleteUser from '@/services/admin/admin.deleteUser'
+import updateUser from '@/services/admin/admin.updateUser'
 
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -21,7 +22,8 @@ export type User = {
 	password?: string,
 	is_active: boolean,
 	role: string,
-	status?: boolean
+	status?: boolean,
+	isVisible?: boolean
 }
 
 function ActionsModal({
@@ -33,16 +35,15 @@ function ActionsModal({
 }: {
 	user: User | null
 	onClose: () => void
-	onEdit: (user: User) => void
+	onEdit: (user: User) => void // ← Mudou para receber o usuário
 	onEmail: (user: User) => void
 	onDelete: (id: string) => void
 }) {
-	const { access_token } = useAuth()
-
 	if (!user) return null
 
+	// ✅ Função simples para abrir modal de edição
 	const handleEdit = () => {
-		onEdit(user)
+		onEdit(user) // Passa o usuário para edição
 		onClose()
 	}
 
@@ -50,6 +51,8 @@ function ActionsModal({
 		onEmail(user)
 		onClose()
 	}
+
+	const { access_token } = useAuth()
 
 	async function handleDelete() {
 		if (!access_token || !user?.id) {
@@ -70,8 +73,6 @@ function ActionsModal({
 			console.error(err.message || "Deu erro ao deletar")
 		}
 	}
-
-
 
 	return (
 		<Modal open={!!user} onClose={onClose} title={`Ações para ${user.name}`}>
@@ -100,9 +101,7 @@ export default function UsersPage() {
 
 	const page = searchParams.get("page") || "1";
 	const limit = searchParams.get("limit") || "25";
-	useEffect(() => {
-		setIsLoading(true);
-
+	
 		async function fetchUsers() {
 			if (!access_token) {
 				setError("Token não encontrado. Faça login novamente.");
@@ -110,41 +109,67 @@ export default function UsersPage() {
 			}
 			try {
 				const data = await listUsers(page, limit, access_token);
+				console.log("Chamou de novo")
 				setUsers(data.users);
 			} catch (err: any) {
 				console.error(err);
+				setError(err.message || "Erro ao carregar usuários");
 			} finally {
 				setIsLoading(false);
 			}
 		}
 
+	useEffect(() => {
+		setIsLoading(true);
+
 		fetchUsers();
-	}, [searchParams]);
+	}, [searchParams, access_token]);
 
 	function handleNextPage() {
-
 		setSearchParams({
 			page: (Number(page) + 1).toString(), limit
 		});
 	};
 
 	function handlePreviusPage() {
-		setSearchParams({
-			page: (Number(page) - 1).toString(), limit
-		})
+		if (Number(page) > 1) {
+			setSearchParams({
+				page: (Number(page) - 1).toString(), limit
+			})
+		}
 	}
+
+	function searchUser(searchTerm: string) {
+		setUsers(prev =>
+			prev.map(user => ({
+			...user,
+			isVisible: user.name.toLowerCase().includes(searchTerm.toLowerCase()) // se corresponder ao usuário da iteração atual ele muda para true se não para false
+			}))
+		);
+	}
+	useEffect(() => {
+		searchUser(q)
+	}, [q])
+
 
 	function handleDeleteUser(id: string) {
 		setUsers(prevUsers => prevUsers.filter(u => u.id !== id));
 	}
 
-	async function handleUpdateUser() {
-
+	function handleEditUser(user: User) {
+		setEditingUser(user)
 	}
 
+	function handleUserUpdated() {
+		console.log("Acessou!")
+		fetchUsers()
+	}
+
+	function handleUserCreated(newUser: User) {
+		setUsers(prevUsers => [...prevUsers, newUser]);
+	}
 
 	const openCreateModal = () => setIsCreating(true)
-	const openEditModal = (user: User) => setEditingUser(user)
 	const openEmailModal = (user: User) => setUserToEmail(user)
 	const openActionsModal = (user: User) => setActionUser(user)
 
@@ -159,7 +184,7 @@ export default function UsersPage() {
 			<div className="card">
 				<div className="page-header">
 					<div className="row">
-						<div className="brand">ERP Veloz</div>
+						<div className="brand">PAINEL DO ADMINISTRADOR</div>
 						<div className="space" />
 						<Button className="ghost" onClick={logout}>Sair</Button>
 					</div>
@@ -176,6 +201,9 @@ export default function UsersPage() {
 				</div>
 
 				<div style={{ padding: 12 }}>
+					{error && (
+						<div className="tag red" style={{ margin: 20 }}>{error}</div>
+					)}
 					{isLoading ? (
 						<div style={{ display: 'grid', placeItems: 'center', padding: 20 }}><Spinner size={22} /></div>
 					) : !users.length ? (
@@ -188,15 +216,17 @@ export default function UsersPage() {
 										<th>ID</th>
 										<th>Nome</th>
 										<th>Email</th>
-										<th>Status</th>
 										<th>Role</th>
+										<th>Status</th>
 										<th className="sticky-col" style={{ width: 50 }}></th>
 									</tr>
 								</thead>
 								<tbody>
-									{users.map(user => (
+									{users
+										.filter(user => user.isVisible !== false)
+										.map(user => (
 										<tr key={user.id}>
-											<td>{user.id}</td>
+											<td>{user.id.substring(0, 8)}...</td>
 											<td>{user.name}</td>
 											<td>{user.email}</td>
 											<td>{user.role}</td>
@@ -218,7 +248,11 @@ export default function UsersPage() {
 					)}
 
 					<div className="row" style={{ justifyContent: 'center', paddingTop: 25 }}>
-						<Button className="ghost" onClick={handlePreviusPage}>
+						<Button 
+							className="ghost" 
+							onClick={handlePreviusPage}
+							disabled={Number(page) <= 1} 
+						>
 							⬅
 						</Button>
 						<div style={{ color: 'var(--muted)' }}>
@@ -235,12 +269,14 @@ export default function UsersPage() {
 				open={isCreating || editingUser !== null}
 				onClose={closeSubModal}
 				user={editingUser}
+				onUserCreated={handleUserCreated} 
+				onUserUpdated={handleUserUpdated} 
 			/>
 			<EmailModal open={userToEmail !== null} user={userToEmail} onClose={closeSubModal} />
 			<ActionsModal
 				user={actionUser}
 				onClose={() => setActionUser(null)}
-				onEdit={openEditModal}
+				onEdit={handleEditUser} 
 				onEmail={openEmailModal}
 				onDelete={handleDeleteUser}
 			/>
@@ -248,11 +284,19 @@ export default function UsersPage() {
 	)
 }
 
-function UserFormModal({ open, onClose, user }: {
+function UserFormModal({ 
+	open, 
+	onClose, 
+	user,
+	onUserCreated,
+	onUserUpdated 
+}: {
 	open: boolean
 	onClose: () => void
 	user: User | null
-}) {
+	onUserCreated: (user: User) => void
+	onUserUpdated: () => void
+}): JSX.Element {
 	const { access_token } = useAuth();
 
 	const nameRef = useRef<HTMLInputElement>(null);
@@ -261,6 +305,23 @@ function UserFormModal({ open, onClose, user }: {
 	const roleRef = useRef<HTMLSelectElement>(null);
 	const [isStatus, setIsStatus] = useState(false);
 	const [error, setError] = useState("");
+
+	useEffect(() => {
+		if (user && open) {
+			if (nameRef.current) nameRef.current.value = user.name || '';
+			if (emailRef.current) emailRef.current.value = user.email || '';
+			if (passwordRef.current) passwordRef.current.value = ''; 
+			if (roleRef.current) roleRef.current.value = user.role || 'USER';
+			setIsStatus(user.status ?? user.is_active ?? false);
+		} else if (!user && open) {
+			if (nameRef.current) nameRef.current.value = '';
+			if (emailRef.current) emailRef.current.value = '';
+			if (passwordRef.current) passwordRef.current.value = '';
+			if (roleRef.current) roleRef.current.value = 'USER';
+			setIsStatus(true);
+		}
+		setError(''); 
+	}, [user, open]);
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
@@ -280,6 +341,7 @@ function UserFormModal({ open, onClose, user }: {
 		}
 
 		const dataUser = {
+			id: "",
 			name: nameRef.current.value,
 			email: emailRef.current.value,
 			password: passwordRef.current.value,
@@ -289,12 +351,17 @@ function UserFormModal({ open, onClose, user }: {
 
 		try {
 			if (user) {
-				// Edição
-				// await onUpdate(user.id, dataUser);
+				const updatedUserData = { ...dataUser };
+					const updatedUser = await updateUser(updatedUserData,  access_token, user.id);
+					if (updatedUser) {
+						onUserUpdated();
+						console.log("Usuário editado:", updatedUser);
+				}
 			} else {
-				const newUser = await createUser(dataUser, access_token);
-				if (!!newUser) {
-					console.log("Usuário criado ou alterado corretamente")
+				const newUserResponse = await createUser(dataUser, access_token);
+				if (newUserResponse?.user) {
+					onUserCreated(newUserResponse.user);
+					console.log("Usuário criado:", newUserResponse.user);
 				}
 			}
 			setError("");
@@ -311,23 +378,24 @@ function UserFormModal({ open, onClose, user }: {
 					label="Nome"
 					ref={nameRef}
 					required
+					placeholder="Digite o nome completo"
 				/>
 				<Input
 					label="Email"
 					type="email"
 					ref={emailRef}
 					required
+					placeholder="Digite o email"
 				/>
 				<Input
-					label="Senha"
+					label={user ? "Nova Senha (deixe vazio para manter)" : "Senha"}
 					type="password"
 					ref={passwordRef}
-					required
+					required={!user}
+					placeholder={user ? "Digite nova senha (opcional)" : "Digite a senha"}
 				/>
 				<div className="row">
-					<span>
-						Status
-					</span>
+					<span>Status</span>
 					<select
 						value={isStatus ? "true" : "false"}
 						onChange={(e) => setIsStatus(e.target.value === "true")}
@@ -336,15 +404,19 @@ function UserFormModal({ open, onClose, user }: {
 						<option value="false">Inativo</option>
 					</select>
 				</div>
-				<div>
+				<div className="row">
+					<span>Role</span>
 					<select ref={roleRef}>
-						<option value="ADMIN">ADMIN</option>
 						<option value="USER">USER</option>
+						<option value="ADMIN">ADMIN</option>
 					</select>
 				</div>
+				
+				{error && <p style={{ color: "red", margin: 0 }}>{error}</p>}
+				
 				<div
 					className="row"
-					style={{ justifyContent: 'flex-end' }}
+					style={{ justifyContent: 'flex-end', gap: 8 }}
 				>
 					<Button
 						className="ghost"
@@ -354,9 +426,8 @@ function UserFormModal({ open, onClose, user }: {
 						Cancelar
 					</Button>
 					<Button type="button" onClick={handleSubmit}>
-						Salvar
+						{user ? 'Atualizar' : 'Criar'}
 					</Button>
-					{error && <p style={{ color: "red" }}>{error}</p>}
 				</div>
 			</form>
 		</Modal>
