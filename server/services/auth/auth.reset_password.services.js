@@ -57,14 +57,14 @@ async function sendEmailResetPassword_Service(data) {
                 error: res.error
             }
         }
-        console.log("Email enviado com sucesso")
+        console.log("Email enviado com sucesso.")
         return { 
             success: true 
         }   
     } catch(err) {
         console.error(err)
         return {
-            error: "Ocorreu um erro ao enviar o email"
+            error: "Não foi possível enviar o email."
         }
     }
 }
@@ -91,13 +91,13 @@ async function resetPassword_Service(email, newPassword) {
     } catch(err) {
         if (err.code === 'P2025') {
             return {
-                error: "Não foi possível redefinir a sua senha ou encontrar a anterior",
+                error: "Não foi possível redefinir a sua senha ou encontrar a anterior.",
                 statusCode: 404
             }
         }
         console.log(err)
         return {
-            error: "Ocorreu um erro ao redefinir a sua senha."
+            error: "Não foi possível redefinir a sua senha."
         }
     }
 }

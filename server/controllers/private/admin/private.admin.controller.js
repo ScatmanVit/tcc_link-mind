@@ -173,17 +173,57 @@ async function update_Admin_Controller_UPDATE(req, res) {
     }
 }
 
+
+async function sendEmaill_Admin_Controller(req, res) {
+    const { email, message, subject } = req.body
+    if (!subject) {
+        return res.status(400).json({
+            error: "Subject não fornecido ou inválido"
+        })
+    }
+    if (!email || !email.includes("@")) {
+        return res.status(400).json({
+            error: "Email não fornecido ou não válido"
+        })
+    }
+    if (!message || message.trim().length === 0 ) {
+        return res.status(400).json({
+            error: "Mensagem não fornecida ou não válida."
+        })
+    }
+    try {
+        const userExist = await findOneUser(email, "")
+        if (!userExist) {
+            return res.status(404).json({
+                error: "Não existe usuário com esse Id"
+            })
+        }
+        const emailSend = await PrivateAdminService
+            . sendEmail_Admin_Service({ email, message, subject })
+        if (emailSend.error) {
+            return res.status(emailSend.statusCode || 500).json({
+                error: emailSend.error
+            })
+        } else {
+            return res.status(200).json({
+                success: true,
+                message: `Mensagem enviada com sucesso para  ${email}`
+            })
+        }
+        
+    } catch (err) {
+        console.error("Ocorreu um erro no servidor [ SEND EMAIL ADMIN ]", err.stack || err)
+        return res.status(500).json({
+            error: "Ocorreu um erro no servidor"
+        })
+    }
+}
+
+
 export default {
     create_Admin_Controller_CREATE,
     update_Admin_Controller_UPDATE,
     delete_Admin_Controller_DELETE,
-    list_Admin_Controller_LIST
+    list_Admin_Controller_LIST,
+    sendEmaill_Admin_Controller
 }
-
-
-
-/* confgurar no login para que só o ADM possa cadastrar um usuário com ROLE alterada para ADMIN 
-    para proteger contra alteração indevida de payloads no envio
-    - isso evita que um hacker possa por meio da própria requisição enviar o role como ADMIN,
-    porque no momento, não existe verificação pra isso.
-*/
