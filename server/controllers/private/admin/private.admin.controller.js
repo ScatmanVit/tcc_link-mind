@@ -175,7 +175,7 @@ async function update_Admin_Controller_UPDATE(req, res) {
 
 
 async function sendEmaill_Admin_Controller(req, res) {
-    const { email, message, subject } = req.body
+    const { name, email, message, subject } = req.body
     if (!subject) {
         return res.status(400).json({
             error: "Subject não fornecido ou inválido"
@@ -199,10 +199,10 @@ async function sendEmaill_Admin_Controller(req, res) {
             })
         }
         const emailSend = await PrivateAdminService
-            . sendEmail_Admin_Service({ email, message, subject })
+            . sendEmail_Admin_Service({ name, email, message, subject })
         if (emailSend.error) {
             return res.status(emailSend.statusCode || 500).json({
-                error: emailSend.error
+                error: emailSend.error.message
             })
         } else {
             return res.status(200).json({

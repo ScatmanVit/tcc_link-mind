@@ -9,7 +9,6 @@ import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
-import Switch from '@/components/ui/Switch'
 import Modal from '@/components/ui/Modal'
 import Spinner from '@/components/ui/Spinner'
 import EmailModal from '@/components/EmailModal'
@@ -35,15 +34,14 @@ function ActionsModal({
 }: {
 	user: User | null
 	onClose: () => void
-	onEdit: (user: User) => void // ← Mudou para receber o usuário
+	onEdit: (user: User) => void
 	onEmail: (user: User) => void
 	onDelete: (id: string) => void
 }) {
 	if (!user) return null
 
-	// ✅ Função simples para abrir modal de edição
 	const handleEdit = () => {
-		onEdit(user) // Passa o usuário para edição
+		onEdit(user) 
 		onClose()
 	}
 
@@ -127,8 +125,9 @@ export default function UsersPage() {
 
 	function handleNextPage() {
 		setSearchParams({
-			page: (Number(page) + 1).toString(), limit
-		});
+			page: (Number(page) + 1).toString(), 
+			limit
+		}); 
 	};
 
 	function handlePreviusPage() {
@@ -142,8 +141,8 @@ export default function UsersPage() {
 	function searchUser(searchTerm: string) {
 		setUsers(prev =>
 			prev.map(user => ({
-			...user,
-			isVisible: user.name.toLowerCase().includes(searchTerm.toLowerCase()) // se corresponder ao usuário da iteração atual ele muda para true se não para false
+				...user,
+				isVisible: user.name.toLowerCase().includes(searchTerm.toLowerCase()) // se corresponder ao usuário da iteração atual ele muda para true se não para false
 			}))
 		);
 	}
@@ -272,7 +271,7 @@ export default function UsersPage() {
 				onUserCreated={handleUserCreated} 
 				onUserUpdated={handleUserUpdated} 
 			/>
-			<EmailModal open={userToEmail !== null} user={userToEmail} onClose={closeSubModal} />
+			<EmailModal open={userToEmail !== null} user={userToEmail} onClose={closeSubModal} access_token={access_token ? access_token : null } />
 			<ActionsModal
 				user={actionUser}
 				onClose={() => setActionUser(null)}
@@ -297,6 +296,7 @@ function UserFormModal({
 	onUserCreated: (user: User) => void
 	onUserUpdated: () => void
 }): JSX.Element {
+	
 	const { access_token } = useAuth();
 
 	const nameRef = useRef<HTMLInputElement>(null);

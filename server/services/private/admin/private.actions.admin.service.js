@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { captalize } from "../../../utils/utils.js";
 import { Resend } from 'resend';
 import dotenv from 'dotenv'
 dotenv.config()
@@ -147,7 +148,7 @@ async function update_Admin_service_UPDATE(newData) {
 }
 
 async function sendEmail_Admin_Service(data) {
-    const { email, message, subject } = data
+    const { name, email, message, subject } = data
     if (!email || !message || !subject) {
         return {
             error: "Email, mensagem ou subject a ser enviados não fornecidos."
@@ -169,7 +170,7 @@ async function sendEmail_Admin_Service(data) {
                         <div style="padding: 30px">
                             <h2 style="font-size: 24px; margin-bottom: 20px; color: #000">Comunicado Importante</h2>
                             <p style="margin-bottom: 16px">
-                                Olá,
+                                Olá, ${name ? captalize(name): ''}
                             </p>
                             <p style="margin-bottom: 10px">
                                 ${message}
@@ -191,7 +192,7 @@ async function sendEmail_Admin_Service(data) {
             return {
                 success: false,
                 error: emailSend.error,
-                statusCode: 500
+                statusCode: emailSend.error.statusCode
             };
         }
 
