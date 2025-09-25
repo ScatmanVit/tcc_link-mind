@@ -175,7 +175,7 @@ async function refreshTokenController(req, res) {
 		const access_token = jwt.sign(
 			{ id: user.id, email: user.email, role: user.role },
 			jwt_secret,
-			{ expiresIn: "15m" }
+			{ expiresIn: "50s" }
 		);
 
 		const refresh_token = jwt.sign(
@@ -201,6 +201,7 @@ async function refreshTokenController(req, res) {
 				maxAge: 7 * 24 * 60 * 60 * 1000,
 			});
 			return res.status(200).json({
+				success: true,
 				message: "Sessão renovada com sucesso",
 				access_token,
 			});

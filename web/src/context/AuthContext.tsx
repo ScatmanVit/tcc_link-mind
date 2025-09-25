@@ -1,3 +1,4 @@
+import axios from 'axios'
 import {
 	createContext,
 	useState,
@@ -6,11 +7,15 @@ import {
 	useEffect,
 } from "react";
 
+type resToken = {
+		message: string
+}
 interface AuthContextType {
 	access_token: string | null;
 	emailUser: string | null;
-	login: (token: string, email: string) => void;
 	logout: () => void;
+	login: (token: string, email: string) => void;
+	refresh_token: (userId: string) => Promise<resToken>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,30 +26,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	useEffect(() => {
 		const storedToken = localStorage.getItem("token");
-		const storedEmail = localStorage.getItem("emailUser");
 		if (storedToken) {
 			setToken(storedToken);
 		}
-		if (storedEmail) {
-			setEmail(storedEmail);
-		}
 	}, []);
 
-	const login = (newToken: string, newEmail: string) => {
+	function login(newToken: string) {
 		localStorage.setItem("access_token", newToken);
-		localStorage.setItem("emailUser", newEmail);
 		setToken(newToken);
-		setEmail(newEmail);
 	};
 
-	const logout = () => {
+	function logout(){
 		localStorage.removeItem("access_token");
-		localStorage.removeItem("emailUser");
 		setToken(null);
 		setEmail(null);
 	};
 
-	const value = { access_token, emailUser, login, logout };
+	async function refresh_token(userId: string): Promise<resToken> {
+		if (!userId) {
+			console.error("Por favor forneça o Id")
+			throw new Error("Id não fornecido para solicitar novo token de acesso.")
+		}
+		try {
+			const refreshToken = await axios.post(
+				"http://localhost:3000/api/v1/linkmind/auth/refresh-token",
+				{  userId, platform: "web" },
+				{ withCredentials: true }
+			)
+			if (refreshToken.data?.success && refreshToken.data.access_token) {
+				const newToken = refreshToken.data.access_token;
+				login(newToken);
+				return { message: "Sessão renovada com sucesso!" };
+			} else {
+				console.error("API não retornou um novo token de acesso:", refreshToken.data);
+				throw new Error(refreshToken.data.error || "A API não conseguiu renovar a sessão.");
+			}
+		} catch (err: any) {
+			if (err.response?.data?.error) {
+				console.error(err.response.data.error || "Deu ruim aqui")
+				throw new Error(err.response.data.error || "Não foi possível solicitar um novo token de acesso")
+			}
+			if (err instanceof Error) {
+				throw err
+			} else {
+				throw new Error("Erro desconhecido ao solicitar novo token")
+			}
+		}
+	}
+
+	const value = { access_token, emailUser, login, logout, refresh_token };
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -3,7 +3,7 @@ import axios from "axios";
 type LoginAdm = {
 	email: string,
 	password: string,
-	login: (access_token: string, email: string) => void
+	login: (access_token: string) => void
 }
  
 export default async function loginUser({ email, password, login }: LoginAdm) {
@@ -36,8 +36,8 @@ export default async function loginUser({ email, password, login }: LoginAdm) {
 					throw new Error("Erro desconhecido ao fazer login");
 				}
 			}
-            
-			login(access_token, email);
+            console.log(access_token)
+			login(access_token);
 			return true
 		} else {
 			throw new Error(errorMessage || "Login falhou");
