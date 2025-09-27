@@ -11,51 +11,54 @@ import { useEffect, useState } from "react";
 	sempre passar o token válido para as rotas privadas não importa o que aconteça.
 
 	- utilizar buffer para sempre verificar 30 segundos antes da expiração do token
-	  	e não correr o risco de não conseguir renovar o acces token
+			e não correr o risco de não conseguir renovar o acces token
 		
 	- fazer uma função utilitária no context/AuthContext para 
-	  	chamadas para api e tratar respostas, guardar o token novo, e retornar o token novo para acesso normal
+			chamadas para api e tratar respostas, guardar o token novo, e retornar o token novo para acesso normal
 
 	- caso o refresh-token tenha expirado redirecionar para o login com mensagem
-	    de "Sessão expirada" amigável
+		de "Sessão expirada" amigável
 */
 type tokenBody = {
-	id: string,
-	email: string,
-	role: string,
-	exp: number
-}
+	id: string;
+	email: string;
+	role: string;
+	exp: number;
+};
 
-function RequireAuth({ children }: {  children: JSX.Element }) {
-	const { access_token, refresh_token } = useAuth()
-		console.log("AAAAA")
-		if (!access_token) {
-			 <Navigate to="/login" replace />
-		}
+function RequireAuth({ children }: { children: JSX.Element }) {
+	const { access_token } = useAuth();
+	const [status, setStatus] = useState<"loading" | "unauthorized" | "authorized">("loading");
 
 	useEffect(() => {
-		async function verifyToken() {
-			const tokenDecoded = jwtDecode<tokenBody>(String(access_token))
-			if (tokenDecoded && tokenDecoded.id) {
-				try {
-					const res = await refresh_token(tokenDecoded.id)
-					if (res?.message) {
-						console.error(res.message || "Ta faltando mensagem de erro, mas deu erro")
-					}
-				} catch (err: any) {
-					if(err?.message) {
-						console.error(err.message || "Não foi possível fazer o que tu pediu")
-						return null
-					}
-				}
-			} else {
-				console.error("Falha ao decodificar o token")
-			}
+		if (!access_token) {
+			setStatus("unauthorized");
+			return;
 		}
-		verifyToken()
-	}, [access_token])
-	return children
+
+		try {
+			const decoded: tokenBody = jwtDecode(access_token);
+			const currentTime = Math.floor(Date.now() / 1000);
+
+			if (decoded.exp < currentTime) {
+				// token já expirou
+				setStatus("unauthorized");
+			} else {
+				setStatus("authorized");
+			}
+		} catch {
+			setStatus("unauthorized");
+		}
+	}, [access_token]);
+
+	if (status === "loading") return <div>Carregando...</div>;
+	if (status === "unauthorized") return <Navigate to="/login" replace />;
+
+	return children;
 }
+
+
+
 
 function AppRoutes() {
 	return (

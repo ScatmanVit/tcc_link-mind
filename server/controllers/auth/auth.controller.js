@@ -73,7 +73,7 @@ async function loginUserController(req, res) {
 		const access_token = jwt.sign(
 			{ id: user.id, email: user.email, role: user.role },
 			jwt_secret,
-			{ expiresIn: "1d" }
+			{ expiresIn: "5m" }
 		);
 		const refresh_token = jwt.sign(
 			{ id: user.id, email: user.email, role: user.role },
@@ -92,20 +92,24 @@ async function loginUserController(req, res) {
 				message: "Login efetuado com sucesso!",
 				access_token,
 				refresh_token,
-				nameUser: captalize(user.name)
+				nameUser: captalize(user.name),
+				userId: user.id
 			});
 		}
 
 		if (platform === "web") {
 			res.cookie("refresh_token", refresh_token, {
 				httpOnly: true,
-				secure: process.env.NODE_ENV === "production",
-				sameSite: "strict",
+				// secure: process.env.NODE_ENV === "production",
+				// sameSite: "strict",
+				secure: false, // TESTE LOCAL
+				sameSite: "lax", // TESTE LOCAL
 				maxAge: 7 * 24 * 60 * 60 * 1000,
 			});
 			return res.status(200).json({
 				message: "Login efetuado com sucesso!",
 				access_token,
+				userId: user.id
 			});
 		}
 	} catch (err) {
@@ -175,7 +179,7 @@ async function refreshTokenController(req, res) {
 		const access_token = jwt.sign(
 			{ id: user.id, email: user.email, role: user.role },
 			jwt_secret,
-			{ expiresIn: "50s" }
+			{ expiresIn: "5m" }
 		);
 
 		const refresh_token = jwt.sign(
@@ -190,20 +194,24 @@ async function refreshTokenController(req, res) {
 			return res.status(200).json({
 				message: "Sessão renovada com sucesso",
 				access_token,
+				userId: user.id
 			});
 		}
 
 		if (platform === "web") {
 			res.cookie("refresh_token", refresh_token, {
 				httpOnly: true,
-				secure: process.env.NODE_ENV === "production",
-				sameSite: "strict",
+				// secure: process.env.NODE_ENV === "production",
+				// sameSite: "strict",
+				secure: false, // TESTE LOCAL
+				sameSite: "lax", // TESTE LOCAL
 				maxAge: 7 * 24 * 60 * 60 * 1000,
 			});
 			return res.status(200).json({
 				success: true,
 				message: "Sessão renovada com sucesso",
 				access_token,
+				userId: user.id
 			});
 		}
 	} catch (err) {
@@ -265,8 +273,10 @@ async function logoutController(req, res) {
 		if (platform === "web") {
 			res.clearCookie("refresh_token", {
 				httpOnly: true,
-				secure: process.env.NODE_ENV === "production",
-				sameSite: "strict",
+				// secure: process.env.NODE_ENV === "production",
+				// sameSite: "strict",
+				secure: false, // TESTE LOCAL
+				sameSite: "lax", // TESTE LOCAL
 			});
 		}
 

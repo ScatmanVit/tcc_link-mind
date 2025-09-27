@@ -3,7 +3,7 @@ import { useState } from "react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import loginUser from '@/services/admin/admin.login';
 
 export default function Login() {
@@ -13,8 +13,12 @@ export default function Login() {
 	const [error, setError] = useState<string | null>(null);
 	const [errorEmail, setErrorEmail] = useState(false);
 	const [errorPassword, setErrorPassword] = useState(false);
-	const { login } = useAuth();
+	const { login, access_token } = useAuth();
 	const navigate = useNavigate();
+
+	if (access_token) {
+  		return <Navigate to="/users" replace />;
+	}
 
 	const handleValidation = () => {
 		setError(null);

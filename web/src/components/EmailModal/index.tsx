@@ -36,7 +36,6 @@ export default function EmailModal({ open, onClose, user, access_token }: {
 					access_token
 				})
 				if (res.message) {
-					
 					console.log(res.message, "asdsa")
 					setLoading(false)
 				}

@@ -3,18 +3,22 @@ import axios from "axios";
 type LoginAdm = {
 	email: string,
 	password: string,
-	login: (access_token: string) => void
+	userId?: string,
+	login: (idUser: string, access_token: string) => void
 }
  
 export default async function loginUser({ email, password, login }: LoginAdm) {
-    try {
+    let userId
+	try {
 		const res = await axios.post(
 			"http://localhost:3000/api/v1/linkmind/auth/login",
-			{ email, password, platform: "web" }
+			{ email, password, platform: "web" },
+			{ withCredentials: true }
 		)
  
 		const access_token = res.data.access_token;
 		const errorMessage = res.data.error || res.data.message || null;
+		userId = res.data.userId
 
 		if (access_token) {
 			try {
@@ -37,7 +41,7 @@ export default async function loginUser({ email, password, login }: LoginAdm) {
 				}
 			}
             console.log(access_token)
-			login(access_token);
+			login(userId, access_token);
 			return true
 		} else {
 			throw new Error(errorMessage || "Login falhou");
