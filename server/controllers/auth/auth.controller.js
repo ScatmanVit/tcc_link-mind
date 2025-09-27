@@ -279,7 +279,6 @@ async function logoutController(req, res) {
 				sameSite: "lax", // TESTE LOCAL
 			});
 		}
-
 		return res.status(200).json({
 			message: "Logout efetuado com sucesso!"
 		});
