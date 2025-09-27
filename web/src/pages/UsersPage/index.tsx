@@ -1,17 +1,20 @@
 import './style.css'
 
 import listUsers from '@/services/admin/admin.listUsers'
-import createUser, { type CreateUserResponse } from '@/services/admin/admin.createUser'
+import createUser from '@/services/admin/admin.createUser'
 import deleteUser from '@/services/admin/admin.deleteUser'
 import updateUser from '@/services/admin/admin.updateUser'
+import logout_Admin from '@/services/admin/admin.logout'
 
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
+
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Modal from '@/components/ui/Modal'
 import Spinner from '@/components/ui/Spinner'
 import EmailModal from '@/components/EmailModal'
+
 import { useAuth } from '@/context/AuthContext'
 
 export type User = {
@@ -168,6 +171,17 @@ export default function UsersPage() {
 		setUsers(prevUsers => [...prevUsers, newUser]);
 	}
 
+	async function handlerLogoutAdmin() {
+		try {
+			const res = await logout_Admin({ logout })
+			if (res?.message) {
+				console.log(res.message)
+			}
+		}  catch (err: any) {
+			console.error(err.message)
+		}
+	} 
+
 	const openCreateModal = () => setIsCreating(true)
 	const openEmailModal = (user: User) => setUserToEmail(user)
 	const openActionsModal = (user: User) => setActionUser(user)
@@ -185,7 +199,7 @@ export default function UsersPage() {
 					<div className="row">
 						<div className="brand">PAINEL DO ADMINISTRADOR</div>
 						<div className="space" />
-						<Button className="ghost" onClick={logout}>Sair</Button>
+						<Button className="ghost" onClick={handlerLogoutAdmin}>Sair</Button>
 					</div>
 				</div>
 				<div className="toolbar">
