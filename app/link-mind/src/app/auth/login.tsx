@@ -29,11 +29,12 @@ export default function Login() {
     async function userLogin(data: any) {
         try {
             const res = await axios.post(
-                "https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/login", {
+                "http://localhost:3000/api/v1/linkmind/auth/login", {
 					email: data.email,
 					password: data.password,
 					platform: "mobile"
-            	}
+            	}, 
+                { withCredentials: true }
             );
             await tokenFuncs.saveToken("access-token", res.data.access_token)
             await tokenFuncs.saveToken("refresh-token", res.data.refresh_token)

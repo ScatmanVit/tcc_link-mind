@@ -24,7 +24,7 @@ async function sendEmailResetPassword_Controller(req, res) {
 			jwt_secret,
 			{ expiresIn: "15m" }
 		);
-		const urlResetPassword = `https://tcc-link-mind-kappa.vercel.app/reset-password?token=${tokenResetPassword}`
+		const urlResetPassword = `http://localhost:5173/reset-password?token=${tokenResetPassword}`
 		const resSendEmail = await UserServiceResetPassword
 			.sendEmailResetPassword_Service({
 				email,
@@ -73,7 +73,7 @@ async function resetPassword_Controller(req, res) {
 		}
 		return res.status(200).json({
 			success: true,
-			message: "Sua senha foi redefinida! Já pode efetuar o login novamente com sua nova senha."
+			message: "Sua senha foi redefinida! Já pode efetuar o login novamente!"
 		})
 	} catch (err) {
 		console.error("Ocorreu um erro no servidor, [ RESET PASSWORD ]", err)

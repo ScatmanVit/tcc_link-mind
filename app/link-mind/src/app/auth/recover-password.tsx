@@ -29,13 +29,12 @@ export default function RecoverPassword() {
         setFeedbackMessage('');
         try {
             const res = await axios.post(
-                "https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/reset-password-send",
+                "http://localhost:3000/api/v1/linkmind/auth/reset-password-send",
                 data
             );
-            console.log(res.data)
-            setFeedbackMessage('Se este email estiver cadastrado, um link de recuperação foi enviado.');
+            setFeedbackMessage(res?.data?.message || "Se esse email estiver cadastrado, já foi enviado um email para recuperação de senha.");
         } catch (err: any) {
-            console.error("Erro na recuperação de senha", err?.response?.data?.error || err.message);
+            console.error("Erro na recuperação de senha", err?.response?.data?.error || err?.data?.message);
             setFeedbackMessage(err?.response?.data?.error || 'Ocorreu um erro. Por favor, tente novamente mais tarde.');
         } finally {
             setLoading(false);
@@ -50,7 +49,7 @@ export default function RecoverPassword() {
             <View style={s.content}>
                 <Text style={s.title}>Recuperar Senha</Text>
                 <Text style={s.subtitle}>
-                    Digite seu email para receber um link de redefinição de senha.
+                    Digite seu email para receber um link de redefinição de senha na sua caixa de entrada.
                 </Text>
 
                 <Controller

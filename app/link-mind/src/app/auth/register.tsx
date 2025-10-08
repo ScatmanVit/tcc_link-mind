@@ -35,7 +35,7 @@ export default function Register() {
 	async function registerUser(data: FormData) {
 		try {
 			const res = await axios.post(
-				"https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/cadastro",
+				"http://tcc-link-mind.onrender.com/api/v1/linkmind/auth/cadastro",
 				data
 			);
 			console.log("Usuário cadastrado com sucesso!", res.data);
