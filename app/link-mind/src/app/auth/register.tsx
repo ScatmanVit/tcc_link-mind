@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "expo-router";
 
-import ModalAlert from "@/components/Modal/modalAlert";
+import ModalAlert from "@/src/components/modalAlert";
 import ButtonApp from '@/components/button';
 import Input from "@/components/input";
 import { AuthContext } from '@/src/context/auth';
@@ -35,7 +35,7 @@ export default function Register() {
 	async function registerUser(data: FormData) {
 		try {
 			const res = await axios.post(
-				"http://tcc-link-mind.onrender.com/api/v1/linkmind/auth/cadastro",
+				"http://localhost:3000/api/v1/linkmind/auth/cadastro",
 				data
 			);
 			console.log("Usuário cadastrado com sucesso!", res.data);

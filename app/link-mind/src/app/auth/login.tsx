@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router';
 import { AuthContext } from '@/src/context/auth';
 import ButtonApp from '@/src/components/button';
 import Input from '@/src/components/input';
-import ModalAlert from '@/src/components/Modal/modalAlert';
+import ModalAlert from '@/src/components/modalAlert';
 import { colors } from '@/src/styles/colors';
 import tokenFuncs from '@/src/secure-store/token'
 
@@ -39,6 +39,7 @@ export default function Login() {
             await tokenFuncs.saveToken("access-token", res.data.access_token)
             await tokenFuncs.saveToken("refresh-token", res.data.refresh_token)
             console.log(tokenFuncs.getToken("access-token"),tokenFuncs.getToken("refresh-token"))
+            // secure store só funciona no expo go ou nativo, na web não da para emular
             return res.data;
         } catch (err: any) {
             setFeedbackMessage(err?.response?.data?.error || 'Ocorreu um erro. Por favor, tente novamente mais tarde.');

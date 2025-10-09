@@ -34,8 +34,8 @@ export default function RecoverPassword() {
             );
             setFeedbackMessage(res?.data?.message || "Se esse email estiver cadastrado, já foi enviado um email para recuperação de senha.");
         } catch (err: any) {
-            console.error("Erro na recuperação de senha", err?.response?.data?.error || err?.data?.message);
-            setFeedbackMessage(err?.response?.data?.error || 'Ocorreu um erro. Por favor, tente novamente mais tarde.');
+            console.error("Erro na recuperação de senha", err?.response?.data?.error?.message /*erro do resend*/  || err?.response.data?.error /*erro da api */);
+            setFeedbackMessage(err?.response?.data?.error?.message || err?.response.data?.error || 'Ocorreu um erro. Por favor, tente novamente mais tarde.');
         } finally {
             setLoading(false);
         }

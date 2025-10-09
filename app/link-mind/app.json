@@ -14,14 +14,27 @@
       "backgroundColor": "#09090B"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIStatusBarStyle": "UIStatusBarStyleDarkContent"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#09090B"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "androidNavigationBar": {
+        "visible": true,
+        "barStyle": "light-content",
+        "backgroundColor": "#000000"
+      },
+      "androidStatusBar": {
+        "barStyle": "light-content",
+        "backgroundColor": "#000000",
+        "translucent": false
+      }
     },
     "web": {
       "bundler": "metro",
