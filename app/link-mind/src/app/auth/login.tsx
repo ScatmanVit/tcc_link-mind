@@ -58,6 +58,7 @@ export default function Login() {
                 name: loginSuccess?.nameUser,
                 email: data.email
             });
+            console.log("Foi")
             router.replace('/tabs/links');
         } else {
             console.log("Email ou senha inválidos.");

@@ -5,7 +5,7 @@ export default function EventosStackLayout(){
        defino as outras telas aqui diretamente com o Stack.screen */
    return (
       <Stack screenOptions={{
-      headerShown: false
+         headerShown: false
     }}/>
    )
 }

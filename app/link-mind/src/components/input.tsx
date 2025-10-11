@@ -10,12 +10,14 @@ export type InputProps = TextInputProps & {
   error?: boolean,
   icon?: ComponentProps<typeof FontAwesome6>["name"],
   iconColor?: string,
+  radius?: number,
   secureTextEntry?: boolean,
 };
 
 
 export default function Input({
   placeholder,
+  radius,
   error,
   label,
   size = 16,
@@ -46,7 +48,7 @@ export default function Input({
       <View
         style={[
           s.inputWrapper,
-          { borderColor: hasError ? colors.red[500] : colors.gray[500] },
+          {height: (radius ? radius : 30)*1.5, borderColor: hasError ? colors.red[500] : colors.gray[500], borderRadius: radius ? radius : 14  },
         ]}
       >
         {icon && (
@@ -110,8 +112,9 @@ const s = StyleSheet.create({
     flex: 1,
     color: colors.gray[100],
     backgroundColor: "transparent",
-    paddingVertical: 18,
+    paddingVertical: 13,
     borderWidth: 0,
+    
   },
   eyeButton: {
     marginLeft: 8,

@@ -36,7 +36,7 @@ export default function Categories({ data }: CategoriesProps) {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 10,
+        marginTop: 3,
         justifyContent: 'center'
     },
     list: {

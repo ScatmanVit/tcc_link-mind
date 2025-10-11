@@ -20,13 +20,13 @@ export default function Index() {
    //    }
    // }, [mounted, user])
 
-   useEffect(() => {
-      const timer = setTimeout(() => {
-         router.replace('/tabs/links')
-      }, 300)
+   // useEffect(() => {
+   //    const timer = setTimeout(() => {
+   //       router.replace('/tabs/links')
+   //    }, 300)
 
-      return () => clearTimeout(timer)
-   }, [])
+   //    return () => clearTimeout(timer)
+   // }, [])
 
-   return null 
+   return <Register/> 
 }
