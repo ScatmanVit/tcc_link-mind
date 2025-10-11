@@ -1,20 +1,78 @@
+import { Image, StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Image, StyleSheet, View, TouchableOpacity } from 'react-native';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { Ionicons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
-import { colors } from '@/styles/colors'
+import { Tabs, usePathname, useRouter } from 'expo-router';
+import { useContext } from 'react';
 
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { ArrowLeft } from "lucide-react-native";
+import { Ionicons } from '@expo/vector-icons';
+
+import { AuthContext } from '@/src/context/auth';
+import { colors } from '@/styles/colors';
 
 export default function TabLayout() {
+	const { user } = useContext(AuthContext);
+	
+	const router = useRouter();
+  	const pathname = usePathname();
+
+	const baseRoutes = ["links", "anotacoes", "eventos", "pesquisa"];
+
+	function handleArrowBack() {
+		const activeBase = baseRoutes.find((route) =>
+			pathname.includes(`/${route}/`)
+		);
+		const backRoute = activeBase ? `/tabs/${activeBase}` : "/tabs/links";
+		router.push(backRoute as any);
+	}
+
+	const shouldShowArrow = baseRoutes.some((route) =>
+		pathname.includes(`/${route}/`)
+	);
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<View style={style.header}>
-				<Image style={style.icon} source={require("../../../assets/images/icon.png")} />
-				<TouchableOpacity activeOpacity={0.7}>
-					<FontAwesome6 style={style.buttonAdd} name="add" size={22} color={colors.green[200]} />
-				</TouchableOpacity>
+				<View style={style.header_left}>
+					{shouldShowArrow && (
+						<ArrowLeft
+							size={24}
+							color="#fff"
+							onPress={handleArrowBack}
+						/>
+					)}
+					<Image
+						style={style.icon}
+						source={require("../../../assets/images/icon.png")}
+					/>
+				</View>
+
+				<View style={style.header_right}>
+					<TouchableOpacity activeOpacity={0.7}>
+						<FontAwesome6
+							style={style.buttonAdd}
+							name="magnifying-glass"
+							size={18}
+							color={colors.green[200]}
+							onPress={() => router.push("/pesquisa")}
+						/>
+					</TouchableOpacity>
+					<TouchableOpacity activeOpacity={0.7}>
+						<FontAwesome6
+							style={style.buttonAdd}
+							name="add"
+							size={22}
+							color={colors.green[200]}
+						/>
+					</TouchableOpacity>
+
+					<TouchableOpacity activeOpacity={0.8}>
+						<View style={style.photo_profile}>
+							<Text style={style.profile_text}>{user && user.email[0].toUpperCase()}</Text>
+						</View>
+					</TouchableOpacity>
+				</View>
 			</View>
+
 			<Tabs
 				screenOptions={{
 					headerShown: false,
@@ -33,19 +91,15 @@ export default function TabLayout() {
 					name="links"
 					options={{
 						tabBarIcon: ({ color, size }) => (
-							<View>
-								<Ionicons name="link" size={size} color={color} />
-							</View>
+							<Ionicons name="link" size={size} color={color} />
 						),
 					}}
 				/>
 				<Tabs.Screen
-					name="compras"
+					name="anotacoes"
 					options={{
 						tabBarIcon: ({ color, size }) => (
-							<View>
-								<Ionicons name="bag-sharp" size={size} color={color} />
-							</View>
+							<Ionicons name="bag-sharp" size={size} color={color} />
 						),
 					}}
 				/>
@@ -53,9 +107,7 @@ export default function TabLayout() {
 					name="eventos"
 					options={{
 						tabBarIcon: ({ color, size }) => (
-							<View>
-								<Ionicons name="calendar-sharp" size={size} color={color} />
-							</View>
+							<Ionicons name="calendar-sharp" size={size} color={color} />
 						),
 					}}
 				/>
@@ -71,15 +123,39 @@ const style = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
+		paddingHorizontal: 18,
+	},
+	header_left: {
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 8,
+	},
+	header_right: {
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 10,
+	},
+	photo_profile: {
+		width: 37,
+		height: 37,
+		backgroundColor: colors.gray[800],
+		borderRadius: 9999, 
 		borderWidth: 1,
-		padding: 18
+		borderColor: colors.gray[300],
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	profile_text: {
+		color: colors.gray[100],
+		fontWeight: "bold",
+		fontSize: 16,
 	},
 	icon: {
-		width: 65,
-		height: 65,
-		marginLeft: -5
+		width: 60,
+		height: 60,
+		marginLeft: -5,
 	},
 	buttonAdd: {
-		marginRight: 7
-	}
-})
+		marginRight: 5,
+	},
+});
