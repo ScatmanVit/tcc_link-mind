@@ -32,6 +32,14 @@ export default function Register() {
 		}
 	});
 
+	/* 	Depois de fazer cadastro, chamar o login para 
+		receber os tokens e ai sim gaurdar o estado global e os tokens no secure store.
+		Porque do jeito que ta não da para enviar o token de acesso para as rotas privadas.
+
+		Além de gerencias o refresh token para preservar
+		login sem obrigar o usuário a logar de novo, mesmo da web.
+	*/
+
 	async function registerUser(data: FormData) {
 		try {
 			const res = await axios.post(
