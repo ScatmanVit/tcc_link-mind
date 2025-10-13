@@ -5,7 +5,7 @@ import { useContext, useState } from 'react';
 import { useRouter } from 'expo-router';
 
 import { AuthContext } from '@/src/context/auth';
-import ButtonApp from '@/src/components/button';
+import ButtonApp from '@/src/components/button/button';
 import Input from '@/src/components/input';
 import ModalAlert from '@/src/components/modalAlert';
 import { colors } from '@/src/styles/colors';

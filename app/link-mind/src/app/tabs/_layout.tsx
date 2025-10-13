@@ -118,17 +118,16 @@ export default function TabLayout() {
 
 const style = StyleSheet.create({
 	header: {
-		height: 80,
+		height: 70,
 		backgroundColor: colors.gray[950],
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		paddingHorizontal: 18,
+		paddingHorizontal: 12,
 	},
 	header_left: {
 		flexDirection: "row",
 		alignItems: "center",
-		gap: 8,
 	},
 	header_right: {
 		flexDirection: "row",
@@ -151,8 +150,8 @@ const style = StyleSheet.create({
 		fontSize: 16,
 	},
 	icon: {
-		width: 60,
-		height: 60,
+		width: 67,
+		height: 67,
 		marginLeft: -5,
 	},
 	buttonAdd: {

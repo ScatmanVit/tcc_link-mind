@@ -2,7 +2,7 @@ import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { colors } from '@/styles/colors';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeft } from "lucide-react-native";
-import Categories from "@/src/components/categories";
+import Categories from "@/src/components/categories/categories";
 import Input from "@/src/components/input";
 import { useRouter } from "expo-router";
 import { FontAwesome6 } from '@expo/vector-icons'; 

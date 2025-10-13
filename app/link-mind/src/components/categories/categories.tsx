@@ -1,6 +1,5 @@
 import { FlatList, StyleSheet, View } from 'react-native'
-import { useState } from 'react'
-import Category from '@/components/category'
+import Category from '@/src/components/categories/category'
 
 export type CategoryItem = {
     id: string
@@ -8,11 +7,12 @@ export type CategoryItem = {
 }
 
 type CategoriesProps = {
-    data: CategoryItem[]
+    data: CategoryItem[],
+    selectedCategory: string,
+    setSelectCategory: (category: string) => void
 }
 
-export default function Categories({ data }: CategoriesProps) {
-    const [selected, setSelected] = useState<string | null>(null)
+export default function Categories({ data, selectedCategory, setSelectCategory }: CategoriesProps) {
 
     return (
         <View style={styles.container}>
@@ -25,8 +25,8 @@ export default function Categories({ data }: CategoriesProps) {
                 renderItem={({ item }) => (
                     <Category
                         categoryName={item.name}
-                        focused={selected === item.id}
-                        onPress={() => setSelected(item.id)}
+                        focused={selectedCategory === item.name}
+                        onPress={() => setSelectCategory(item.name)}
                     />
                 )}
             />
@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     list: {
-        paddingHorizontal: 10,
+        paddingHorizontal: 12,
+        paddingVertical: 3,
         gap: 6,
     },
 })

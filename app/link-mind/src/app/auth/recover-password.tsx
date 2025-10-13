@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 
-import ButtonApp from '@/src/components/button';
+import ButtonApp from '@/src/components/button/button';
 import Input from '@/src/components/input';
 import { colors } from '@/src/styles/colors';
 

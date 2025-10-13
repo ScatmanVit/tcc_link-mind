@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "expo-router";
 
 import ModalAlert from "@/src/components/modalAlert";
-import ButtonApp from '@/components/button';
+import ButtonApp from '@/src/components/button/button';
 import Input from "@/components/input";
 import { AuthContext } from '@/src/context/auth';
 import { colors } from "@/src/styles/colors";
@@ -62,7 +62,9 @@ export default function Register() {
 
 		if (result) {
 			signUp({ name: data.name, email: data.email });
-			router.replace('/tabs/links');
+			setTimeout(() => {
+				router.replace('/auth/login');
+			}, 800)
 		} else {
 			console.log("Ocorreu um erro ao registrar no servidor.");
 		}
