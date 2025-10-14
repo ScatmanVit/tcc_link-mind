@@ -8,7 +8,6 @@ export function useCategory() {
   }
 
   useEffect(() => {
-    console.log(selectedCategory)
   }, [selectedCategory])
 
   return {

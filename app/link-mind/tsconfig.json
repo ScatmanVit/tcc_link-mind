@@ -11,6 +11,9 @@
       ],
       "@/styles/*": [
         "./src/styles/*"
+      ],
+      "@/context/*": [
+        "./src/context/*"
       ]
     }
   },

@@ -1,49 +1,34 @@
-import { createContext, useState } from "react";
-import { useRouter } from 'expo-router'
+import React, { createContext, useState } from "react";
+
 
 type User = {
-  name: string,
-  email: string,
-  status: string
+  name: string;
+  email: string;
+  idUser: string;
+  access_token_prov: string; // TOKEN SENDO GUARDADO AQUI PORQUE NÃO DA PARA USAR O SECURE STORE EMULANDO NA WEB
+  status?: string;
 };
 
 type AuthContextType = {
-  user?: User,
-  signUp: (data: Omit<User, "status">) => void,
-  isLogged: (user: Omit<User, "status"> | undefined) => void,
-  Logout: () => void
+  user: User | null;
+  signUp: (data: User) => void;
 };
 
-export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+export const AuthContext = createContext<AuthContextType>({
+  user: null,
+  signUp: () => {},
+});
 
-export default function AuthProvider({children}: any){
-   const router = useRouter()
-   const [user, setUser] = useState<User>();
+export default function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
 
-   function signUp({ name, email }: Omit<User, "status">){
-      if(email && name){
-         setUser({
-            name: name,
-            email: email,
-            status: "ATIVO"
-         })
-      }
-   }
+  function signUp(data: User) {
+    setUser(data);
+  }
 
-   function isLogged(userLogged: Omit<User, "status"> | undefined) {
-      if (!userLogged || !userLogged.email || !userLogged.name) {
-         router.push("/auth/register");
-      }
-      router.replace('/auth/login')
-   }
-
-   function Logout() {
-      setUser(undefined)
-   }
-
-   return (
-      <AuthContext.Provider value={{signUp, isLogged, user, Logout}}>
-         {children}
-      </AuthContext.Provider>
-   )
+  return (
+    <AuthContext.Provider value={{ user, signUp }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }

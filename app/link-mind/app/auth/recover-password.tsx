@@ -44,7 +44,7 @@ export default function RecoverPassword() {
     return (
         <View style={s.container}>
             <View style={s.header}>
-                <Image source={require("../../../assets/images/icon.png")} style={s.image_header} />
+                <Image source={require("../../assets/images/icon.png")} style={s.image_header} />
             </View>
             <View style={s.content}>
                 <Text style={s.title}>Recuperar Senha</Text>

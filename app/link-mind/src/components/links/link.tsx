@@ -57,7 +57,8 @@ const style = StyleSheet.create({
     title: {
         color: colors.gray[50],
         fontSize: 16,
-        fontWeight: 600
+        fontWeight: 600,
+        width: 270
     },
     link_url: {
         color: colors.gray[500],

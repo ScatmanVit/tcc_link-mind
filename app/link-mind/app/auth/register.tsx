@@ -7,7 +7,7 @@ import { useRouter } from "expo-router";
 import ModalAlert from "@/src/components/modalAlert";
 import ButtonApp from '@/src/components/button/button';
 import Input from "@/components/input";
-import { AuthContext } from '@/src/context/auth';
+import { AuthContext } from '@/context/auth';
 import { colors } from "@/src/styles/colors";
 
 type FormData = {
@@ -86,7 +86,7 @@ export default function Register() {
 				modalVisible={modalVisible}
 			/>
 			<View style={s.header}>
-				<Image source={require("../../../assets/images/icon.png")} style={s.image_header} />
+				<Image source={require("../../assets/images/icon.png")} style={s.image_header} />
 			</View>
 
 			<View style={s.container}>

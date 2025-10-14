@@ -1,7 +1,7 @@
-import Register from '@/src/app/auth/register'
+import Register from './auth/register'
 import LinksIndex from './tabs/links'
 import { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../context/auth'
+import { AuthContext } from '../src/context/auth'
 import { useRouter } from 'expo-router'
 import TabLayout from './tabs/_layout'
 

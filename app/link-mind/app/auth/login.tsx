@@ -1,10 +1,10 @@
 import { useForm, Controller } from 'react-hook-form';
 import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 
-import { AuthContext } from '@/src/context/auth';
+import { AuthContext } from '@/context/auth';
 import ButtonApp from '@/src/components/button/button';
 import Input from '@/src/components/input';
 import ModalAlert from '@/src/components/modalAlert';
@@ -14,7 +14,7 @@ import tokenFuncs from '@/src/secure-store/token'
 export default function Login() {
     const { signUp } = useContext(AuthContext);
     const router = useRouter();
-
+    
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [feedbackMessage, setFeedbackMessage] = useState<string>()
@@ -54,11 +54,13 @@ export default function Login() {
         setLoading(false);
 
         if (loginSuccess) {
+            console.log(loginSuccess) 
             signUp({
-                name: loginSuccess?.nameUser,
-                email: data.email
+                name: loginSuccess.nameUser,
+                email: data.email,
+                access_token_prov: loginSuccess.access_token,
+                idUser: loginSuccess.userId
             });
-            console.log("Foi")
             router.replace('/tabs/links');
         } else {
             console.log("Email ou senha inválidos.");
@@ -81,7 +83,7 @@ export default function Login() {
                 modalVisible={modalVisible}
             />
             <View style={s.header}>
-                <Image source={require("../../../assets/images/icon.png")} style={s.image_header} />
+                <Image source={require("../../assets/images/icon.png")} style={s.image_header} />
             </View>
             <View style={s.content}>
                 <Controller

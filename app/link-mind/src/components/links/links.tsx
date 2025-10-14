@@ -46,8 +46,8 @@ export default function Links({ data, onDelete, onDetails }: LinksProps) {
                 ItemSeparatorComponent={() => (
                     <View style={{
                         height: 0.5,
-                        backgroundColor: '#444', // cor da linha
-                        marginVertical: 4       // espaçamento acima e abaixo da linha
+                        backgroundColor: '#444', 
+                        marginVertical: 4      
                     }} />
                 )}
             />

@@ -7,7 +7,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ArrowLeft } from "lucide-react-native";
 import { Ionicons } from '@expo/vector-icons';
 
-import { AuthContext } from '@/src/context/auth';
+import { AuthContext } from '../../src/context/auth';
 import { colors } from '@/styles/colors';
 
 export default function TabLayout() {
@@ -42,7 +42,7 @@ export default function TabLayout() {
 					)}
 					<Image
 						style={style.icon}
-						source={require("../../../assets/images/icon.png")}
+						source={require("../../assets/images/icon.png")}
 					/>
 				</View>
 
@@ -67,7 +67,7 @@ export default function TabLayout() {
 
 					<TouchableOpacity activeOpacity={0.8}>
 						<View style={style.photo_profile}>
-							<Text style={style.profile_text}>{user && user.email[0].toUpperCase()}</Text>
+							<Text style={style.profile_text}>{user?.email ? user.email[0].toUpperCase() : "?"}</Text>
 						</View>
 					</TouchableOpacity>
 				</View>

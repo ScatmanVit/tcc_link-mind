@@ -5,36 +5,38 @@ import { ArrowLeft } from "lucide-react-native";
 import Categories from "@/src/components/categories/categories";
 import Input from "@/src/components/input";
 import { useRouter } from "expo-router";
-import { FontAwesome6 } from '@expo/vector-icons'; 
+import { FontAwesome6 } from '@expo/vector-icons';
+import { useCategory } from "@/src/components/categories/useCategory";
 
 export default function PesquisaIndex() {
     const router = useRouter();
-    
+    const { selectedCategory, setSelectCategory, } = useCategory()
+
     const categories = [
-      { id: '1', name: 'Todas' },
-      { id: '2', name: 'Estudos' },
-      { id: '3', name: 'Trabalho' },
-      { id: '4', name: 'Finanças' },
-      { id: '5', name: 'Academia' },
-      { id: '6', name: 'Progresso' },
-      { id: '7', name: 'Família' }
+        { id: '1', name: 'Todas' },
+        { id: '2', name: 'Estudos' },
+        { id: '3', name: 'Trabalho' },
+        { id: '4', name: 'Finanças' },
+        { id: '5', name: 'Academia' },
+        { id: '6', name: 'Progresso' },
+        { id: '7', name: 'Família' }
     ];
 
     return (
-        <SafeAreaView style={{ padding: 10, paddingTop: 7, flex: 1, backgroundColor: colors.gray[950] }}>
+        <SafeAreaView style={{ padding: 7, paddingTop: 7, flex: 1, backgroundColor: colors.gray[950] }}>
             <View style={style.header}>
                 <ArrowLeft
-                    size={24} 
+                    size={24}
                     color="#fff"
                     onPress={() => router.back()}
                 />
-                
+
                 <View style={style.searchContainer}>
-                    <Input 
-                        placeholder="Pesquise links, notas ou eventos..." 
-                        placeholderTextColor={colors.gray[400]} 
-                        radius={26} 
-                        size={15} 
+                    <Input
+                        placeholder="Pesquise links, notas ou eventos..."
+                        placeholderTextColor={colors.gray[400]}
+                        radius={26}
+                        size={15}
                     />
                     <TouchableOpacity activeOpacity={0.7} style={style.searchButton}>
                         <FontAwesome6
@@ -44,9 +46,13 @@ export default function PesquisaIndex() {
                         />
                     </TouchableOpacity>
                 </View>
-            </View> 
+            </View>
 
-            <Categories data={categories} />
+            <Categories 
+                data={categories}
+                selectedCategory={selectedCategory}
+                setSelectCategory={setSelectCategory}
+            />
         </SafeAreaView>
     );
 }
@@ -59,7 +65,7 @@ const style = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         paddingLeft: 8,
-        marginBottom: 6,
+        marginBottom: -10,
         gap: 15
     },
     searchContainer: {
@@ -83,6 +89,6 @@ const style = StyleSheet.create({
         backgroundColor: colors.green[300],
         justifyContent: "center",
         alignItems: "center",
-        marginLeft: 5, 
+        marginLeft: 5,
     }
 });

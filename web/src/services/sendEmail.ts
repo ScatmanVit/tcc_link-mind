@@ -34,11 +34,15 @@ export default async function emailSend({ name, email, message, subject, access_
         }
     } catch (err: any) {
         if (err.response?.data?.error || err.response?.data?.error?.message) {
-            throw new Error(err.response.data.error || err.response.error.message || "Ocorreu um erro ao enviar o email")
+            throw new Error(
+                err.response.data.error || 
+                err.response.error.message || 
+                "Ocorreu um erro ao enviar o email"
+            )
 		} else if (err instanceof Error) {
             throw err;
 		} else {
-			throw new Error("Erro desconhecido ao fazer login");
+			throw new Error("Erro desconhecido ao enviar o email");
 		}
     }
 }
