@@ -1,15 +1,13 @@
 import { FlatList, StyleSheet, View } from 'react-native'
 import Link from "@/components/links/link"
 
+
 type LinksPropsComponent = {
     id: string,
     title: string,
     link: string
 }
 
-async function handleDelete_Link(id: string) {
-    // chamada do service para apagar o link
-}
 
 function handleOpenUrl() {
     // redireciona para o link externo
@@ -36,10 +34,7 @@ export default function Links({ data, onDelete, onDetails }: LinksProps) {
                         title={item.title}
                         link_url={item.link}
                         onOpen_url={handleOpenUrl}
-                        onDelete={() => {
-                            handleDelete_Link(item.id)
-                            onDelete(item.id)
-                        }}
+                        onDelete={() => onDelete(item.id)}
                         onDetails={() => onDetails(item.id)}
                     />
                 )}

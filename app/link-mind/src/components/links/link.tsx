@@ -26,20 +26,25 @@ export default function Link({ title, link_url, onDelete, onDetails, onOpen_url 
                 </Text>
             </View>
             <View style={style.right_content}> 
-                <Pressable onPress={onDelete}>
-                    <TouchableOpacity activeOpacity={0.6}>
-                            <FontAwesome6 name="trash" size={15} color={colors.gray[400]}/>
-                    </TouchableOpacity>
+                <Pressable
+                    onPress={onDelete}
+                    style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                >
+                    <FontAwesome6 name="trash" size={15} color={colors.gray[400]} />
                 </Pressable>
-                <Pressable onPress={onOpen_url}>
-                    <TouchableOpacity activeOpacity={0.6}>
-                            <FontAwesome style={style.external_link_icon} name="external-link" size={16.5} color={colors.gray[400]} />
-                    </TouchableOpacity>
+
+                <Pressable
+                    onPress={onOpen_url}
+                    style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                >
+                    <FontAwesome style={style.external_link_icon} name="external-link" size={16.5} color={colors.gray[400]} />
                 </Pressable>
-                <Pressable onPress={onDetails}>
-                    <TouchableOpacity activeOpacity={0.6}>
-                            <Feather style={style.more_horizontal} name="more-horizontal" size={22} color={colors.gray[400]} />
-                    </TouchableOpacity>
+
+                <Pressable
+                    onPress={onDetails}
+                    style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                >
+                    <Feather style={style.more_horizontal} name="more-horizontal" size={22} color={colors.gray[400]} />
                 </Pressable>
             </View>    
         </View>

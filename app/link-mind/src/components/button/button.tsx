@@ -8,10 +8,11 @@ type ButtonProps = {
    text: string,
    color?: string,
    colorBack?: string,
-   onPress?: () => void
+   radius?: number
+   onPress?: () => void,
 }
 
-export default function ButtonApp({ onPress, text, colorBack, color }: ButtonProps) {
+export default function ButtonApp({ onPress, text, colorBack, color, radius }: ButtonProps) {
    return (
       <TouchableOpacity
          activeOpacity={0.8} 
@@ -19,7 +20,10 @@ export default function ButtonApp({ onPress, text, colorBack, color }: ButtonPro
          style={[s.ButtonSend, 
             { backgroundColor: 
                colorBack ? colorBack 
-                  : colors.green[300] }]}>
+                  : colors.green[300],
+               borderRadius: 
+                  radius ? radius 
+                  : 14   }]}>
          <Text style={[s.ButtonSendText, 
             { color: 
                color ? color
@@ -35,6 +39,7 @@ const s = StyleSheet.create({
    ButtonSend: {
        marginTop: 3,
        width: "100%",
+       height: "100%",
        flexDirection: "row",
        alignItems: "center",
        justifyContent: "center",
