@@ -163,11 +163,14 @@ export default function Register() {
 
 				{feedbackMessage && <Text style={s.feedbackText}>{feedbackMessage}</Text>}
 					
-				<ButtonApp
-					text={loading ? "Carregando..." : "Cadastre-se"}
-					colorBack={loading ? colors.gray[400] : undefined}
-					onPress={handleSubmit(onSubmit, onInvalid)}
-				/>
+				<View style={s.buttonSend}>
+					<ButtonApp
+						text={loading ? "Carregando..." : "Cadastre-se"}
+						colorBack={loading ? colors.gray[400] : undefined}
+						onPress={handleSubmit(onSubmit, onInvalid)}
+					/>
+				</View>
+
 			</View>
 		</View>
 	);
@@ -198,7 +201,7 @@ const s = StyleSheet.create({
 		height: '95%',
 		justifyContent: "flex-start",
 		paddingHorizontal: 15,
-		gap: 16
+		gap: 14
 	},
 	forgotPasswordButton: {
 		flexDirection: 'row',
@@ -214,6 +217,10 @@ const s = StyleSheet.create({
         color: colors.gray[400],
         fontWeight: 'bold',
         textDecorationLine: 'underline',
+    },
+	buttonSend: {
+        width: 340,
+        height: 45
     },
 	feedbackText: {
         color: colors.green[300],

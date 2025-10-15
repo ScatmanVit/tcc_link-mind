@@ -73,7 +73,7 @@ async function loginUserController(req, res) {
 		const access_token = jwt.sign(
 			{ id: user.id, email: user.email, role: user.role },
 			jwt_secret,
-			{ expiresIn: "5m" }
+			{ expiresIn: "10m" }
 		);
 		const refresh_token = jwt.sign(
 			{ id: user.id, email: user.email, role: user.role },

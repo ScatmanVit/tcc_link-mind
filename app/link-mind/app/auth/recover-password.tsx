@@ -78,11 +78,14 @@ export default function RecoverPassword() {
                 
                 {errors.email && <Text style={s.errorText}>{errors.email.message}</Text>}
 
-                <ButtonApp
-                    text={loading ? "Enviando..." : "Enviar Link"}
-                    colorBack={loading ? colors.gray[400] : undefined}
-                    onPress={handleSubmit(handleRecoverPassword)}
-                />
+                <View style={s.buttonSend}>
+                    <ButtonApp
+                        text={loading ? "Enviando..." : "Enviar Link"}
+                        colorBack={loading ? colors.gray[400] : undefined}
+                        onPress={handleSubmit(handleRecoverPassword)}
+                    />
+                </View>
+
 
                 {feedbackMessage && <Text style={s.feedbackText}>{feedbackMessage}</Text>}
                 
@@ -144,6 +147,10 @@ const s = StyleSheet.create({
     },
     backButton: {
         marginTop: 20,
+    },
+    buttonSend: {
+        width: 340,
+        height: 45
     },
     backButtonText: {
         color: colors.gray[400],

@@ -133,7 +133,7 @@ export default function Login() {
                     	)
                     }
                 />
-
+        
                 <TouchableOpacity 
                     style={s.forgotPasswordButton}
                     onPress={() => router.push('/auth/recover-password')}
@@ -145,11 +145,14 @@ export default function Login() {
 
                 {feedbackMessage && <Text style={s.feedbackText}>{feedbackMessage}</Text>}
 
-                <ButtonApp
-                    text={loading ? "Carregando..." : "Entrar"}
-                    colorBack={loading ? colors.gray[400] : undefined}
-                    onPress={handleSubmit(onSubmitLogin, onInvalid)}
-                />
+                <View style={s.buttonSend}>
+                    <ButtonApp
+                        text={loading ? "Carregando..." : "Entrar"}
+                        colorBack={loading ? colors.gray[400] : undefined}
+                        onPress={handleSubmit(onSubmitLogin, onInvalid)}
+                    />
+                </View>
+
                 
                 <View style={s.signupContainer}>
                     <Text style={s.signupText}>Não tem cadastro? </Text>
@@ -213,6 +216,10 @@ const s = StyleSheet.create({
         color: colors.gray[400],
         fontWeight: 'bold',
         textDecorationLine: 'underline',
+    },
+    buttonSend: {
+        width: 340,
+        height: 45
     },
     feedbackText: {
         color: colors.green[300],

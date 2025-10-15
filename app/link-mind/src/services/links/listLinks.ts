@@ -2,16 +2,15 @@ import axios from 'axios'
 
 export default async function list_Links(access_token: string) {
     if (!access_token) {
-        console.log("TOKEN NAO RECEBIDO")
-        throw new Error("Token não recebido")
+        console.log("TOKEN NAO RECEBIDO", access_token)
     }
     try {
         const res = await axios.get('http://localhost:3000/api/v1/linkmind/links/list', {
-                headers: {
-                    Authorization: `Bearer ${access_token}`
-                }
-            })
-        if (res?.data?.success) {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        })
+        if (res.data?.success) {
             return { 
                 message: res.data.message ,
                 links: res.data.linksUser
@@ -27,7 +26,6 @@ export default async function list_Links(access_token: string) {
 		} else if (err instanceof Error) {
             throw err;
 		} else {
-
 			throw new Error("Erro desconhecido ao enviar buscar os links");
 		}
     }

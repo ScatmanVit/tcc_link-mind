@@ -21,7 +21,7 @@ app.use(cookieParser())
 app.use(express.json()) 
 
 app.use('/api/v1/linkmind', AuthRoutes)
-app.use('/api/v1/linkmind',auth, UserLinkPrivateRoutes) 
+app.use('/api/v1/linkmind', auth, UserLinkPrivateRoutes) 
 app.use('/api/v1/linkmind/admin', auth, isAdmin, AdminPrivateRoutes)
 app.post('/api/v1/linkmind/check-admin', auth, isAdmin, (req, res) => {
     res.status(200).json({
