@@ -1,55 +1,28 @@
 import { useEffect, useState, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
+import { useRouter } from 'expo-router'
 import { colors } from '@/styles/colors'
 
 import { useCategory } from '@/src/components/categories/useCategory'
 import { AuthContext } from '@/context/auth'
 import Categories from '@/src/components/categories/categories'
+import LinkSkeleton from '@/src/components/links/linksSkeleton';
 import Links from '@/src/components/links/links'
+import EmptyState from '@/src/components/emptyStatePage'
 
 import list_Links from '@/src/services/links/listLinks'
+import delete_Link from '@/src/services/links/deleteLink'
 
 export default function LinksIndex() {
    const { user } = useContext(AuthContext) // provisório pegar do estado, não da para usar o secure store no web
-   const { selectedCategory, setSelectCategory } = useCategory()
-   const [links, setLinks] = useState<any[]>([])
-   // estado para prevalecer  e não precisar ficar fazendo refetch
-   // além de quando adcionar um link ou categoria, inserir no estado sem precisar fazer GET de tudo de novo
-
-   async function fetch_Links() {
-      if(user) {  
-         try {
-            const linksRes = await list_Links(user.access_token_prov)
-            if (linksRes?.links) {
-               console.log(linksRes.message)
-               console.log(linksRes.links)
-               setLinks(linksRes.links)  
-            } 
-         } catch(err: any) {  
-            console.log(err.message)    
-         } 
-      } else {
-         console.log("Usuário não autenticado")
-      } 
-   }
-   useEffect(() => {
-      if (user?.access_token_prov) {
-            console.log(user.access_token_prov)
-         fetch_Links()
-      }
-   }, [user])
-
- 
+   const router = useRouter()
    
-   const categories = [
-      { id: '1', name: 'Todas' },
-      { id: '2', name: 'Estudos' }, 
-      { id: '3', name: 'Trabalho' },
-      { id: '4', name: 'Finanças' },
-      { id: '5', name: 'Academia' },
-      { id: '6', name: 'Progresso' },
-      { id: '7', name: '+' }
-   ]
+   const { selectedCategory, setSelectCategory } = useCategory()
+   const [ links, setLinks ] = useState<any[]>([])
+   const [ isLoading, setIsLoading ] = useState<boolean>(false)
+   
+   // ------------------------- NOTAS ------------------------------
+   // além de quando adcionar um link ou categoria, inserir no estado sem precisar fazer GET de tudo de novo
    /* fazer uma função que busca as categoriais do usuário com base no seu ID, em uma função 
       utilit[aria que só recebe o objeto e e usar ela aqui para pegar as categorias e jogar no componente categories */ 
 
@@ -77,9 +50,49 @@ export default function LinksIndex() {
       */
 
 
+   async function fetch_Links() {
+      if(user && user.access_token_prov) {  
+         try {
+            setIsLoading(true)
+            const linksRes = await list_Links(user.access_token_prov)
+            if (Array.isArray(linksRes?.links)) {
+               console.log(linksRes.message)
+               console.log(linksRes.links) 
+               setTimeout(() => {
+                  setLinks(linksRes.links)
+                  setIsLoading(false)
+               }, 1000)
+            } else {
+                  setLinks([]) 
+                  setIsLoading(false)
+            } 
+         } catch(err: any) {  
+            console.log(err.message)    
+         } 
+      } else {
+         console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
+      } 
+   }
 
-   function handleOnDelete_Link(id: string) {
-      setLinks(prev => prev.filter(link => link.id !== id))
+   async function handleOnDelete_Link(id: string) {
+      if (user && user.access_token_prov) {
+         try {
+            const deleteLink = await delete_Link({
+               access_token: user.access_token_prov, 
+               id_link: id
+            })
+            if (deleteLink?.message) {
+               console.log(deleteLink.message)
+               setTimeout(() => {
+                  setLinks(prev => prev.filter(link => link.id !== id))
+               }, 500)
+            }
+         } catch(err: any) {
+            console.log(err.message)
+         }
+      } else {
+         console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
+      }
    }
 
    function handleOnDetails_Link(id: string) {
@@ -89,18 +102,51 @@ export default function LinksIndex() {
       }
    }
 
-   return (
+   useEffect(() => {
+      if (user?.access_token_prov) {
+         fetch_Links()
+      }
+   }, [user])
+   
+   const categories = [
+      { id: '1', name: 'Todas' },
+      { id: '2', name: 'Estudos' }, 
+      { id: '3', name: 'Trabalho' },
+      { id: '4', name: 'Finanças' },
+     { id: '5', name: 'Academia' },
+     { id: '6', name: 'Progresso' },
+     { id: '7', name: '+' }
+  ]
+  
+   
+   return ( 
       <View style={styles.container}>
          <Categories 
             data={categories}
             selectedCategory={selectedCategory}
             setSelectCategory={setSelectCategory}
          />
-         <Links 
-            data={links}
-            onDelete={handleOnDelete_Link}
-            onDetails={handleOnDetails_Link}   
-         />
+         {isLoading ? (
+            <>
+               <LinkSkeleton />
+               <LinkSkeleton />
+               <LinkSkeleton />
+               <LinkSkeleton />
+               <LinkSkeleton />
+            </>
+         ) : links.length === 0 ? (
+            <EmptyState 
+               categoryName={selectedCategory} 
+               pageName="Links"
+               onBackPage={() => router.push('/tabs/links')} 
+            />
+         ) : (
+            <Links 
+               data={links}
+               onDelete={handleOnDelete_Link}
+               onDetails={handleOnDetails_Link}   
+            />
+         )}
       </View>
    )
 }
