@@ -218,7 +218,7 @@ const s = StyleSheet.create({
         textDecorationLine: 'underline',
     },
     buttonSend: {
-        width: 340,
+        width: "100%",
         height: 45
     },
     feedbackText: {

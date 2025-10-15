@@ -149,7 +149,7 @@ const s = StyleSheet.create({
         marginTop: 20,
     },
     buttonSend: {
-        width: 340,
+        width: "100%",
         height: 45
     },
     backButtonText: {

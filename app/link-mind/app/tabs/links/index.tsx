@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, ScrollView } from 'react-native'
 import { useRouter } from 'expo-router'
 import { colors } from '@/styles/colors'
 
@@ -106,7 +106,7 @@ export default function LinksIndex() {
       if (user?.access_token_prov) {
          fetch_Links()
       }
-   }, [user])
+   }, [])
    
    const categories = [
       { id: '1', name: 'Todas' },
@@ -121,13 +121,10 @@ export default function LinksIndex() {
    
    return ( 
       <View style={styles.container}>
-         <Categories 
-            data={categories}
-            selectedCategory={selectedCategory}
-            setSelectCategory={setSelectCategory}
-         />
          {isLoading ? (
             <>
+               <LinkSkeleton />
+               <LinkSkeleton />
                <LinkSkeleton />
                <LinkSkeleton />
                <LinkSkeleton />
@@ -145,6 +142,9 @@ export default function LinksIndex() {
                data={links}
                onDelete={handleOnDelete_Link}
                onDetails={handleOnDetails_Link}   
+               categories={categories}
+               selectedCategory={selectedCategory}
+               setSelectCategory={setSelectCategory}
             />
          )}
       </View>

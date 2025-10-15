@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     },
     list: {
         paddingHorizontal: 12,
-        paddingVertical: 3,
+        paddingVertical: 5,
         gap: 6,
     },
 })

@@ -1,6 +1,8 @@
+// Links.tsx
 import { FlatList, StyleSheet, View } from 'react-native'
 import Link from "@/components/links/link"
-
+import Categories from '@/src/components/categories/categories'
+import { Heading1 } from 'lucide-react-native'
 
 type LinksPropsComponent = {
     id: string,
@@ -8,27 +10,39 @@ type LinksPropsComponent = {
     link: string
 }
 
-
-function handleOpenUrl() {
-    // redireciona para o link externo
-}
-
 type LinksProps = {
     data: LinksPropsComponent[]
     onDelete: (id: string) => void,
-    onDetails: (id: string) => void
+    onDetails: (id: string) => void,
+    categories: { id: string, name: string }[],
+    selectedCategory: string,
+    setSelectCategory: (category: string) => void
 }
 
-export default function Links({ data, onDelete, onDetails }: LinksProps) {
+export default function Links({ data, onDelete, onDetails, categories, selectedCategory, setSelectCategory }: LinksProps) {
+
+    function handleOpenUrl() {
+        // redireciona para o link externo
+    }
+
     return (
-        <View style={style.container}>
-            <FlatList
-                data={data}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={true}
-                style={{ flex: 1 }}
-                contentContainerStyle={style.list}
-                renderItem={({ item }) => (
+        <FlatList
+            data={data}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator
+            style={{ flex: 1 }}
+            ListHeaderComponent={
+                <View style={{ flexShrink: 0 }}>
+                    <Categories 
+                        data={categories}
+                        selectedCategory={selectedCategory}
+                        setSelectCategory={setSelectCategory}
+                    />
+                </View>
+            }
+            contentContainerStyle={{ padding: 3, gap: 14 }}
+            renderItem={({ item }) => (
+                <View style={{ marginHorizontal: 11 }}>
                     <Link
                         id={item.id}
                         title={item.title}
@@ -37,26 +51,11 @@ export default function Links({ data, onDelete, onDetails }: LinksProps) {
                         onDelete={() => onDelete(item.id)}
                         onDetails={() => onDetails(item.id)}
                     />
-                )}
-                ItemSeparatorComponent={() => (
-                    <View style={{
-                        height: 0.5,
-                        backgroundColor: '#444', 
-                        marginVertical: 4      
-                    }} />
-                )}
-            />
-        </View>
+                </View>
+            )}
+            ItemSeparatorComponent={() => (
+                <View style={{ height: 0.5, backgroundColor: '#444', marginVertical: 4 }} />
+            )}
+        />
     )
 }
-
-const style = StyleSheet.create({
-    container: {
-        flex: 1,
-        marginTop: 20
-    },
-    list: {
-        paddingHorizontal: 10,
-        gap: 6,
-    }
-})

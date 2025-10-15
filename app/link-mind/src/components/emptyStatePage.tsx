@@ -49,7 +49,7 @@ const style = StyleSheet.create({
     textAlign: 'center',
     fontSize: 15,
     color: colors.gray[400],
-    marginBottom: 37,
+    marginBottom: 28,
   },
   category: {
     color: colors.green[300],
