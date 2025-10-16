@@ -23,7 +23,7 @@ export default function PesquisaIndex() {
     ];
 
     return (
-        <SafeAreaView style={{ padding: 7, paddingTop: 7, flex: 1, backgroundColor: colors.gray[950] }}>
+        <SafeAreaView style={{ padding: 7, paddingTop: 1, flex: 1, backgroundColor: colors.gray[950] }}>
             <View style={style.header}>
                 <ArrowLeft
                     size={24}
@@ -64,8 +64,8 @@ const style = StyleSheet.create({
         backgroundColor: colors.gray[950],
         flexDirection: "row",
         alignItems: "center",
+        marginBottom: 2.5,
         paddingLeft: 8,
-        marginBottom: -10,
         gap: 15
     },
     searchContainer: {

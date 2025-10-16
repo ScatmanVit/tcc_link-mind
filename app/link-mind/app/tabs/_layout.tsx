@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { AuthContext } from '../../src/context/auth';
 import { colors } from '@/styles/colors';
+import Input from '@/src/components/input';
 
 export default function TabLayout() {
 	const { user } = useContext(AuthContext);
@@ -44,10 +45,20 @@ export default function TabLayout() {
 						style={style.icon}
 						source={require("../../assets/images/icon.png")}
 					/>
+					<View style={style.buttonSearch}>					
+						<TouchableOpacity onPress={() => router.push("/pesquisa")} activeOpacity={0.7}>
+							<Input
+								placeholder="Pesquise links, notas ou eventos..."
+								placeholderTextColor={colors.gray[400]}
+								radius={26}
+								size={15}
+							/>
+						</TouchableOpacity>
+					</View>	
 				</View>
 
 				<View style={style.header_right}>
-					<TouchableOpacity activeOpacity={0.7}>
+					{/* <TouchableOpacity activeOpacity={0.7}>
 						<FontAwesome6
 							style={style.buttonAdd}
 							name="magnifying-glass"
@@ -55,7 +66,7 @@ export default function TabLayout() {
 							color={colors.green[200]}
 							onPress={() => router.push("/pesquisa")}
 						/>
-					</TouchableOpacity>
+					</TouchableOpacity> */}
 					<TouchableOpacity activeOpacity={0.7}>
 						<FontAwesome6
 							style={style.buttonAdd}
@@ -118,16 +129,20 @@ export default function TabLayout() {
 
 const style = StyleSheet.create({
 	header: {
-		height: 70,
+		height: 73,
 		backgroundColor: colors.gray[950],
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		paddingHorizontal: 12,
+		paddingTop: 5,
+		paddingHorizontal: 11,
 	},
 	header_left: {
 		flexDirection: "row",
 		alignItems: "center",
+	},
+	buttonSearch: {
+		width: 225
 	},
 	header_right: {
 		flexDirection: "row",

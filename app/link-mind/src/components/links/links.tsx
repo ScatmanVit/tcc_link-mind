@@ -54,7 +54,7 @@ export default function Links({ data, onDelete, onDetails, categories, selectedC
                 </View>
             )}
             ItemSeparatorComponent={() => (
-                <View style={{ height: 0.5, backgroundColor: '#444', marginVertical: 4 }} />
+                <View style={{ height: 0.5, backgroundColor: '#444', marginVertical: 1}} />
             )}
         />
     )
