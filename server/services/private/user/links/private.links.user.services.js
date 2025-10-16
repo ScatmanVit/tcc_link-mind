@@ -126,7 +126,8 @@ async function links_UPDATE(dataUptdatedink) {
 async function links_LIST(idUser) {
 	if (!idUser) {
 		return {
-			error: "Id do usuário não fornecido para busca dos links do usuário"
+			error: "Id do usuário não fornecido para busca dos links do usuário",
+			statusCode: 400
 		}
 	}
 	try {
@@ -135,13 +136,8 @@ async function links_LIST(idUser) {
 				userId: idUser
 			}
 		})
-		if (links.length === 0) {
-			return {
-				message: "Sem links disponíveis para esse id de usuário"
-			}
-		}
 		return links
-	} catch (err) {
+	} catch(err) {
 		console.error(err)
 		return {
 			error: "Não foi possível buscar links do usuário"

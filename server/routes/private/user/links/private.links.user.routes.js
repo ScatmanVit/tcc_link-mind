@@ -1,4 +1,4 @@
-import PrivateLinksUserController from '../../../../controllers/private/user/links/private.links.user.controller.js'
+import PrivateLinksUserController from '../../../../controllers/private/user/links/private.links.user.controllers.js'
 import Route from 'express'
 const route = Route()
 

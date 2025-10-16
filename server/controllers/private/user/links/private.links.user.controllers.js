@@ -1,4 +1,4 @@
-import PrivateUserService from '../../../../services/private/user/links/private.links.user.service.js'
+import PrivateUserServiceLinks from '../../../../services/private/user/links/private.links.user.services.js'
 import { findOneUser } from '../../../../utils/utils.js'
 
 async function links_create_Controller_POST(req, res) {
@@ -31,7 +31,7 @@ async function links_create_Controller_POST(req, res) {
 				error: "Campos obrigatórios não fornecidos."
 			})
 		}
-		const newLink = await PrivateUserService.links_CREATE({
+		const newLink = await PrivateUserServiceLinks.links_CREATE({
 			title,
 			link,
 			description,
@@ -77,7 +77,7 @@ async function links_delete_Controller_DELETE(req, res) {
 			})
 		}
 
-		const linkDeleted = await PrivateUserService.link_DELETE(linkId, idUser)
+		const linkDeleted = await PrivateUserServiceLinks.link_DELETE(linkId, idUser)
 
 		if (linkDeleted.error) {
 			return res.status(400).json({
@@ -123,7 +123,7 @@ async function links_update_Controller_UPDATE(req, res) {
 	}
 
 	try {
-		const linkUpdated = await PrivateUserService.links_UPDATE({
+		const linkUpdated = await PrivateUserServiceLinks.links_UPDATE({
 			idUser: userId,
 			idLink: idLink,
 			newLink,
@@ -164,7 +164,7 @@ async function links_list_Controller_GET(req, res) {
 				error: "Não existe usuário com esse ID para listar os Links."
 			})
 		}
-		const linksUser = await PrivateUserService.links_LIST(userId)
+		const linksUser = await PrivateUserServiceLinks.links_LIST(userId)
 		if (linksUser?.error) {
 			return res.status(400).json({
 				error: linksUser.error
@@ -173,7 +173,10 @@ async function links_list_Controller_GET(req, res) {
 
 		return res.status(200).json({
 			success: true,
-			message: "Links do usuário obtidos com sucesso!", linksUser
+			message: linksUser.length > 0 
+				? "Links do usuário obtidos com sucesso!" 
+				: "Não há links para esse usuário.",
+			linksUser: linksUser.length > 0 ? linksUser : []
 		})
 	} catch (err) {
 		console.error("Erro no servidor, [ LISTAGEM LINKS ]", err)
