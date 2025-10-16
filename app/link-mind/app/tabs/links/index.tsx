@@ -35,8 +35,8 @@ export default function LinksIndex() {
          e só depois criar o item com essa nova categoria.
 
          Fetch inicial:
-         - Buscar categorias do usuário
-         - Buscar itens do usuário
+         - Buscar categorias do usuário 
+         - Buscar itens do usuário 
 
          Vantagens:
          - Cadastro de categorias centralizado
@@ -74,7 +74,7 @@ export default function LinksIndex() {
       } 
    }
 
-   async function handleOnDelete_Link(id: string) {
+   async function handleOnDelete_Link(id: string) { // aplicar comand pattern depois ( desfazer ) com toast
       if (user && user.access_token_prov) {
          try {
             const deleteLink = await delete_Link({
@@ -138,7 +138,7 @@ export default function LinksIndex() {
                onBackPage={() => router.push('/tabs/links')} 
             />
          ) : (
-            <Links 
+            <Links  
                data={links}
                onDelete={handleOnDelete_Link}
                onDetails={handleOnDetails_Link}   

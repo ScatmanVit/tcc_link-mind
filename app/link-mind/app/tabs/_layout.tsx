@@ -58,15 +58,7 @@ export default function TabLayout() {
 				</View>
 
 				<View style={style.header_right}>
-					{/* <TouchableOpacity activeOpacity={0.7}>
-						<FontAwesome6
-							style={style.buttonAdd}
-							name="magnifying-glass"
-							size={18}
-							color={colors.green[200]}
-							onPress={() => router.push("/pesquisa")}
-						/>
-					</TouchableOpacity> */}
+
 					<TouchableOpacity activeOpacity={0.7}>
 						<FontAwesome6
 							style={style.buttonAdd}

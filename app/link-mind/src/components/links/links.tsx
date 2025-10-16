@@ -1,5 +1,5 @@
 // Links.tsx
-import { FlatList, StyleSheet, View } from 'react-native'
+import { FlatList, Linking, Alert, View } from 'react-native'
 import Link from "@/components/links/link"
 import Categories from '@/src/components/categories/categories'
 import { Heading1 } from 'lucide-react-native'
@@ -21,8 +21,22 @@ type LinksProps = {
 
 export default function Links({ data, onDelete, onDetails, categories, selectedCategory, setSelectCategory }: LinksProps) {
 
-    function handleOpenUrl() {
-        // redireciona para o link externo
+    async function handleOpenUrl(link_url: string) {
+        let url = link_url.trim();
+        if (!link_url.includes('.') || link_url.includes(' ')) {
+            Alert.alert('Isso não parece um link válido');
+            return;
+        }
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'https://' + url;
+        }
+        const supported = await Linking.canOpenURL(url);
+
+        if (supported) {
+            await Linking.openURL(url);
+        } else {
+            Alert.alert(`Não é possível abrir a URL: ${url}`);
+        }
     }
 
     return (
@@ -33,7 +47,7 @@ export default function Links({ data, onDelete, onDetails, categories, selectedC
             style={{ flex: 1 }}
             ListHeaderComponent={
                 <View style={{ flexShrink: 0 }}>
-                    <Categories 
+                    <Categories
                         data={categories}
                         selectedCategory={selectedCategory}
                         setSelectCategory={setSelectCategory}
@@ -47,14 +61,14 @@ export default function Links({ data, onDelete, onDetails, categories, selectedC
                         id={item.id}
                         title={item.title}
                         link_url={item.link}
-                        onOpen_url={handleOpenUrl}
+                        onOpen_url={() => handleOpenUrl(item.link)}
                         onDelete={() => onDelete(item.id)}
                         onDetails={() => onDetails(item.id)}
                     />
                 </View>
             )}
             ItemSeparatorComponent={() => (
-                <View style={{ height: 0.5, backgroundColor: '#444', marginVertical: 1}} />
+                <View style={{ height: 0.5, backgroundColor: '#444', marginVertical: 1 }} />
             )}
         />
     )
