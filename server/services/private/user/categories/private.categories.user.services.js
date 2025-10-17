@@ -13,7 +13,7 @@ async function category_CREATE(dataNewCategory, userId) {
     }
     try {
         const categoriesData = dataNewCategory.map(category => ({
-            nome: captalize(category.name),
+            nome: captalize(String(category.name)),
             userId
         }))
         const categoryCreated = await prisma.categoria.createMany({

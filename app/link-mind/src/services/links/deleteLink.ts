@@ -17,11 +17,10 @@ export default async function delete_Link({ access_token, id_link }: deleteLinkP
             {}, 
             {
                 headers: {
-                    Authorization: `${access_token}`
+                    Authorization: `Bearer ${access_token}`
                 }
             }
         )
-        console.log(res.data)
         if (res.data.success) {
             return { 
                 message: res.data.message

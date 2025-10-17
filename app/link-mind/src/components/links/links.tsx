@@ -2,7 +2,6 @@
 import { FlatList, Linking, Alert, View } from 'react-native'
 import Link from "@/components/links/link"
 import Categories from '@/src/components/categories/categories'
-import { Heading1 } from 'lucide-react-native'
 
 type LinksPropsComponent = {
     id: string,
@@ -52,7 +51,7 @@ export default function Links({ data, onDelete, onDetails, categories, selectedC
                         selectedCategory={selectedCategory}
                         setSelectCategory={setSelectCategory}
                     />
-                </View>
+                </View> 
             }
             contentContainerStyle={{ padding: 3, gap: 14 }}
             renderItem={({ item }) => (
