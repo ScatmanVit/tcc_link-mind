@@ -1,11 +1,9 @@
 import axios from 'axios'
-import type { CategoryPropsItem } from '../../../app/index'
-
+import type { CategoryPropsItem } from '../../../app/_layout'
 
 export default async function category_Create(access_token: string, dataNewCategory: CategoryPropsItem[]) {
-    if (!access_token || !dataNewCategory) {
-        console.log("TOKEN OU NOVAS CATEGORIAS NÃO RECEBIDAS")
-        console.log("TOKEN: ", access_token)
+    if (!dataNewCategory) {
+        console.log("NOVAS CATEGORIAS NÃO RECEBIDAS")
         console.log("CATEGORIAS NOVAS: ", dataNewCategory)
     }
     try {
@@ -19,7 +17,8 @@ export default async function category_Create(access_token: string, dataNewCateg
         )
         if (res.data?.success) {
             return {
-                message: res.data.message
+                message: res.data.message,
+                categories: res.data.categories
             }
         }
     } catch(err: any) {

@@ -7,17 +7,17 @@ import { useEffect } from 'react';
 
 
 export type CategoryPropsItem = {
-    name: string;
+    nome: string;
     id: string;
 };
  
 const defaultCategories: CategoryPropsItem[] = [
-    { id: '1', name: 'Todas' },
-    { id: '2', name: 'Estudos' },
-    { id: '3', name: 'Trabalho' },
-    { id: '4', name: 'Finanças' },
-    { id: '5', name: 'Academia' },
-    { id: '6', name: 'Progresso' }
+    { id: '1', nome: 'Todas' },
+    { id: '2', nome: 'Estudos' },
+    { id: '3', nome: 'Trabalho' },
+    { id: '4', nome: 'Finanças' },
+    { id: '5', nome: 'Academia' },
+    { id: '6', nome: 'Progresso' }
 ];
 
 export const STORAGE_KEY = '@categories';

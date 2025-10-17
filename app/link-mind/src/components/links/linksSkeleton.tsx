@@ -3,13 +3,13 @@ import { useEffect, useRef } from 'react'
 import { colors } from '@/styles/colors'
 
 export default function LinkSkeleton() {
-  const opacity = useRef(new Animated.Value(0.3)).current
+  const opacity = useRef(new Animated.Value(0.55)).current
 
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
-        Animated.timing(opacity, { toValue: 0.6, duration: 1200, useNativeDriver: true }),
-        Animated.timing(opacity, { toValue: 0.9, duration: 1200, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.65, duration: 900, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.55, duration: 900, useNativeDriver: true }),
       ])
     ).start()
   }, [])

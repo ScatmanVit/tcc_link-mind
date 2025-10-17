@@ -13,9 +13,9 @@ type LinksProps = {
     data: LinksPropsComponent[]
     onDelete: (id: string) => void,
     onDetails: (id: string) => void,
-    categories: { id: string, name: string }[],
-    selectedCategory: string,
-    setSelectCategory: (category: string) => void
+    categories: { id: string, nome?: string }[],
+    selectedCategory?: { id: string, nome?: string },
+    setSelectCategory: (category: { id: string, nome?: string }) => void
 }
 
 export default function Links({ data, onDelete, onDetails, categories, selectedCategory, setSelectCategory }: LinksProps) {

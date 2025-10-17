@@ -35,6 +35,7 @@ async function category_create_Controller_POST(req, res) {
 			success: true,
 			message: "Categoria criada com sucesso!"
 		})
+		
 	} catch (err) {
 		console.error("Erro no servidor, [ CRIAÇÃO CATEGORIA ]", err)
 		return res.status(500).json({

@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
 
 export function useCategory() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("Todas")
+  const [selectedCategory, setSelectedCategory] = useState<{ id: string, nome?: string } | undefined>()
 
-  function setSelectCategory (category: string) {
+  function setSelectCategory(category: { id: string, nome?: string }) {
     setSelectedCategory(category)
+    console.log(selectedCategory)
   }
-
-  useEffect(() => {
-  }, [selectedCategory])
 
   return {
     selectedCategory,

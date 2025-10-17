@@ -2,7 +2,7 @@ import { Text, Pressable, StyleSheet } from 'react-native'
 import { colors } from '@/styles/colors'
 
 export type CategoryProps = {
-    categoryName: string
+    categoryName?: string
     focused: boolean
     onPress: () => void
 }

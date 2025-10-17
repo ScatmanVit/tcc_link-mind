@@ -1,9 +1,6 @@
 import axios from 'axios'
 
 export default async function categories_List(access_token: string) {
-    if (!access_token) {
-        console.log("TOKEN NÃO RECEBIDO: ", access_token)
-    }
     try {
         const res = await axios.get("http://localhost:3000/api/v1/linkmind/categories/list", 
             {

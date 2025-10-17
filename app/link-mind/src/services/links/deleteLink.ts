@@ -6,12 +6,10 @@ type deleteLinkProps = {
 }
  
 export default async function delete_Link({ access_token, id_link }: deleteLinkProps) {
-    if (!access_token || !id_link) {
-        console.log("TOKEN OU ID DO LINK NÃO RECEBIDOS")
-        console.log("TOKEN", access_token)
-        console.log("ID LINK", id_link)
+    if (!id_link) {
+        console.log("ID DO LINK NÃO RECEBIDO")
+        console.log("ID LINK: ", id_link)
     }
-
     try {
         const res = await axios.post(`http://localhost:3000/api/v1/linkmind/link/delete/${id_link}`,
             {}, 
