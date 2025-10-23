@@ -30,17 +30,18 @@ export default function Category({ categoryName, focused, onPress }: CategoryPro
 
 const styles = StyleSheet.create({
     container: {
-        minWidth: 60,
-        paddingVertical: 8,
-        paddingHorizontal: 14,
+        minWidth: 30,
         borderRadius: 22,
         borderWidth: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     text: {
-        color: colors.gray[200],
-        fontWeight: '400',
+        flex: 1,
+        paddingVertical: 8,
+        paddingHorizontal: 14,
+        color: colors.gray[400],
+        fontWeight: '600',
         fontSize: 13,
         textTransform: 'capitalize',
     },

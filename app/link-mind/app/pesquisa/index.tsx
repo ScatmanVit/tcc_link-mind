@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Pressable } from "react-native";
 import { colors } from '@/styles/colors';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeft } from "lucide-react-native";
@@ -25,18 +25,26 @@ export default function PesquisaIndex() {
     return (
         <SafeAreaView style={{ padding: 7, paddingTop: 1, flex: 1, backgroundColor: colors.gray[950] }}>
             <View style={style.header}>
-                <ArrowLeft
-                    size={24}
-                    color="#fff"
-                    onPress={() => router.back()}
-                />
+                <Pressable style={({ pressed }) => [
+                    { padding: 8, borderRadius: 9999 }, 
+                    pressed && { backgroundColor: colors.gray[600] } 
+                ]}>
+                    <ArrowLeft
+                        size={24}
+                        color="#fff"
+                        onPress={() => router.back()}
+                    />     
+                </Pressable>
+
 
                 <View style={style.searchContainer}>
                     <Input
-                        placeholder="Pesquise links, notas ou eventos..."
+                        placeholder="Pesquise links, notas ou eventos"
                         placeholderTextColor={colors.gray[400]}
                         radius={26}
                         size={15}
+                        iconColor={colors.gray[400]}
+					    icon="magnifying-glass"
                     />
                     <TouchableOpacity activeOpacity={0.7} style={style.searchButton}>
                         <FontAwesome6
@@ -72,6 +80,7 @@ const style = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         flex: 1,
+        marginLeft: -9,
         maxWidth: 260,
     },
     input: {

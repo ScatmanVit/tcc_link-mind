@@ -1,7 +1,8 @@
 // Links.tsx
-import { FlatList, Linking, Alert, View } from 'react-native'
+import { FlatList, Linking, Alert, View, Text, StyleSheet, Pressable } from 'react-native'
 import Link from "@/components/links/link"
 import Categories from '@/src/components/categories/categories'
+import { colors } from '@/src/styles/colors'
 
 type LinksPropsComponent = {
     id: string,
@@ -45,30 +46,52 @@ export default function Links({ data, onDelete, onDetails, categories, selectedC
             showsVerticalScrollIndicator
             style={{ flex: 1 }}
             ListHeaderComponent={
-                <View style={{ flexShrink: 0 }}>
+                <View style={{ flexShrink: 0, flexDirection: "row", gap: 1, alignItems: "center", marginBottom: 6 }}>
                     <Categories
                         data={categories}
                         selectedCategory={selectedCategory}
                         setSelectCategory={setSelectCategory}
                     />
-                </View> 
+                    <Pressable
+                        style={style.alert_add_category}
+                    >
+                        <Text
+                            style={{
+                                fontSize: 16,
+                                color: colors.gray[400],
+                            }}
+                        >
+                            {categories.length === 1 ? 'Adicione uma categoria!' : null}
+                        </Text>
+                    </Pressable>
+
+                </View>
             }
-            contentContainerStyle={{ padding: 3, gap: 14 }}
+            contentContainerStyle={{ padding: 3, gap: 12 }}
             renderItem={({ item }) => (
                 <View style={{ marginHorizontal: 11 }}>
-                    <Link
-                        id={item.id}
-                        title={item.title}
-                        link_url={item.link}
-                        onOpen_url={() => handleOpenUrl(item.link)}
-                        onDelete={() => onDelete(item.id)}
-                        onDetails={() => onDetails(item.id)}
-                    />
+                    <Pressable style={({ pressed }) => [
+                        { flex: 1, marginHorizontal: -3 },
+                        pressed && { backgroundColor: colors.gray[800] }
+                    ]}>
+                        <Link
+                            id={item.id}
+                            title={item.title}
+                            link_url={item.link}
+                            onOpen_url={() => handleOpenUrl(item.link)}
+                            onDelete={() => onDelete(item.id)}
+                            onDetails={() => onDetails(item.id)}
+                        />
+                    </Pressable>
                 </View>
-            )}
-            ItemSeparatorComponent={() => (
-                <View style={{ height: 0.5, backgroundColor: '#444', marginVertical: 1 }} />
             )}
         />
     )
 }
+
+const style = StyleSheet.create({
+    alert_add_category: {
+        borderRadius: 22
+    },
+
+})

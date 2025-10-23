@@ -1,10 +1,10 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from "expo-status-bar"
-import AuthProvider from '@/context/auth';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 
+import AuthProvider from '@/context/auth';
 
 export type CategoryPropsItem = {
     nome: string;
@@ -47,12 +47,14 @@ export default function RootLayout() {
     return (
         <SafeAreaProvider>
             <AuthProvider>
-                <StatusBar style="light" backgroundColor="black" />
-                <Stack
-                    screenOptions={{
-                        headerShown: false,
-                    }}
-                />
+                <SafeAreaView style={{ flex: 1 }}>
+                    <StatusBar style="light" backgroundColor="black" />
+                    <Stack
+                        screenOptions={{
+                            headerShown: false,
+                        }}
+                    />
+                </SafeAreaView>
             </AuthProvider>
         </SafeAreaProvider>
 

@@ -1,6 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { useRouter } from 'expo-router'
 import NetInfo from '@react-native-community/netinfo'
 
 
@@ -21,6 +20,7 @@ import list_Links from '@/src/services/links/listLinks'
 import delete_Link from '@/src/services/links/deleteLink'
 import category_Create from '@/src/services/categories/createCategories'
 import categories_List from '@/src/services/categories/listCategories'
+
 
 export default function LinksIndex() {
     const { user } = useContext(AuthContext) // provisório pegar do estado o token, não da para usar o secure store no web
@@ -129,7 +129,6 @@ export default function LinksIndex() {
         } catch (err: any) {
             console.log(err)
         }
-
     }
 
 
@@ -148,9 +147,9 @@ export default function LinksIndex() {
         } else {
             setLinksFiltered(null)
         }
-    }, [selectedCategory, links])
-
-
+    }, [selectedCategory, links]) 
+ 
+ 
     return (
         <View style={styles.container}>
             {isLoading ? (
@@ -160,17 +159,20 @@ export default function LinksIndex() {
                     <LinkSkeleton />
                     <LinkSkeleton />
                     <LinkSkeleton />
-                </>
+                    <LinkSkeleton />
+                    <LinkSkeleton />
+                    <LinkSkeleton />
+                </> 
             ) : (
-                <Links
-                    data={linksFiltered ? linksFiltered : links}
-                    onDelete={handleOnDelete_Link}
-                    onDetails={handleOnDetails_Link}
-                    categories={categories}
-                    selectedCategory={selectedCategory}
-                    setSelectCategory={setSelectCategory}
-                />
-            )}
+                    <Links
+                        data={linksFiltered ? linksFiltered : links}
+                        onDelete={handleOnDelete_Link}
+                        onDetails={handleOnDetails_Link}
+                        categories={categories}
+                        selectedCategory={selectedCategory}
+                        setSelectCategory={setSelectCategory}
+                    />
+            )} 
         </View>
     )
 }

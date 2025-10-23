@@ -23,7 +23,7 @@ async function category_create_Controller_POST(req, res) {
 			return res.status(404).json({
 				error: "Usuário não encontrado. Não é possível criar categoria."
 			})
-		}
+		} 
 		const newCategory = await PrivateUserServiceCategories
 			.category_CREATE(dataNewCategory, userId)
 		if (newCategory?.error) {

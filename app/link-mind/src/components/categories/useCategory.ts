@@ -5,7 +5,7 @@ export function useCategory() {
 
   function setSelectCategory(category: { id: string, nome?: string }) {
     setSelectedCategory(category)
-    console.log(selectedCategory)
+    console.log(category)
   }
 
   return {

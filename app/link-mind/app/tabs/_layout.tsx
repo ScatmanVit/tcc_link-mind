@@ -1,7 +1,7 @@
 import { Image, StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Tabs, usePathname, useRouter } from 'expo-router';
-import { useContext } from 'react';
+import { useContext, useState, useRef } from 'react';
 
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ArrowLeft } from "lucide-react-native";
@@ -9,16 +9,19 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { AuthContext } from '../../src/context/auth';
 import { colors } from '@/styles/colors';
-import Input from '@/src/components/input';
+import ItemSelector from '@/src/components/itemSelector';
+import OptionsModal from '@/src/components/optionsModal';
 
 export default function TabLayout() {
 	const { user } = useContext(AuthContext);
 	
 	const router = useRouter();
-  	const pathname = usePathname();
+	const pathname = usePathname();
+	
+	const [modalVisible, setModalVisible] = useState<boolean>(false)
+
 
 	const baseRoutes = ["links", "anotacoes", "eventos", "pesquisa"];
-
 	function handleArrowBack() {
 		const activeBase = baseRoutes.find((route) =>
 			pathname.includes(`/${route}/`)
@@ -30,8 +33,32 @@ export default function TabLayout() {
 	const shouldShowArrow = baseRoutes.some((route) =>
 		pathname.includes(`/${route}/`)
 	);
+
+	function ChangeModalVisibility() {
+        setModalVisible(prev => !prev) 
+    }
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
+			<OptionsModal 
+				toggleVisible={ChangeModalVisibility} 
+				isVisible={modalVisible}
+			>
+				<ItemSelector
+					name="Novo Link"
+					icon="link"
+					onPress={() => { }}
+				/>
+				<ItemSelector 
+					name=" Nova Anotação"
+					icon="note-sticky" 
+					onPress={() => { }} 
+				/>
+				<ItemSelector 
+					name=" Novo Evento"
+					icon="calendar-plus"
+					onPress={() => { }} 
+				/>
+			</OptionsModal>
 			<View style={style.header}>
 				<View style={style.header_left}>
 					{shouldShowArrow && (
@@ -45,21 +72,21 @@ export default function TabLayout() {
 						style={style.icon}
 						source={require("../../assets/images/icon.png")}
 					/>
-					<View style={style.buttonSearch}>					
-						<TouchableOpacity onPress={() => router.push("/pesquisa")} activeOpacity={0.7}>
-							<Input
-								placeholder="Pesquise links, notas ou eventos..."
-								placeholderTextColor={colors.gray[400]}
-								radius={26}
-								size={15}
-							/>
-						</TouchableOpacity>
-					</View>	
 				</View>
 
 				<View style={style.header_right}>
 
-					<TouchableOpacity activeOpacity={0.7}>
+					<View style={style.buttonSearch}>					
+						<TouchableOpacity onPress={() => router.push("/pesquisa")} activeOpacity={0.7}>
+							<FontAwesome6
+								style={style.buttonAdd}
+								name="magnifying-glass"
+								size={20}
+								color={colors.green[200]}
+							/>
+						</TouchableOpacity>
+					</View>	
+					<TouchableOpacity onPress={ChangeModalVisibility} activeOpacity={0.7}>
 						<FontAwesome6
 							style={style.buttonAdd}
 							name="add"
@@ -134,7 +161,7 @@ const style = StyleSheet.create({
 		alignItems: "center",
 	},
 	buttonSearch: {
-		width: 225
+		width: 22
 	},
 	header_right: {
 		flexDirection: "row",

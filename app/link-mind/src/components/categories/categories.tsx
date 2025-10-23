@@ -21,7 +21,7 @@ export default function Categories({ data, selectedCategory, setSelectCategory }
                 keyExtractor={(item) => item.id}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.list}
+                contentContainerStyle={[styles.list, { flexGrow: 1 }]}
                 renderItem={({ item }) => (
                         <Category
                             categoryName={item?.nome}

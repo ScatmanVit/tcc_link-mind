@@ -1,9 +1,8 @@
-import { StyleSheet, Text, Pressable, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, Pressable, View } from 'react-native'
 import { colors } from '@/styles/colors'
 
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Feather from '@expo/vector-icons/Feather';
 
 export type LinkProps =  {
     id: string,
@@ -16,7 +15,14 @@ export type LinkProps =  {
 
 export default function Link({ title, link_url, onDelete, onDetails, onOpen_url }: LinkProps) {
     return (
-        <View style={style.container}>
+            <Pressable 
+                onPress={onDetails}
+                style={({ pressed }) => [
+                    style.container,
+                    pressed && { backgroundColor: colors.gray[800]}
+                ]}
+            >
+
             <View>
                 <Text style={style.title} numberOfLines={1}>
                     {title}
@@ -30,30 +36,45 @@ export default function Link({ title, link_url, onDelete, onDetails, onOpen_url 
                     onPress={onDelete}
                     style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
                 >
-                    <FontAwesome6 name="trash" size={15} color={colors.gray[400]} />
+                    <FontAwesome6 
+                        name="trash" 
+                        size={15} 
+                        color={colors.gray[400]} 
+                    />
                 </Pressable>
 
                 <Pressable
                     onPress={onOpen_url}
                     style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
                 >
-                    <FontAwesome style={style.external_link_icon} name="external-link" size={16.5} color={colors.gray[400]} />
+                    <FontAwesome 
+                        style={style.external_link_icon} 
+                        name="external-link" size={16.5} 
+                        color={colors.gray[400]} 
+                    />
                 </Pressable>
 
-                <Pressable
+                {/* <Pressable
                     onPress={onDetails}
                     style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
                 >
-                    <Feather style={style.more_horizontal} name="more-horizontal" size={22} color={colors.gray[400]} />
-                </Pressable>
+                    <Feather 
+                        style={style.more_horizontal} 
+                        name="more-horizontal" 
+                        size={22} 
+                        color={colors.gray[400]} 
+                    />
+                </Pressable> */}
             </View>    
-        </View>
+        </Pressable>
     ) 
 }
 
 
 const style = StyleSheet.create({
     container: {
+        flex: 1,
+        paddingHorizontal: 1,
         flexDirection: 'row',
         alignItems: "center",
         justifyContent: "space-between",

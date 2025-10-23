@@ -1,6 +1,7 @@
 import { captalize, findOneUser, formatEmail } from "../../utils/utils.js"
 import UserAuthService from "../../services/auth/auth.services.js"
 import redis from '../../config/redis.js'
+
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
 
@@ -20,7 +21,7 @@ async function createUserController(req, res) {
 		const salt = await bcrypt.genSalt(10);
 		hashPassword = await bcrypt.hash(password, salt);
 	}
-
+ 
 	try {
 		const userExist = await findOneUser(formatEmail(email), "")
 		if (userExist) {

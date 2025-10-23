@@ -5,7 +5,7 @@ async function links_create_Controller_POST(req, res) {
 	const userId = req.user?.id
 
 	try {
-		if (!userId) {
+		if (!userId) { 
 			return res.status(401).json({
 				error: "Usuário não autenticado. Token inválido ou ausente."
 			})
