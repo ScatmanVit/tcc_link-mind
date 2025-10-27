@@ -15,13 +15,20 @@ type CategoriesProps = {
 export default function Categories({ data, selectedCategory, setSelectCategory }: CategoriesProps) {
 
     return (
-        <View style={styles.container}>
+        <View 
+            style={styles.container}
+            onStartShouldSetResponderCapture={() => true} // 🔥 evita que o scroll vertical da lista principal "roube" o toque
+    
+        >
             <FlatList
+                horizontal
                 data={data}
                 keyExtractor={(item) => item.id}
-                horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={[styles.list, { flexGrow: 1 }]}
+                scrollEnabled={true}
+                scrollEventThrottle={16}
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={styles.list}
                 renderItem={({ item }) => (
                         <Category
                             categoryName={item?.nome}
@@ -41,7 +48,9 @@ export default function Categories({ data, selectedCategory, setSelectCategory }
 const styles = StyleSheet.create({
     container: {
         marginTop: 3,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexGrow: 0,
+
     },
     list: {
         paddingHorizontal: 12,

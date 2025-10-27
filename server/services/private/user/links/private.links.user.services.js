@@ -15,7 +15,10 @@ async function links_CREATE(dataNewLink) {
 	} = dataNewLink
 
 	if (!idUser) {
-		return { error: "Id do usuário não fornecido para a criação do novo link" }
+		return { 
+			statusCode: 400,
+			error: "Id do usuário não fornecido para a criação do novo link" 
+		}
 	}
 	try {
 		const data = {
@@ -45,6 +48,7 @@ async function links_CREATE(dataNewLink) {
 async function link_DELETE(idLink, idUser) {
 	if (!idLink || !idUser) {
 		return {
+			statusCode: 400,
 			error: "Id do link ou do usuário não fornecidos para deletar o link."
 		}
 	}

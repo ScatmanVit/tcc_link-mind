@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../../src/context/auth';
 import { colors } from '@/styles/colors';
 import ItemSelector from '@/src/components/itemSelector';
-import OptionsModal from '@/src/components/optionsModal';
+import OptionsModal from '@/src/components/modals/optionsModal';
 
 export default function TabLayout() {
 	const { user } = useContext(AuthContext);
@@ -46,7 +46,10 @@ export default function TabLayout() {
 				<ItemSelector
 					name="Novo Link"
 					icon="link"
-					onPress={() => { }}
+					onPress={() => { 
+						router.push('/tabs/links/add-link')
+						ChangeModalVisibility()
+					}}
 				/>
 				<ItemSelector 
 					name=" Nova Anotação"

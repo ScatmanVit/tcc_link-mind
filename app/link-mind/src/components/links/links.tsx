@@ -41,17 +41,20 @@ export default function Links({ data, onDelete, onDetails, categories, selectedC
 
     return (
         <FlatList
+            nestedScrollEnabled
             data={data}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator
             style={{ flex: 1 }}
             ListHeaderComponent={
                 <View style={{ flexShrink: 0, flexDirection: "row", gap: 1, alignItems: "center", marginBottom: 6 }}>
-                    <Categories
-                        data={categories}
-                        selectedCategory={selectedCategory}
-                        setSelectCategory={setSelectCategory}
-                    />
+                    <View pointerEvents="box-none" style={{ flexShrink: 0, width: "100%" }}>
+                        <Categories
+                            data={categories}
+                            selectedCategory={selectedCategory}
+                            setSelectCategory={setSelectCategory}
+                        />
+                    </View>
                     <Pressable
                         style={style.alert_add_category}
                     >

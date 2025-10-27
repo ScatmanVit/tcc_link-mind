@@ -6,6 +6,8 @@ export default function LinksStackLayout() {
   return (
     <Stack screenOptions={{
       headerShown: false
-    }}/> 
+    }}>
+        <Stack.Screen name="add-link" />
+    </Stack> 
   )
 }

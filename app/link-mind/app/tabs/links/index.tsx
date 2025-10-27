@@ -74,7 +74,7 @@ export default function LinksIndex() {
         }
     }
 
-    function handleOnDetails_Link(id: string) { // Bottom sheet com tudo do link
+    function handleOnDetails_Link(id: string) { 
         const link = links.find(link => link.id === id)
         if (link) {
             console.log('Detalhes do link:', link)

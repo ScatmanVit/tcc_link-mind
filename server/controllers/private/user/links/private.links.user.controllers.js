@@ -43,7 +43,7 @@ async function links_create_Controller_POST(req, res) {
 		})
 
 		if (newLink?.error) {
-			return res.status(400).json({ error: newLink.error })
+			return res.status(newLink.statusCode || 500).json({ error: newLink.error })
 		}
 
 		return res.status(201).json({
@@ -80,7 +80,7 @@ async function links_delete_Controller_DELETE(req, res) {
 		const linkDeleted = await PrivateUserServiceLinks.link_DELETE(linkId, idUser)
 
 		if (linkDeleted.error) {
-			return res.status(400).json({
+			return res.status(linkDeleted.statusCode || 500).json({
 				error: linkDeleted.error
 			})
 		}
@@ -166,7 +166,7 @@ async function links_list_Controller_GET(req, res) {
 		}
 		const linksUser = await PrivateUserServiceLinks.links_LIST(userId)
 		if (linksUser?.error) {
-			return res.status(400).json({
+			return res.status(linksUser.statusCode || 500).json({
 				error: linksUser.error
 			})
 		}

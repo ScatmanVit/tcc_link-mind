@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import Modal from 'react-native-modal';
-import { colors } from '../styles/colors';
+import { colors } from '../../styles/colors';
 
 type OptionsModalProps = {
     isVisible: boolean
