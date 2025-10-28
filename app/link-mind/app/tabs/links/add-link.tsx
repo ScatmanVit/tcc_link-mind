@@ -1,34 +1,77 @@
 import { useState, useContext, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
-import { colors } from "@/styles/colors";
-import { useCategory } from "@/components/categories/useCategory";
+import { useToast } from 'react-native-toast-notifications';
 
+import { colors } from "@/styles/colors";
+import { AuthContext } from '@/context/auth'
 import Button from "@/components/button/button";
 import Categories from "@/components/categories//categories";
+import { useCategory } from "@/components/categories/useCategory";
+
+import { type CategoryPropsItem } from "../../_layout";
+import { type CreateLinkProps } from '@/src/services/links/createLink'
 import categories_List from "@/src/services/categories/listCategories";
-import { AuthContext } from '@/context/auth'
-import { CategoryPropsItem } from "../../_layout";
+import create_Link from "@/src/services/links/createLink";
 
 export default function CreateLink() {
+    const toast = useToast()
     const { user } = useContext(AuthContext) // provisório pegar do estado o token, não da para usar o secure store no web
     
     
-    const [title, setTitle] = useState("");
-    const [url, setUrl] = useState("");
-    const [description, setDescription] = useState("");
+    const [ link, setLink]  = useState<Partial<CreateLinkProps>>({
+        title: '',
+        link: '',
+        description: '',
+    });
+    const [ loading, setLoading ] = useState(false)
     const [ categories, setCategories ] = useState<CategoryPropsItem[]>([])
     const { selectedCategory, setSelectCategory } = useCategory();
 
-    function handleCreateLink() {
-        if (!title.trim() || !url.trim()) return;
+    async function handleCreateLink() {
+        if (!link?.title?.trim() || !link?.link?.trim()) return;
+        if (!user?.access_token_prov) return
         console.log({
-            title,
-            url,
-            description,
-            category: selectedCategory,
+            link
         });
-    }
 
+        try {
+            setLoading(true)
+            const linkCreated = await create_Link(
+                user.access_token_prov, 
+                {
+                    title: link?.title,
+                    link: link?.link,
+                    description: link?.description,
+                    categoriaId: selectedCategory?.id
+                } as CreateLinkProps
+            )
+            if (linkCreated?.success) {
+                console.log(linkCreated)
+                setLink({ title: '', link: '', description: '' })
+                setSelectCategory(undefined)
+                toast.show(linkCreated.message, {
+                    type: 'success',
+                    placement: 'top',
+                    duration: 4000,
+                });
+            } 
+        } catch(err: any) {
+            console.log(err.message)
+            toast.show(err.message, {
+                type: 'danger', 
+                placement: 'top',
+                duration: 4000,
+            });
+        } finally {
+            setLoading(false)
+        }
+    }
+    // COLOCAR NA API EM TODOS OS RETORNOS DE ERRO 400 UM ATRIBUTO NA RSPOSTA CHAMADO TYPE ERROR COM OS SEGUINTES POSSÍVEIS VALORES:
+    /* 
+        erros 400... = typeError: "alert"
+        erros 200... = typeError: "success"
+        erros 500... = typeError: "error"
+    */
     async function fecth_Categories() {
         if (!user || !user.access_token_prov) {
             console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
@@ -49,7 +92,7 @@ export default function CreateLink() {
         if (user?.access_token_prov) {
             fecth_Categories()
         }
-    }, [])
+    }, [user?.access_token_prov])
 
     return (
         <View style={styles.container}>
@@ -61,8 +104,9 @@ export default function CreateLink() {
                     style={styles.input}
                     placeholder="Digite o título do link"
                     placeholderTextColor={colors.gray[300]}
-                    value={title}
-                    onChangeText={setTitle}
+                    underlineColorAndroid="transparent"
+                    value={link?.title}
+                    onChangeText={(title) => setLink(prevLink => ({ ...prevLink, title }))}
                 />
             </View>
 
@@ -72,8 +116,9 @@ export default function CreateLink() {
                     style={styles.input}
                     placeholder="https://..."
                     placeholderTextColor={colors.gray[300]}
-                    value={url}
-                    onChangeText={setUrl}
+                    underlineColorAndroid="transparent"
+                    value={link?.link}
+                    onChangeText={(link) => setLink(prevLink => ({ ...prevLink, link }))}
                     autoCapitalize="none"
                 />
             </View>
@@ -84,21 +129,26 @@ export default function CreateLink() {
                     style={[styles.input, styles.textArea]}
                     placeholder="Adicione uma descrição..."
                     placeholderTextColor={colors.gray[300]}
-                    value={description}
-                    onChangeText={setDescription}
+                    underlineColorAndroid="transparent"
+                    value={link?.description}
+                    onChangeText={(description) => setLink(prevLink => ({ ...prevLink, description }))}                    
                     multiline
                 />
             </View>
 
             <Text style={styles.label}>Categoria</Text>
-            <Categories
+            <Categories 
                 data={categories}
                 selectedCategory={selectedCategory}
                 setSelectCategory={setSelectCategory}
             />
 
             <View style={{ marginTop: 25 }}>
-                <Button text="Criar Link" onPress={() => console.log("sadasd")} />
+                <Button 
+                    text={loading ? "Carregando..." : "Criar Link"} 
+                    colorBack={loading ? colors.gray[400] : undefined}
+                    onPress={handleCreateLink} 
+                />
             </View>
         </View>
     );
@@ -126,6 +176,7 @@ const styles = StyleSheet.create({
         marginBottom: 18,
     },
     input: {
+        outlineWidth: 0,
         backgroundColor: colors.gray[800],
         borderRadius: 10,
         paddingHorizontal: 14,
