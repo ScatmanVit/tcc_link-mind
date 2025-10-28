@@ -26,10 +26,10 @@ export default function LinksIndex() {
     const { user } = useContext(AuthContext) // provisório pegar do estado o token, não da para usar o secure store no web
     const { selectedCategory, setSelectCategory } = useCategory()
 
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [categories, setCategories] = useState<CategoryPropsItem[]>([])
-    const [linksFiltered, setLinksFiltered] = useState<any[] | null>([])
-    const [links, setLinks] = useState<any[]>([])
+    const [ isLoading, setIsLoading ] = useState<boolean>(false)
+    const [ categories, setCategories ] = useState<CategoryPropsItem[]>([])
+    const [ linksFiltered, setLinksFiltered ] = useState<any[] | null>([])
+    const [ links, setLinks ] = useState<any[]>([])
 
 
     async function fetch_Links() {
@@ -131,7 +131,7 @@ export default function LinksIndex() {
         }
     }
 
-
+ 
     useEffect(() => {
         if (user?.access_token_prov) {
             fetch_Links()
@@ -139,17 +139,17 @@ export default function LinksIndex() {
         }
     }, [])
 
-
+ 
     useEffect(() => {
         if (selectedCategory && selectedCategory.nome != "Todas") {
             const linksFilter = links.filter(links => links.categoriaId === selectedCategory.id)
             setLinksFiltered(linksFilter)
-        } else {
+        } else { 
             setLinksFiltered(null)
         }
-    }, [selectedCategory, links]) 
+    }, [selectedCategory, links])  
  
- 
+  
     return (
         <View style={styles.container}>
             {isLoading ? (

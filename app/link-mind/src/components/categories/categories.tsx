@@ -17,7 +17,7 @@ export default function Categories({ data, selectedCategory, setSelectCategory }
     return (
         <View 
             style={styles.container}
-            onStartShouldSetResponderCapture={() => true} // 🔥 evita que o scroll vertical da lista principal "roube" o toque
+            onStartShouldSetResponderCapture={() => true} 
     
         >
             <FlatList

@@ -53,14 +53,14 @@ const style = StyleSheet.create({
     },
     items: {
         flex: 1,
-        paddingVertical: 11,
+        paddingVertical: 9,
         flexDirection: "row", 
         justifyContent: "flex-start", 
         alignItems: "center",
         gap: 10
     },
     nameItem: {
-        fontSize: 17,
+        fontSize: 19,
         fontWeight: 600
     }
 })

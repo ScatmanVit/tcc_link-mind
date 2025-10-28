@@ -109,9 +109,9 @@ async function links_update_Controller_UPDATE(req, res) {
 	const idLink = req.params?.id
 	const {
 		newLink,
-		newName,
+		newTitle,
 		newDescription,
-		newCategory,
+		newCategoryId,
 		newEstadoId,
 		newTagsRelacionadas,
 		newNotification
@@ -127,9 +127,9 @@ async function links_update_Controller_UPDATE(req, res) {
 			idUser: userId,
 			idLink: idLink,
 			newLink,
-			newName,
+			newTitle,
 			newDescription,
-			newCategory,
+			newCategoryId,
 			newEstadoId,
 			newTagsRelacionadas,
 			newNotification

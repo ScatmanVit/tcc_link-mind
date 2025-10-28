@@ -79,9 +79,9 @@ async function links_UPDATE(dataUptdatedink) {
 		idUser,
 		idLink,
 		newLink,
-		newName,
+		newTitle,
 		newDescription,
-		newCategory,
+		newCategoryId,
 		newEstadoId,
 		newTagsRelacionadas,
 		newNotification
@@ -95,10 +95,10 @@ async function links_UPDATE(dataUptdatedink) {
 	try {
 		const newLinkData = Object.fromEntries(
 			Object.entries({
-				title: newName,
+				title: newTitle,
 				link: newLink,
 				description: newDescription,
-				categoriaId: newCategory,
+				categoriaId: newCategoryId,
 				estadoId: newEstadoId,
 				tagsRelacionadas: newTagsRelacionadas,
 				notification: newNotification,
