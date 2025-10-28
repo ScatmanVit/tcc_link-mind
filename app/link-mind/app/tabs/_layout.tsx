@@ -2,6 +2,8 @@ import { Image, StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Tabs, usePathname, useRouter } from 'expo-router';
 import { useContext, useState, useRef } from 'react';
+import { ToastProvider } from 'react-native-toast-notifications';
+
 
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ArrowLeft } from "lucide-react-native";
@@ -22,129 +24,145 @@ export default function TabLayout() {
 
 
 	const baseRoutes = ["links", "anotacoes", "eventos", "pesquisa"];
+	const subRoutes = ["add-link"]
 	function handleArrowBack() {
 		const activeBase = baseRoutes.find((route) =>
 			pathname.includes(`/${route}/`)
 		);
 		const backRoute = activeBase ? `/tabs/${activeBase}` : "/tabs/links";
 		router.push(backRoute as any);
+		console.log(pathname)
 	}
 
 	const shouldShowArrow = baseRoutes.some((route) =>
 		pathname.includes(`/${route}/`)
 	);
 
+	function nameActionPage() {
+		const nameActionPage = subRoutes.find((route: string) =>
+			pathname.includes(`/${route}`)
+		);
+		console.log(nameActionPage)
+		if (nameActionPage === "add-link") return "Criar novo link"
+		// conmtinuar para as demais páginas
+	}
+
 	function ChangeModalVisibility() {
         setModalVisible(prev => !prev) 
     }
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<OptionsModal 
-				toggleVisible={ChangeModalVisibility} 
-				isVisible={modalVisible}
-			>
-				<ItemSelector
-					name="Novo Link"
-					icon="link"
-					onPress={() => { 
-						router.push('/tabs/links/add-link')
-						ChangeModalVisibility()
-					}}
-				/>
-				<ItemSelector 
-					name=" Nova Anotação"
-					icon="note-sticky" 
-					onPress={() => { }} 
-				/>
-				<ItemSelector 
-					name=" Novo Evento"
-					icon="calendar-plus"
-					onPress={() => { }} 
-				/>
-			</OptionsModal>
-			<View style={style.header}>
-				<View style={style.header_left}>
-					{shouldShowArrow && (
-						<ArrowLeft
-							size={24}
-							color="#fff"
-							onPress={handleArrowBack}
-						/>
-					)}
-					<Image
-						style={style.icon}
-						source={require("../../assets/images/icon.png")}
+			<ToastProvider>
+				<OptionsModal 
+					toggleVisible={ChangeModalVisibility} 
+					isVisible={modalVisible}
+				>
+					<ItemSelector
+						name="Novo Link"
+						onPress={() => { 
+							router.push('/tabs/links/add-link')
+							ChangeModalVisibility()
+						}}
 					/>
-				</View>
+					<ItemSelector 
+						name="Nova Anotação"
+						onPress={() => { }} 
+					/>
+					<ItemSelector 
+						name="Novo Evento"
+						onPress={() => { }} 
+					/>
+				</OptionsModal>
+				<View style={style.header}>
+					<View style={style.header_left}>
+						{shouldShowArrow ? (
+							<View style={style.viewNameActionPage}>
+								<ArrowLeft
+									size={24}
+									color="#fff"
+									onPress={handleArrowBack}
+								/>
+								<Text style={style.nameActionPage}>
+									{nameActionPage()}
+								</Text> 
+							</View>
+						) : 
+							<Image
+								style={style.icon}
+								source={require("../../assets/images/icon.png")}
+							/>
+						}
+					</View>
 
-				<View style={style.header_right}>
+					<View style={style.header_right}>
 
-					<View style={style.buttonSearch}>					
-						<TouchableOpacity onPress={() => router.push("/pesquisa")} activeOpacity={0.7}>
+						<View style={style.buttonSearch}>					
+							<TouchableOpacity onPress={() => router.push("/pesquisa")} activeOpacity={0.7}>
+								<FontAwesome6
+									style={style.buttonAdd}
+									name="magnifying-glass"
+									size={20}
+									color={colors.green[200]}
+								/>
+							</TouchableOpacity>
+						</View>	
+						<TouchableOpacity onPress={ChangeModalVisibility} activeOpacity={0.7}>
 							<FontAwesome6
 								style={style.buttonAdd}
-								name="magnifying-glass"
-								size={20}
+								name="add"
+								size={22}
 								color={colors.green[200]}
 							/>
 						</TouchableOpacity>
-					</View>	
-					<TouchableOpacity onPress={ChangeModalVisibility} activeOpacity={0.7}>
-						<FontAwesome6
-							style={style.buttonAdd}
-							name="add"
-							size={22}
-							color={colors.green[200]}
-						/>
-					</TouchableOpacity>
 
-					<TouchableOpacity activeOpacity={0.8}>
-						<View style={style.photo_profile}>
-							<Text style={style.profile_text}>{user?.email ? user.email[0].toUpperCase() : "?"}</Text>
-						</View>
-					</TouchableOpacity>
+						<TouchableOpacity activeOpacity={0.8}>
+							<View style={style.photo_profile}>
+								<Text style={style.profile_text}>{user?.email ? user.email[0].toUpperCase() : "?"}</Text>
+							</View>
+						</TouchableOpacity>
+					</View>
 				</View>
-			</View>
 
-			<Tabs
-				screenOptions={{
-					headerShown: false,
-					tabBarShowLabel: true,
-					tabBarInactiveTintColor: colors.gray[400],
-					tabBarActiveTintColor: colors.green[300],
-					tabBarStyle: {
-						backgroundColor: colors.gray[900],
-						borderTopColor: colors.gray[700],
-						paddingTop: 5,
-						height: 60,
-					},
-				}}
-			>
-				<Tabs.Screen
-					name="links"
-					options={{
-						tabBarIcon: ({ color, size }) => (
-							<Ionicons name="link" size={size} color={color} />
-						),
+				<Tabs
+					screenOptions={{
+						headerShown: false,
+						tabBarShowLabel: true,
+						tabBarInactiveTintColor: colors.gray[400],
+						tabBarActiveTintColor: colors.green[300],
+						tabBarStyle: {
+							backgroundColor: colors.gray[900],
+							borderTopColor: colors.gray[700],
+							paddingTop: 5,
+							height: 60,
+						},
 					}}
-				/>
-				<Tabs.Screen
-					name="anotacoes"
-					options={{
-						tabBarIcon: ({ color, size }) => (
-							<Ionicons name="bag-sharp" size={size} color={color} />
-						),
-					}}
-				/>
-				<Tabs.Screen
-					name="eventos"
-					options={{
-						tabBarIcon: ({ color, size }) => (
-							<Ionicons name="calendar-sharp" size={size} color={color} />
-						),
-					}}
-				/>
-			</Tabs>
+				>
+					<Tabs.Screen
+						name="links"
+						options={{
+							tabBarIcon: ({ color, size }) => (
+								<Ionicons name="link" size={size} color={color} />
+							),
+						}}
+					/>
+					<Tabs.Screen
+						name="anotacoes"
+						options={{
+							tabBarIcon: ({ color, size }) => (
+								<Ionicons name="bag-sharp" size={size} color={color} />
+							),
+						}}
+					/>
+					<Tabs.Screen
+						name="eventos"
+						options={{
+							tabBarIcon: ({ color, size }) => (
+								<Ionicons name="calendar-sharp" size={size} color={color} />
+							),
+						}}
+					/>
+				</Tabs>
+			</ToastProvider>
 		</SafeAreaView>
 	);
 }
@@ -194,4 +212,13 @@ const style = StyleSheet.create({
 	buttonAdd: {
 		marginRight: 5,
 	},
+	viewNameActionPage: {
+		flexDirection: "row",
+		justifyContent: "center",
+		gap: 10
+	},
+	nameActionPage: {
+		fontSize: 15,
+		color: colors.gray[50]
+	}
 });
