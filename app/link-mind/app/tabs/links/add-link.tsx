@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
 import { useToast } from 'react-native-toast-notifications';
+import { FontAwesome6 } from '@expo/vector-icons';
 
 import { colors } from "@/styles/colors";
 import { AuthContext } from '@/context/auth'
@@ -16,20 +17,32 @@ import create_Link from "@/src/services/links/createLink";
 export default function CreateLink() {
     const toast = useToast()
     const { user } = useContext(AuthContext) // provisório pegar do estado o token, não da para usar o secure store no web
-    
-    
-    const [ link, setLink]  = useState<Partial<CreateLinkProps>>({
+
+
+    const [link, setLink] = useState<Partial<CreateLinkProps>>({
         title: '',
         link: '',
-        description: '',
+        description: '', 
     });
     const [ loading, setLoading ] = useState(false)
     const [ categories, setCategories ] = useState<CategoryPropsItem[]>([])
     const { selectedCategory, setSelectCategory } = useCategory();
 
     async function handleCreateLink() {
-        if (!link?.title?.trim() || !link?.link?.trim()) return;
-        if (!user?.access_token_prov) return
+        if (!link.title?.trim() || !link.link?.trim()) {
+            toast.show("O título e o link são obrigatórios", {
+                type: 'danger',
+                placement: "top",
+                duration: 2000,
+                icon: <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />,
+                style: { backgroundColor: colors.amber[500] }
+            })
+            return
+        }
+        if (!user || !user.access_token_prov) {
+            console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
+            return
+        }
         console.log({
             link
         });
@@ -37,7 +50,7 @@ export default function CreateLink() {
         try {
             setLoading(true)
             const linkCreated = await create_Link(
-                user.access_token_prov, 
+                user.access_token_prov,
                 {
                     title: link?.title,
                     link: link?.link,
@@ -51,16 +64,24 @@ export default function CreateLink() {
                 setSelectCategory(undefined)
                 toast.show(linkCreated.message, {
                     type: 'success',
-                    placement: 'top',
-                    duration: 4000,
+                    placement: "top",
+                    duration: 2000,
+                    icon: <FontAwesome6 name="check-circle" size={20} color="#4CAF50" />
                 });
-            } 
-        } catch(err: any) {
+            }
+        } catch (err: any) {
             console.log(err.message)
             toast.show(err.message, {
-                type: 'danger', 
-                placement: 'top',
-                duration: 4000,
+                type: 'danger',
+                placement: "top",
+                duration: 3000,
+                dangerIcon: err.message.includes("Campos obrigatórios") 
+                    ? <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />
+                    : <FontAwesome6 name="triangle-exclamation" size={20} color="#F44336" />,
+                style: err.message.includes("Campos obrigatórios") 
+                    ? { backgroundColor: colors.amber[500] }
+                    : { backgroundColor: colors.red[500] }
+
             });
         } finally {
             setLoading(false)
@@ -71,33 +92,37 @@ export default function CreateLink() {
         erros 400... = typeError: "alert"
         erros 200... = typeError: "success"
         erros 500... = typeError: "error"
-    */
-    async function fecth_Categories() {
+    */ 
+    async function fetch_Categories() {
         if (!user || !user.access_token_prov) {
             console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
             return
         }
-        try { 
+        try {  
             const resList = await categories_List(user.access_token_prov)
-            console.log(resList)
-            if (resList?.categories) {
-                setCategories([...resList.categories, { id: 123123123, nome: "+" }])
+            if (resList?.categories) { 
+                console.log("Categorias LISTADAS COM SUCESSO")
+                setCategories([...resList.categories
+                        .filter((categorie: any) => categorie.nome !== "Sem categoria")
+                        .map((categorie: any) => ({
+                            id: categorie.id,
+                            nome: categorie.nome
+                        })), 
+                { id: 123123123, nome: "+" }])
             }
-        } catch(err: any) {
+        } catch (err: any) { 
             console.log(err.message)
         }
     }
-
+ 
     useEffect(() => {
         if (user?.access_token_prov) {
-            fecth_Categories()
-        }
+            fetch_Categories()
+        } 
     }, [user?.access_token_prov])
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Novo Link</Text>
-
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Título</Text>
                 <TextInput
@@ -131,23 +156,23 @@ export default function CreateLink() {
                     placeholderTextColor={colors.gray[300]}
                     underlineColorAndroid="transparent"
                     value={link?.description}
-                    onChangeText={(description) => setLink(prevLink => ({ ...prevLink, description }))}                    
+                    onChangeText={(description) => setLink(prevLink => ({ ...prevLink, description }))}
                     multiline
                 />
             </View>
 
             <Text style={styles.label}>Categoria</Text>
-            <Categories 
+            <Categories
                 data={categories}
                 selectedCategory={selectedCategory}
                 setSelectCategory={setSelectCategory}
             />
 
             <View style={{ marginTop: 25 }}>
-                <Button 
-                    text={loading ? "Carregando..." : "Criar Link"} 
+                <Button
+                    text={loading ? "Carregando..." : "Criar Link"}
                     colorBack={loading ? colors.gray[400] : undefined}
-                    onPress={handleCreateLink} 
+                    onPress={handleCreateLink}
                 />
             </View>
         </View>
@@ -158,8 +183,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.gray[950],
-        paddingHorizontal: 20,
+        paddingHorizontal: 18,
         paddingTop: 20,
+
     },
     title: {
         color: colors.gray[50],
@@ -169,7 +195,7 @@ const styles = StyleSheet.create({
     },
     label: {
         color: colors.gray[100],
-        fontSize: 15,
+        fontSize: 17,
         marginBottom: 6,
     },
     inputContainer: {
@@ -188,4 +214,27 @@ const styles = StyleSheet.create({
         height: 100,
         textAlignVertical: "top",
     },
+    toastContainer: {
+        flexDirection: 'row',
+        backgroundColor: '#E0E0E0', // fundo cinza
+        padding: 12,
+        borderRadius: 8,
+        minWidth: 200,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+        elevation: 3,
+    },
+    sideBar: {
+        width: 6,
+        height: '100%',
+        borderRadius: 2,
+        marginRight: 10,
+    },
+    toastText: {
+        color: '#000',
+        flexShrink: 1,
+    }
 });

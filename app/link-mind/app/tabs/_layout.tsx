@@ -52,7 +52,9 @@ export default function TabLayout() {
     }
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<ToastProvider>
+			<ToastProvider
+				offsetTop={70}
+			>
 				<OptionsModal 
 					toggleVisible={ChangeModalVisibility} 
 					isVisible={modalVisible}
@@ -169,12 +171,12 @@ export default function TabLayout() {
 
 const style = StyleSheet.create({
 	header: {
-		height: 73,
+		height: 68,
 		backgroundColor: colors.gray[950],
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		paddingTop: 5,
+		paddingTop: 6,
 		paddingHorizontal: 11,
 	},
 	header_left: {
@@ -218,7 +220,9 @@ const style = StyleSheet.create({
 		gap: 10
 	},
 	nameActionPage: {
-		fontSize: 15,
+		marginLeft: 4,
+		fontSize: 21,
+		fontWeight: 600,
 		color: colors.gray[50]
 	}
 });

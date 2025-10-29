@@ -13,11 +13,12 @@ export type CategoryPropsItem = {
  
 const defaultCategories: CategoryPropsItem[] = [
     { id: '1', nome: 'Todas' },
-    { id: '2', nome: 'Estudos' },
-    { id: '3', nome: 'Trabalho' },
-    { id: '4', nome: 'Finanças' },
-    { id: '5', nome: 'Academia' },
-    { id: '6', nome: 'Progresso' }
+    { id: '2', nome: "Sem categoria"},
+    { id: '3', nome: 'Estudos' },
+    { id: '4', nome: 'Trabalho' },
+    { id: '5', nome: 'Finanças' },
+    { id: '6', nome: 'Academia' },
+    { id: '7', nome: 'Progresso' }
 ];
 
 export const STORAGE_KEY = '@categories';

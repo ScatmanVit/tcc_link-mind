@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router';
 import { AuthContext } from '@/context/auth';
 import ButtonApp from '@/src/components/button/button';
 import Input from '@/src/components/input';
-import ModalAlert from '@/src/components/modals/modalAlert';
+import ModalAlert from '@/src/components/modals/alertModal';
 import { colors } from '@/src/styles/colors';
 import tokenFuncs from '@/src/secure-store/token'
 

@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "expo-router";
 
-import ModalAlert from "@/src/components/modals/modalAlert";
+import ModalAlert from "@/src/components/modals/alertModal";
 import ButtonApp from '@/src/components/button/button';
 import Input from "@/components/input";
 import { AuthContext } from '@/context/auth';

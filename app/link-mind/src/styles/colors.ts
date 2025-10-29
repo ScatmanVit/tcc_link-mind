@@ -21,10 +21,10 @@ export const colors = {
       gold: "#FACC15", 
                 
     red: {
-      500: "#f34848ff", // aviso de alerta
+      500: "#810303ff", // aviso de alerta
     },
 
     amber: {
-      500: "#F59E0B", // aviso
+      500: "#b07b1fff", // aviso
     },
 }

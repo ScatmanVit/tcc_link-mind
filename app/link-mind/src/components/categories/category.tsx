@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 14,
         color: colors.gray[400],
         fontWeight: '600',
-        fontSize: 13,
-        textTransform: 'capitalize',
+        fontSize: 13
     },
 })

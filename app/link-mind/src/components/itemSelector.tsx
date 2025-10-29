@@ -60,7 +60,7 @@ const style = StyleSheet.create({
         gap: 10
     },
     nameItem: {
-        fontSize: 19,
+        fontSize: 18,
         fontWeight: 600
     }
 })

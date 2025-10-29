@@ -20,6 +20,7 @@ import list_Links from '@/src/services/links/listLinks'
 import delete_Link from '@/src/services/links/deleteLink'
 import category_Create from '@/src/services/categories/createCategories'
 import categories_List from '@/src/services/categories/listCategories'
+import ChooseOptionModal from '@/src/components/modals/chooseOptionModal'
 
 
 export default function LinksIndex() {
@@ -141,11 +142,16 @@ export default function LinksIndex() {
 
  
     useEffect(() => {
-        if (selectedCategory && selectedCategory.nome != "Todas") {
-            const linksFilter = links.filter(links => links.categoriaId === selectedCategory.id)
-            setLinksFiltered(linksFilter)
-        } else { 
-            setLinksFiltered(null)
+        if (!selectedCategory) {
+            setLinksFiltered(null);
+        } else if (selectedCategory.nome === "Sem categoria") {
+            const linksFilter = links.filter(link => !link.categoriaId || link.categoriaId === "");
+            setLinksFiltered(linksFilter);
+        } else if (selectedCategory.nome !== "Todas") {
+            const linksFilter = links.filter(link => link.categoriaId === selectedCategory.id);
+            setLinksFiltered(linksFilter);
+        } else {
+            setLinksFiltered(null);
         }
     }, [selectedCategory, links])  
  

@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
-import Modal from 'react-native-modal';
 import { colors } from '../../styles/colors';
+
+import Modal from 'react-native-modal';
 
 type OptionsModalProps = {
     isVisible: boolean
@@ -31,7 +32,7 @@ const style = StyleSheet.create({
         paddingVertical: 22,
         borderRadius: 22,
         minWidth: 150,
-        marginTop: -370,
+        marginTop: -390,
         marginRight: 25,
         alignSelf: "flex-end",
         alignItems: "flex-end",
