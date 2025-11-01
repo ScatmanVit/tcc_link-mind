@@ -10,13 +10,13 @@ export type LinkProps =  {
     link_url: string,
     onOpen_url?: () => void,
     onDelete?: () => void,
-    onDetails?: () => void
+    onModalvisibleDetails?: () => void
 }
 
-export default function Link({ title, link_url, onDelete, onDetails, onOpen_url }: LinkProps) {
+export default function Link({ title, link_url, onDelete, onOpen_url, onModalvisibleDetails }: LinkProps) {
     return (
             <Pressable 
-                onPress={onDetails}
+                onPress={onModalvisibleDetails}
                 style={({ pressed }) => [
                     style.container,
                     pressed && { backgroundColor: colors.gray[800]}
@@ -82,12 +82,14 @@ const style = StyleSheet.create({
     },
     title: {
         color: colors.gray[50],
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: 600,
-        width: 270
+        width: 290,
+        marginBottom: 1
     },
     link_url: {
         color: colors.gray[500],
+        fontSize: 16,
         width: 250
     },
     right_content: {

@@ -3,6 +3,7 @@ import { FlatList, Linking, Alert, View, Text, StyleSheet, Pressable } from 'rea
 import Link from "@/components/links/link"
 import Categories from '@/src/components/categories/categories'
 import { colors } from '@/src/styles/colors'
+import { CreateLinkProps } from '@/src/services/links/createLink'
 
 type LinksPropsComponent = {
     id: string,
@@ -10,16 +11,27 @@ type LinksPropsComponent = {
     link: string
 }
 
+export type LinkWithId = CreateLinkProps & { id: string }
+
 type LinksProps = {
     data: LinksPropsComponent[]
     onDelete: (id: string) => void,
-    onDetails: (id: string) => void,
+    modalOptionsVisiblity: () => void,
+    setLink: (link: LinkWithId) => void,
     categories: { id: string, nome?: string }[],
     selectedCategory?: { id: string, nome?: string },
     setSelectCategory: (category: { id: string, nome?: string }) => void
 }
 
-export default function Links({ data, onDelete, onDetails, categories, selectedCategory, setSelectCategory }: LinksProps) {
+export default function Links({
+     data,
+     setLink, 
+     onDelete, 
+     categories, 
+     selectedCategory, 
+     setSelectCategory, 
+     modalOptionsVisiblity 
+    }: LinksProps) {
 
     async function handleOpenUrl(link_url: string) {
         let url = link_url.trim();
@@ -73,9 +85,11 @@ export default function Links({ data, onDelete, onDetails, categories, selectedC
             contentContainerStyle={{ padding: 3, gap: 12 }}
             renderItem={({ item }) => (
                 <View style={{ marginHorizontal: 11 }}>
-                    <Pressable style={({ pressed }) => [
+                    <Pressable onPress={() => {
+                        setLink(item)
+                    }} style={({ pressed }) => [
                         { flex: 1, marginHorizontal: -3 },
-                        pressed && { backgroundColor: colors.gray[800] }
+                        pressed && { backgroundColor: colors.gray[800], opacity: 0.7 }
                     ]}>
                         <Link
                             id={item.id}
@@ -83,7 +97,10 @@ export default function Links({ data, onDelete, onDetails, categories, selectedC
                             link_url={item.link}
                             onOpen_url={() => handleOpenUrl(item.link)}
                             onDelete={() => onDelete(item.id)}
-                            onDetails={() => onDetails(item.id)}
+                            onModalvisibleDetails={() => {
+                                setLink(item)
+                                modalOptionsVisiblity() 
+                            }}
                         />
                     </Pressable>
                 </View>

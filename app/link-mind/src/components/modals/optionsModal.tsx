@@ -7,7 +7,7 @@ type OptionsModalProps = {
     isVisible: boolean
     toggleVisible: () => void,
     children: React.ReactNode
-}
+} 
 
 export default function OptionsModal({ children, isVisible, toggleVisible }: OptionsModalProps) {
     return (

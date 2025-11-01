@@ -9,7 +9,7 @@ export const colors = {
     600: "#52525B",
     700: "#3F3F46", 
     800: "#27272A",
-    900: "#18181B",
+    900: "#1a1a1eff",
     950: "#000",
   },
 
@@ -21,6 +21,8 @@ export const colors = {
       gold: "#FACC15", 
                 
     red: {
+      100: "#fab7b7c2",
+      200: "#e02020ff",
       500: "#810303ff", // aviso de alerta
     },
 

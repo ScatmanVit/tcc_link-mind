@@ -18,14 +18,14 @@ export default function EmptyState({ categoryName, onBackPage, pageName }: Empty
         <Text style={style.category}>{categoryName}</Text>.
       </Text>
 
-    <View style={style.button}>
-        <ButtonApp  
-            text='Voltar à tela inicial' 
-            colorBack={colors.green[300]} 
-            onPress={onBackPage}
-            radius={22}
-        />
-    </View>
+      <View style={style.button}>
+          <ButtonApp  
+              text='Voltar à tela inicial' 
+              colorBack={colors.green[300]} 
+              onPress={onBackPage}
+              radius={22}
+          />
+      </View>
     </View>
   )
 }

@@ -31,6 +31,7 @@ export default function ItemSelector({
                         name={icon}
                         size={18}
                         color={iconColor}
+                        style={{ marginLeft: -1 }}
                     />
                 )}
                 <Text style={[style.nameItem, { color: textColor }]}>
@@ -48,7 +49,7 @@ const style = StyleSheet.create({
         justifyContent: "center", 
         alignItems: "center",
         width: "100%",
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
         backgroundColor: colors.gray[800],
     },
     items: {
