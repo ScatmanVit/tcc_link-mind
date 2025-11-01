@@ -20,7 +20,7 @@ export default function TabLayout() {
 	const router = useRouter();
 	const pathname = usePathname();
 	
-	const [modalVisible, setModalVisible] = useState<boolean>(false)
+	const [ modalVisible, setModalVisible ] = useState<boolean>(false)
 
 
 	const baseRoutes = ["links", "anotacoes", "eventos", "pesquisa"];
@@ -133,7 +133,7 @@ export default function TabLayout() {
 						tabBarActiveTintColor: colors.green[300],
 						tabBarStyle: {
 							backgroundColor: colors.gray[900],
-							borderTopColor: colors.gray[700],
+							borderTopColor: colors.gray[800],
 							paddingTop: 5,
 							height: 60,
 						},
@@ -171,7 +171,7 @@ export default function TabLayout() {
 
 const style = StyleSheet.create({
 	header: {
-		height: 68,
+		height: 64,
 		backgroundColor: colors.gray[950],
 		flexDirection: "row",
 		justifyContent: "space-between",

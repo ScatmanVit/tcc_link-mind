@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     toastContainer: {
         flexDirection: 'row',
         backgroundColor: '#E0E0E0', // fundo cinza
-        padding: 12,
+        padding: 18,
         borderRadius: 8,
         minWidth: 200,
         alignItems: 'center',

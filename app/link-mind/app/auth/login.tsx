@@ -52,9 +52,7 @@ export default function Login() {
         setLoading(true);
         const loginSuccess = await userLogin(data);
         setLoading(false);
-        console.log("chamou")
         if (loginSuccess) {
-            console.log("chamou45")
             console.log(loginSuccess) 
             signUp({
                 name: loginSuccess.nameUser,
