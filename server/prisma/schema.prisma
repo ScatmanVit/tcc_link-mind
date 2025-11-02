@@ -94,6 +94,7 @@ model Link {
   description     String?
   tagRelacionadas TagRelacionada[]
   notification    String?
+  summary_link    Boolean     @default(false)
 }
 
 model Evento {
