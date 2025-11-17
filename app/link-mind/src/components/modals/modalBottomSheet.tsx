@@ -53,7 +53,7 @@ export default function ChooseOptionModal({
                                 },
                                 pressed && { backgroundColor: colors.gray[500] }
                             ]}
-                        >
+                        > 
                             <ArrowLeft
                                 size={24}
                                 color={colors.gray[300]}

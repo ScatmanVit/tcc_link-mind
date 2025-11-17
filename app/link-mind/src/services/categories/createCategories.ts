@@ -7,7 +7,7 @@ export default async function category_Create(access_token: string, dataNewCateg
         console.log("CATEGORIAS NOVAS: ", dataNewCategory)
     }
     try {
-        const res = await axios.post("http://localhost:3000/api/v1/linkmind/category/create", 
+        const res = await axios.post("https://tcc-link-mind.onrender.com/api/v1/linkmind/category/create", 
             { dataNewCategory },
             {
                 headers:  {

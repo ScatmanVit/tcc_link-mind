@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar"
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
+import { colors } from '@/styles/colors'
 
 import AuthProvider from '@/context/auth';
 
@@ -48,8 +49,8 @@ export default function RootLayout() {
     return (
         <SafeAreaProvider>
             <AuthProvider>
-                <SafeAreaView style={{ flex: 1 }}>
-                    <StatusBar style="light" backgroundColor="black" />
+                <SafeAreaView style={{ flex: 1, paddingTop: -27, paddingBottom: -15 }}>
+                    <StatusBar style="light" backgroundColor={colors.gray[950]} />
                     <Stack
                         screenOptions={{
                             headerShown: false,

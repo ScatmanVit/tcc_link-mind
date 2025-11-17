@@ -61,7 +61,7 @@ const style = StyleSheet.create({
         gap: 10
     },
     nameItem: {
-        fontSize: 18,
+        fontSize: 17,
         fontWeight: 600
     }
 })

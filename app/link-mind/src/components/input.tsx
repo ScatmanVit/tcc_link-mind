@@ -103,7 +103,7 @@ const s = StyleSheet.create({
         backgroundColor: colors.gray[800],
         borderRadius: 14,
         paddingHorizontal: 12,
-        borderWidth: 1,
+        borderWidth: 0.4,
     },
     icon: {
         marginRight: 8,
@@ -112,7 +112,7 @@ const s = StyleSheet.create({
         flex: 1,
         color: colors.gray[100],
         backgroundColor: "transparent",
-        paddingVertical: 13,
+        paddingVertical: 9,
         borderWidth: 0,
 
     },

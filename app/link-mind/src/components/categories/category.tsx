@@ -17,7 +17,7 @@ export default function Category({ categoryName, focused, onPress }: CategoryPro
                     backgroundColor: focused
                         ? colors.gray[900]
                         : pressed
-                            ? colors.gray[800]
+                            ? colors.gray[900]
                             : colors.gray[950],
                     borderColor: focused ? colors.gray[300] : colors.gray[700],
                 },
@@ -32,16 +32,16 @@ const styles = StyleSheet.create({
     container: {
         minWidth: 30,
         borderRadius: 22,
-        borderWidth: 1,
+        borderWidth: 0.5,
         justifyContent: 'center',
         alignItems: 'center',
     },
     text: {
         flex: 1,
-        paddingVertical: 8,
+        paddingVertical: 6,
         paddingHorizontal: 16,
         color: colors.gray[400],
         fontWeight: '600',
-        fontSize: 13
+        fontSize: 12.5
     },
 })

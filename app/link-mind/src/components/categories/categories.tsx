@@ -16,9 +16,7 @@ export default function Categories({ data, selectedCategory, setSelectCategory }
 
     return (
         <View 
-            style={styles.container}
-            onStartShouldSetResponderCapture={() => true} 
-    
+            style={styles.container}    
         >
             <FlatList
                 horizontal

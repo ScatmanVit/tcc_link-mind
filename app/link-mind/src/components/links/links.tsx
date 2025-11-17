@@ -1,4 +1,3 @@
-// Links.tsx
 import { FlatList, Linking, Alert, View, Text, StyleSheet, Pressable } from 'react-native'
 import Link from "@/components/links/link"
 import Categories from '@/src/components/categories/categories'
@@ -104,7 +103,11 @@ export default function Links({
                         />
                     </Pressable>
                 </View>
-            )}
+            )}ListFooterComponent={
+                <View style={{ backgroundColor: colors.gray[950], flex: 1, height: 200, }}>
+
+                </View>
+            }
         />
     )
 }

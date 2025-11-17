@@ -166,7 +166,7 @@ export default function LinksIndex() {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, paddingTop: -25.8, paddingBottom: -15 }}>
 
             <View style={styles.container}>
 

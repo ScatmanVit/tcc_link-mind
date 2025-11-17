@@ -13,6 +13,7 @@ import { AuthContext } from '../../src/context/auth';
 import { colors } from '@/styles/colors';
 import ItemSelector from '@/src/components/itemSelector';
 import OptionsModal from '@/src/components/modals/optionsModal';
+import { StatusBar } from 'expo-status-bar';
 
 export default function TabLayout() {
 	const { user } = useContext(AuthContext);
@@ -52,8 +53,12 @@ export default function TabLayout() {
     }
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
+			<StatusBar style="light" backgroundColor={colors.gray[950]} />
 			<ToastProvider
-				offsetTop={70}
+				offset={10}   
+				offsetTop={87}
+				animationType="slide-in"
+				swipeEnabled={false}
 			>
 				<OptionsModal 
 					toggleVisible={ChangeModalVisibility} 
