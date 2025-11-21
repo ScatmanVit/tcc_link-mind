@@ -1,18 +1,22 @@
 import { FlatList, StyleSheet, View } from 'react-native'
 import Category from '@/src/components/categories/category'
+import { useEffect } from 'react'
+import { type CategoryPropsItem as CategoryItem } from "../../../app/_layout";
 
-export type CategoryItem = {
-    id: string
-    nome?: string
-}
 
 type CategoriesProps = {
     data: CategoryItem[],
     selectedCategory?: { id: string, nome?: string },
     setSelectCategory: (category: { id: string, nome?: string }) => void
+    onCreateCategory?: () => void
 }
 
-export default function Categories({ data, selectedCategory, setSelectCategory }: CategoriesProps) {
+export default function Categories({ 
+    data, 
+    selectedCategory, 
+    setSelectCategory,
+    onCreateCategory = () => {}
+}: CategoriesProps) {
 
     return (
         <View 
@@ -34,10 +38,10 @@ export default function Categories({ data, selectedCategory, setSelectCategory }
                             onPress={() => (
                                 item.nome != '+' 
                                     ? setSelectCategory({ id: item.id, nome: item.nome })
-                                    : console.log("CHAMAR BOTTOM SHEET OU MODAL E CADASTRAR CATEGORIA")
+                                    : onCreateCategory()
                             )}
                         />
-                    )}
+                )}
             />
         </View>
     )

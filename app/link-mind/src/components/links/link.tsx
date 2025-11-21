@@ -1,10 +1,9 @@
 import { StyleSheet, Text, Pressable, View } from 'react-native'
 import { colors } from '@/styles/colors'
+import FontAwesome from '@expo/vector-icons/FontAwesome'
+import { FontAwesome6 } from '@expo/vector-icons'
 
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-
-export type LinkProps =  {
+export type LinkProps = {
     id: string,
     title: string,
     link_url: string,
@@ -23,14 +22,13 @@ export default function Link({ title, link_url, onDelete, onOpen_url, onModalvis
                     pressed && { backgroundColor: colors.gray[800]}
                 ]}
             >
-
             <View>
                 <Text style={style.title} numberOfLines={1}>
                     {title}
                 </Text>
                 <Text style={style.link_url} numberOfLines={1}>
                     {link_url}
-                </Text>
+                </Text>
             </View>
             <View style={style.right_content}> 
                 <Pressable

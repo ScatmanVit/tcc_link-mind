@@ -49,11 +49,12 @@ export default function RootLayout() {
     return (
         <SafeAreaProvider>
             <AuthProvider>
-                <SafeAreaView style={{ flex: 1, paddingTop: -27, paddingBottom: -15 }}>
+                <SafeAreaView style={{ flex: 1, paddingTop: -27, paddingBottom: -10 }}>
                     <StatusBar style="light" backgroundColor={colors.gray[950]} />
                     <Stack
                         screenOptions={{
                             headerShown: false,
+                            animation: "none"
                         }}
                     />
                 </SafeAreaView>

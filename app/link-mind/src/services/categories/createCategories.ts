@@ -15,10 +15,11 @@ export default async function category_Create(access_token: string, dataNewCateg
                 }
             }
         )
+        console.log(res.data)
         if (res.data?.success) {
             return {
                 message: res.data.message,
-                categories: res.data.categories
+                category: res.data.category
             }
         }
     } catch(err: any) {

@@ -2,7 +2,7 @@ import { Text, Pressable, StyleSheet } from 'react-native'
 import { colors } from '@/styles/colors'
 
 export type CategoryProps = {
-    categoryName?: string
+    categoryName: string
     focused: boolean
     onPress: () => void
 }
@@ -31,6 +31,7 @@ export default function Category({ categoryName, focused, onPress }: CategoryPro
 const styles = StyleSheet.create({
     container: {
         minWidth: 30,
+        minHeight: 33,
         borderRadius: 22,
         borderWidth: 0.5,
         justifyContent: 'center',

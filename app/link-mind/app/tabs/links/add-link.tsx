@@ -28,6 +28,10 @@ export default function CreateLink() {
     const [ categories, setCategories ] = useState<CategoryPropsItem[]>([])
     const { selectedCategory, setSelectCategory } = useCategory();
 
+    useEffect(() => {
+        console.log("Categorias do estado", categories)
+    }, [categories])
+
     async function handleCreateLink() {
         if (!link.title?.trim() || !link.link?.trim()) {
             toast.show("O título e o link são obrigatórios", {
@@ -98,17 +102,17 @@ export default function CreateLink() {
             console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
             return
         }
-        try {  
+        try {   
             const resList = await categories_List(user.access_token_prov)
             if (resList?.categories) { 
-                console.log("Categorias LISTADAS COM SUCESSO")
+                console.log("Categorias LISTADAS COM SUCESSO", resList.categories)
                 setCategories([...resList.categories
                         .filter((categorie: any) => categorie.nome !== "Sem categoria")
                         .map((categorie: any) => ({
-                            id: categorie.id,
+                            id: String(categorie.id),
                             nome: categorie.nome
                         })), 
-                { id: 123123123, nome: "+" }])
+                { id: "123123123123", nome: "+" }])
             }
         } catch (err: any) { 
             console.log(err.message)
@@ -162,18 +166,20 @@ export default function CreateLink() {
             </View>
 
             <Text style={styles.label}>Categoria</Text>
-            <Categories
-                data={categories}
-                selectedCategory={selectedCategory}
-                setSelectCategory={setSelectCategory}
-            />
-
-            <View style={{ marginTop: 25 }}>
-                <Button
-                    text={loading ? "Carregando..." : "Criar Link"}
-                    colorBack={loading ? colors.gray[400] : undefined}
-                    onPress={handleCreateLink}
+                <Categories
+                    data={categories}
+                    selectedCategory={selectedCategory}
+                    setSelectCategory={setSelectCategory}
                 />
+
+            <View style={{ flex: 1, flexDirection: "column", justifyContent:"flex-end" }}>
+                <View style={{ height: 50, marginBottom: 50 }}>
+                    <Button
+                        text={loading ? "Carregando..." : "Criar Link"}
+                        colorBack={loading ? colors.gray[400] : undefined}
+                        onPress={handleCreateLink}
+                    />
+                </View>
             </View>
         </View>
     );
@@ -184,7 +190,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.gray[950],
         paddingHorizontal: 18,
-        paddingTop: 20,
+        paddingTop: 20
 
     },
     title: {

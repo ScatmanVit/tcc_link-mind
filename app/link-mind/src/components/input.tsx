@@ -6,6 +6,7 @@ import { colors } from "@/styles/colors";
 export type InputProps = TextInputProps & {
     placeholder?: string;
     size?: number,
+    height?: number,
     label?: string,
     error?: boolean,
     icon?: ComponentProps<typeof FontAwesome6>["name"],
@@ -17,6 +18,7 @@ export type InputProps = TextInputProps & {
 
 export default function Input({
     placeholder,
+    height,
     radius,
     error,
     label,
@@ -48,7 +50,7 @@ export default function Input({
             <View
                 style={[
                     s.inputWrapper,
-                    { height: (radius ? radius : 30) * 1.5, borderColor: hasError ? colors.red[500] : colors.gray[500], borderRadius: radius ? radius : 14 },
+                    { height: height, borderColor: hasError ? colors.red[500] : colors.gray[500], borderRadius: radius ? radius : 14 },
                 ]}
             >
                 {icon && (

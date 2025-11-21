@@ -13,6 +13,7 @@ type ConfirmModalProps = {
     pageNameModal?: string
     toggleModal: () => void,
     ChangePageNameModal: (page: string) => void,
+    toggleModalClode: () => void
 };
 
 export default function ChooseOptionModal({ 
@@ -20,7 +21,8 @@ export default function ChooseOptionModal({
         children, 
         toggleModal, 
         modalVisible, 
-        pageNameModal, 
+        pageNameModal,
+        toggleModalClode, 
         ChangePageNameModal 
     }: ConfirmModalProps) {
     return (
@@ -31,7 +33,7 @@ export default function ChooseOptionModal({
             animationOut="slideOutDown"
             useNativeDriver
             style={styles.modal}
-            backdropOpacity={0.1}
+            backdropOpacity={0}
         >
             <View style={[
                 styles.container,
@@ -64,7 +66,7 @@ export default function ChooseOptionModal({
                         </Text>
                     </View>
                     <Pressable
-                        onPress={toggleModal}
+                        onPress={toggleModalClode}
                         style={({ pressed }) => [
                             styles.close_button,
                             pressed && { backgroundColor: colors.gray[500] },

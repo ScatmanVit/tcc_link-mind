@@ -3,6 +3,8 @@ import Link from "@/components/links/link"
 import Categories from '@/src/components/categories/categories'
 import { colors } from '@/src/styles/colors'
 import { CreateLinkProps } from '@/src/services/links/createLink'
+import { useRouter } from 'expo-router'
+import Input from '../input'
 
 type LinksPropsComponent = {
     id: string,
@@ -14,10 +16,11 @@ export type LinkWithId = CreateLinkProps & { id: string }
 
 type LinksProps = {
     data: LinksPropsComponent[]
+    onCreateCategory: () => void
     onDelete: (id: string) => void,
     modalOptionsVisiblity: () => void,
     setLink: (link: LinkWithId) => void,
-    categories: { id: string, nome?: string }[],
+    categories: { id: string, nome: string }[],
     selectedCategory?: { id: string, nome?: string },
     setSelectCategory: (category: { id: string, nome?: string }) => void
 }
@@ -28,9 +31,12 @@ export default function Links({
      onDelete, 
      categories, 
      selectedCategory, 
+     onCreateCategory,
      setSelectCategory, 
      modalOptionsVisiblity 
     }: LinksProps) {
+
+    const router = useRouter()
 
     async function handleOpenUrl(link_url: string) {
         let url = link_url.trim();
@@ -58,12 +64,26 @@ export default function Links({
             showsVerticalScrollIndicator
             style={{ flex: 1 }}
             ListHeaderComponent={
-                <View style={{ flexShrink: 0, flexDirection: "row", gap: 1, alignItems: "center", marginBottom: 6 }}>
+                <View style={{ flexShrink: 0, flexDirection: "column", gap: 8, alignItems: "center", marginBottom: -20 }}>
+                        <Pressable style={style.input_search} onPress={() => router.push("/pesquisa")}>
+                        <View pointerEvents='none'>
+                                <Input
+                                    placeholder="Pesquise links, notas ou eventos"
+                                    placeholderTextColor={colors.gray[400]}
+                                    iconColor={colors.gray[400]}
+                                    icon="magnifying-glass"
+                                    radius={26}
+                                    height={45}
+                                    size={15}
+                                />
+                        </View>
+                    </Pressable>
                     <View pointerEvents="box-none" style={{ flexShrink: 0, width: "100%" }}>
                         <Categories
                             data={categories}
                             selectedCategory={selectedCategory}
                             setSelectCategory={setSelectCategory}
+                            onCreateCategory={onCreateCategory}
                         />
                     </View>
                     <Pressable
@@ -103,9 +123,9 @@ export default function Links({
                         />
                     </Pressable>
                 </View>
-            )}ListFooterComponent={
+            )}
+            ListFooterComponent={
                 <View style={{ backgroundColor: colors.gray[950], flex: 1, height: 200, }}>
-
                 </View>
             }
         />
@@ -116,5 +136,10 @@ const style = StyleSheet.create({
     alert_add_category: {
         borderRadius: 22
     },
+    input_search: {
+        marginHorizontal: 7,
+        marginVertical: 7,
+        width: "95%"
+    }
 
 })

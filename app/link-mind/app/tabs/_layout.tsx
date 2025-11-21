@@ -102,17 +102,6 @@ export default function TabLayout() {
 					</View>
 
 					<View style={style.header_right}>
-
-						<View style={style.buttonSearch}>					
-							<TouchableOpacity onPress={() => router.push("/pesquisa")} activeOpacity={0.7}>
-								<FontAwesome6
-									style={style.buttonAdd}
-									name="magnifying-glass"
-									size={20}
-									color={colors.green[200]}
-								/>
-							</TouchableOpacity>
-						</View>	
 						<TouchableOpacity onPress={ChangeModalVisibility} activeOpacity={0.7}>
 							<FontAwesome6
 								style={style.buttonAdd}
@@ -139,8 +128,12 @@ export default function TabLayout() {
 						tabBarStyle: {
 							backgroundColor: colors.gray[900],
 							borderTopColor: colors.gray[800],
-							paddingTop: 5,
-							height: 60,
+							paddingTop: 9,
+							height: 95,
+							margin: -8,
+							marginBottom: -20,
+							borderTopLeftRadius: 25,
+							borderTopRightRadius: 25,
 						},
 					}}
 				>
@@ -201,7 +194,7 @@ const style = StyleSheet.create({
 		height: 37,
 		backgroundColor: colors.gray[800],
 		borderRadius: 9999, 
-		borderWidth: 1,
+		borderWidth: 0.5,
 		borderColor: colors.gray[300],
 		alignItems: "center",
 		justifyContent: "center",
