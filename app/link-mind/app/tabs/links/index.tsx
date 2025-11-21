@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, ScrollView } from 'react-native'
 import NetInfo from '@react-native-community/netinfo'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -24,6 +24,7 @@ import ChooseOptionModal from '@/src/components/modals/modalBottomSheet'
 import ActionSelector from '@/src/components/actionSelector';
 import Input from '@/src/components/input';
 import CreateCategoryModal from '@/src/components/modals/createCategoryModal';
+import EditLink from './edit-link';
 
 
 export default function LinksIndex() {
@@ -79,6 +80,14 @@ export default function LinksIndex() {
         } else {
             console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
         }
+    }
+
+    function onUpdated(linkUpdated: LinkWithId) {
+        setLinks(prev =>
+            prev.map(link => 
+                link.id === linkUpdated.id ? linkUpdated : link
+            )
+        );
     }
 
 
@@ -165,7 +174,7 @@ export default function LinksIndex() {
          setTimeout(() => {
             setPageNameModal(page)
             ChangeModalVisibility()
-       }, 185) 
+       }, 300) 
     }
 
     function ChangeModalVisibilityCategory() {
@@ -218,7 +227,7 @@ export default function LinksIndex() {
                         <LinkSkeleton />
                         <LinkSkeleton />
                     </> 
-                ) : (
+                ) : ( 
                         <Links
                             data={linksFiltered ? linksFiltered : links}
                             setLink={setLink}
@@ -238,9 +247,19 @@ export default function LinksIndex() {
                     toggleModalClode={ChangeModalVisibilityClose}
                 >
                     {pageNameModal ?
-                        <Text>
-                            PAGE NAME MODAL TESTE
-                        </Text>
+                        pageNameModal === "Editar Link" 
+                         ? <EditLink
+                                linkId={link?.id}
+                                onUpdatedLink={onUpdated}
+                                data={{
+                                    newTitle: link?.title,
+                                    newLink: link?.link,
+                                    newDescription: link?.description,
+                                    newCategoryId: link?.categoriaId
+                                }}
+                                toggleModal={ChangeModalVisibilityClose}
+                         /> 
+                         : <Text>NENHUM PAGE NAME MODAL</Text>
                     :    
                         <View style={styles.content_modal}>
                             <ActionSelector nameAction='Editar' icon={"pencil"} onPress={() => {

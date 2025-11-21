@@ -31,13 +31,15 @@ export default function ChooseOptionModal({
             onBackdropPress={toggleModal}
             animationIn="slideInUp"
             animationOut="slideOutDown"
+            animationInTiming={100}   
+            animationOutTiming={100}  
             useNativeDriver
             style={styles.modal}
             backdropOpacity={0}
         >
             <View style={[
                 styles.container,
-                pageNameModal === "Editar Link"  && { height: "70%" },
+                pageNameModal === "Editar Link"  && { height: "78%" },
                 pageNameModal === "Resumir Link com IA"  && { height: "80%" }
             ]}>
                 {pageNameModal ? 
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
         flexDirection: "row", 
         justifyContent: "space-between", 
         alignItems: "center",
-        borderWidth: 0.1,
+        borderWidth: 0.7,
         paddingVertical: 10,
         borderBottomColor: colors.gray[700] 
     },

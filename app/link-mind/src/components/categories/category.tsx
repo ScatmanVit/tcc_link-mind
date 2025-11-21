@@ -18,7 +18,7 @@ export default function Category({ categoryName, focused, onPress }: CategoryPro
                         ? colors.gray[900]
                         : pressed
                             ? colors.gray[900]
-                            : colors.gray[950],
+                            : "transparent",
                     borderColor: focused ? colors.gray[300] : colors.gray[700],
                 },
             ]}

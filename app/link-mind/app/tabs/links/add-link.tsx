@@ -13,6 +13,8 @@ import { type CategoryPropsItem } from "../../_layout";
 import { type CreateLinkProps } from '@/src/services/links/createLink'
 import categories_List from "@/src/services/categories/listCategories";
 import create_Link from "@/src/services/links/createLink";
+import CreateCategoryModal from "@/src/components/modals/createCategoryModal";
+import category_Create from "@/src/services/categories/createCategories";
 
 export default function CreateLink() {
     const toast = useToast()
@@ -26,6 +28,7 @@ export default function CreateLink() {
     });
     const [ loading, setLoading ] = useState(false)
     const [ categories, setCategories ] = useState<CategoryPropsItem[]>([])
+    const [ modalCreateCategory, setModalCreateCategory ] = useState<boolean>(false)
     const { selectedCategory, setSelectCategory } = useCategory();
 
     useEffect(() => {
@@ -119,6 +122,30 @@ export default function CreateLink() {
         }
     }
  
+    function ChangeModalVisibilityCategory() {
+        setModalCreateCategory(prev => !prev)
+    }
+
+    async function handle_CreateCategry(name: string) {
+        if (!user || !user.access_token_prov) {
+            console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
+            return
+        }
+        try {
+            const res = await category_Create(user.access_token_prov,
+                                        [{ id: "123123123", nome: name }])
+            if(res?.message) {
+                const resList = await categories_List(user.access_token_prov)
+                if(resList?.message) {
+                    setCategories(() => [...resList.categories, { id: "123123123", nome: "+" }])
+                    ChangeModalVisibilityCategory()
+                }
+            }
+        } catch(err: any) {
+            console.error(err.message)
+        }
+    }
+
     useEffect(() => {
         if (user?.access_token_prov) {
             fetch_Categories()
@@ -127,6 +154,11 @@ export default function CreateLink() {
 
     return (
         <View style={styles.container}>
+            <CreateCategoryModal 
+                modalVisible={modalCreateCategory}
+                toggleModal={ChangeModalVisibilityCategory}
+                onCategoryName={handle_CreateCategry}
+            />
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Título</Text>
                 <TextInput
@@ -170,6 +202,7 @@ export default function CreateLink() {
                     data={categories}
                     selectedCategory={selectedCategory}
                     setSelectCategory={setSelectCategory}
+                    onCreateCategory={ChangeModalVisibilityCategory}
                 />
 
             <View style={{ flex: 1, flexDirection: "column", justifyContent:"flex-end" }}>

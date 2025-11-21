@@ -118,7 +118,9 @@ export default function Links({
                             onDelete={() => onDelete(item.id)}
                             onModalvisibleDetails={() => {
                                 setLink(item)
-                                modalOptionsVisiblity() 
+                                setTimeout(() => {
+                                    modalOptionsVisiblity()
+                                }, 0)  
                             }}
                         />
                     </Pressable>
