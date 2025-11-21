@@ -13,6 +13,7 @@ import { AuthContext } from '../../src/context/auth';
 import { colors } from '@/styles/colors';
 import ItemSelector from '@/src/components/itemSelector';
 import OptionsModal from '@/src/components/modals/optionsModal';
+import { StatusBar } from 'expo-status-bar';
 
 export default function TabLayout() {
 	const { user } = useContext(AuthContext);
@@ -52,8 +53,12 @@ export default function TabLayout() {
     }
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
+			<StatusBar style="light" backgroundColor={colors.gray[950]} />
 			<ToastProvider
-				offsetTop={70}
+				offset={10}   
+				offsetTop={87}
+				animationType="slide-in"
+				swipeEnabled={false}
 			>
 				<OptionsModal 
 					toggleVisible={ChangeModalVisibility} 
@@ -97,17 +102,6 @@ export default function TabLayout() {
 					</View>
 
 					<View style={style.header_right}>
-
-						<View style={style.buttonSearch}>					
-							<TouchableOpacity onPress={() => router.push("/pesquisa")} activeOpacity={0.7}>
-								<FontAwesome6
-									style={style.buttonAdd}
-									name="magnifying-glass"
-									size={20}
-									color={colors.green[200]}
-								/>
-							</TouchableOpacity>
-						</View>	
 						<TouchableOpacity onPress={ChangeModalVisibility} activeOpacity={0.7}>
 							<FontAwesome6
 								style={style.buttonAdd}
@@ -134,8 +128,12 @@ export default function TabLayout() {
 						tabBarStyle: {
 							backgroundColor: colors.gray[900],
 							borderTopColor: colors.gray[800],
-							paddingTop: 5,
-							height: 60,
+							paddingTop: 9,
+							height: 95,
+							margin: -8,
+							marginBottom: -20,
+							borderTopLeftRadius: 25,
+							borderTopRightRadius: 25,
 						},
 					}}
 				>
@@ -196,7 +194,7 @@ const style = StyleSheet.create({
 		height: 37,
 		backgroundColor: colors.gray[800],
 		borderRadius: 9999, 
-		borderWidth: 1,
+		borderWidth: 0.5,
 		borderColor: colors.gray[300],
 		alignItems: "center",
 		justifyContent: "center",

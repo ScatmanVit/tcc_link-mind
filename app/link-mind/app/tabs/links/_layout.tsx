@@ -5,9 +5,10 @@ export default function LinksStackLayout() {
        defino as outras telas aqui diretamente com o Stack.screen */
   return (
     <Stack screenOptions={{
-      headerShown: false
+      headerShown: false,
+      animation: "none"
     }}>
-        <Stack.Screen name="add-link" />
+        <Stack.Screen name="add-link"  />
     </Stack> 
   )
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, ScrollView } from 'react-native'
 import NetInfo from '@react-native-community/netinfo'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -22,6 +22,9 @@ import category_Create from '@/src/services/categories/createCategories'
 import categories_List from '@/src/services/categories/listCategories'
 import ChooseOptionModal from '@/src/components/modals/modalBottomSheet'
 import ActionSelector from '@/src/components/actionSelector';
+import Input from '@/src/components/input';
+import CreateCategoryModal from '@/src/components/modals/createCategoryModal';
+import EditLink from './edit-link';
 
 
 export default function LinksIndex() {
@@ -31,11 +34,12 @@ export default function LinksIndex() {
     const [ links, setLinks ] = useState<any[]>([])
     const [ link, setLink ] = useState<LinkWithId>()
     const [ isLoading, setIsLoading ] = useState<boolean>(false)
-    const [ modalVisible, setModalVisible ] = useState<boolean>(false)
+    const [ bottomModalVisible, setBottomModalVisible ] = useState<boolean>(false)
     const [ categories, setCategories ] = useState<CategoryPropsItem[]>([])
     const [ linksFiltered, setLinksFiltered ] = useState<any[] | null>([])
     const [ pageNameModal, setPageNameModal ] = useState<string | undefined>(undefined)
-    
+    const [ modalCreateCategory, setModalCreateCategory ] = useState<boolean>(false)
+
     async function fetch_Links() {
         if (user && user.access_token_prov) {
             try {
@@ -76,6 +80,14 @@ export default function LinksIndex() {
         } else {
             console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
         }
+    }
+
+    function onUpdated(linkUpdated: LinkWithId) {
+        setLinks(prev =>
+            prev.map(link => 
+                link.id === linkUpdated.id ? linkUpdated : link
+            )
+        );
     }
 
 
@@ -128,8 +140,45 @@ export default function LinksIndex() {
         }
     }
 
+    async function handle_CreateCategry(name: string) {
+        if (!user || !user.access_token_prov) {
+            console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
+            return
+        }
+        try {
+            const res = await category_Create(user.access_token_prov,
+                                     [{ id: "123123123", nome: name }])
+            if(res?.message) {
+                const resList = await categories_List(user.access_token_prov)
+                if(resList?.message) {
+                    setCategories(() => [...resList.categories, { id: "123123123", nome: "+" }])
+                    ChangeModalVisibilityCategory()
+                }
+            }
+        } catch(err: any) {
+            console.error(err.message)
+        }
+    }
+
+    function ChangeModalVisibilityClose() {
+        setBottomModalVisible(prev => !prev)
+        setPageNameModal("")
+    }
+    
     function ChangeModalVisibility() {
-        setModalVisible(prev => !prev)
+        setBottomModalVisible(prev => !prev)
+    }
+    
+    function ChangePageNameModal(page: string | undefined) {
+         ChangeModalVisibility()
+         setTimeout(() => {
+            setPageNameModal(page)
+            ChangeModalVisibility()
+       }, 300) 
+    }
+
+    function ChangeModalVisibilityCategory() {
+        setModalCreateCategory(prev => !prev)
     }
 
     useEffect(() => {
@@ -157,18 +206,15 @@ export default function LinksIndex() {
         }
     }, [selectedCategory, links])  
  
-    function ChangePageNameModal(page: string | undefined) {
-         ChangeModalVisibility()
-         setTimeout(() => {
-            setPageNameModal(page)
-            ChangeModalVisibility()
-       }, 185) 
-    }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-
+        <SafeAreaView style={{ flex: 1, paddingTop: -25.8, paddingBottom: -15 }}>
             <View style={styles.container}>
+                <CreateCategoryModal 
+                    modalVisible={modalCreateCategory}
+                    toggleModal={ChangeModalVisibilityCategory}
+                    onCategoryName={handle_CreateCategry}
+                />
 
                 {isLoading ? (
                     <>
@@ -181,27 +227,39 @@ export default function LinksIndex() {
                         <LinkSkeleton />
                         <LinkSkeleton />
                     </> 
-                ) : (
+                ) : ( 
                         <Links
                             data={linksFiltered ? linksFiltered : links}
                             setLink={setLink}
                             categories={categories}
                             onDelete={handleOnDelete_Link}
+                            onCreateCategory={ChangeModalVisibilityCategory}
                             selectedCategory={selectedCategory}
                             setSelectCategory={setSelectCategory}
                             modalOptionsVisiblity={ChangeModalVisibility}
                         />
                 )} 
                 <ChooseOptionModal 
-                    modalVisible={modalVisible} 
+                    modalVisible={bottomModalVisible} 
                     toggleModal={ChangeModalVisibility}
                     pageNameModal={pageNameModal}
                     ChangePageNameModal={ChangePageNameModal}
+                    toggleModalClode={ChangeModalVisibilityClose}
                 >
                     {pageNameModal ?
-                        <Text>
-                            PAGE NAME MODAL TESTE
-                        </Text>
+                        pageNameModal === "Editar Link" 
+                         ? <EditLink
+                                linkId={link?.id}
+                                onUpdatedLink={onUpdated}
+                                data={{
+                                    newTitle: link?.title,
+                                    newLink: link?.link,
+                                    newDescription: link?.description,
+                                    newCategoryId: link?.categoriaId
+                                }}
+                                toggleModal={ChangeModalVisibilityClose}
+                         /> 
+                         : <Text>NENHUM PAGE NAME MODAL</Text>
                     :    
                         <View style={styles.content_modal}>
                             <ActionSelector nameAction='Editar' icon={"pencil"} onPress={() => {

@@ -29,12 +29,13 @@ export default function OptionsModal({ children, isVisible, toggleVisible }: Opt
 const style = StyleSheet.create({
     container: {
         backgroundColor: colors.gray[800],
-        paddingVertical: 22,
+        paddingVertical: 15,
         borderRadius: 22,
-        minWidth: 150,
-        marginTop: -390,
+        maxWidth: 180,
+        marginTop: -500,
         marginRight: 25,
         alignSelf: "flex-end",
         alignItems: "flex-end",
+        maxHeight: 180
     }
 })

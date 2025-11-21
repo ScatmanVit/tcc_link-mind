@@ -29,7 +29,7 @@ export default function Login() {
     async function userLogin(data: any) {
         try {
             const res = await axios.post(
-                "http://localhost:3000/api/v1/linkmind/auth/login", {
+                "https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/login", {
 					email: data.email,
 					password: data.password,
 					platform: "mobile"
@@ -40,6 +40,7 @@ export default function Login() {
             await tokenFuncs.saveToken("refresh-token", res.data.refresh_token)
             console.log(tokenFuncs.getToken("access-token"),tokenFuncs.getToken("refresh-token"))
             // secure store só funciona no expo go ou nativo, na web não da para emular
+            console.log(res.data)
             return res.data;
         } catch (err: any) {
             setFeedbackMessage(err?.response?.data?.error || 'Ocorreu um erro. Por favor, tente novamente mais tarde.');
@@ -52,6 +53,7 @@ export default function Login() {
         setLoading(true);
         const loginSuccess = await userLogin(data);
         setLoading(false);
+        console.log(loginSuccess)
         if (loginSuccess) {
             console.log(loginSuccess) 
             signUp({
@@ -175,6 +177,7 @@ const s = StyleSheet.create({
     },
     header: {
         width: '100%',
+        marginTop: 120,
         marginVertical: 55,
         marginBottom: 27,
         flexDirection: "row",

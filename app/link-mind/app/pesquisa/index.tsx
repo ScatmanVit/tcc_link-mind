@@ -43,6 +43,7 @@ export default function PesquisaIndex() {
                         placeholderTextColor={colors.gray[400]}
                         radius={26}
                         size={15}
+                        height={45}
                         iconColor={colors.gray[400]}
 					    icon="magnifying-glass"
                     />

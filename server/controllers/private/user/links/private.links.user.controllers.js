@@ -141,7 +141,8 @@ async function links_update_Controller_UPDATE(req, res) {
 		}
 		return res.status(200).json({
 			success: true, 
-			message: "Seu link foi alterado com sucesso!"
+			message: "Seu link foi alterado com sucesso!",
+			linkUpdated: linkUpdated
 		})
 	} catch (err) {
 		console.error("Ocorreu um erro no servidor, [ UPDATE LINK  ]", err)

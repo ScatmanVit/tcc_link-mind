@@ -11,7 +11,7 @@ export default async function delete_Link({ access_token, id_link }: deleteLinkP
         console.log("ID LINK: ", id_link)
     }
     try {
-        const res = await axios.post(`http://localhost:3000/api/v1/linkmind/link/delete/${id_link}`,
+        const res = await axios.post(`https://tcc-link-mind.onrender.com/api/v1/linkmind/link/delete/${id_link}`,
             {}, 
             {
                 headers: {

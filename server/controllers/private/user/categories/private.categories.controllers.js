@@ -33,7 +33,7 @@ async function category_create_Controller_POST(req, res) {
 		}
 		return res.status(201).json({
 			success: true,
-			message: "Categoria criada com sucesso!"
+			message: "Categoria criada com sucesso!",
 		})
 		
 	} catch (err) {

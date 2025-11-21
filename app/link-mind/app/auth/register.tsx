@@ -43,7 +43,7 @@ export default function Register() {
 	async function registerUser(data: FormData) {
 		try {
 			const res = await axios.post(
-				"http://localhost:3000/api/v1/linkmind/auth/cadastro",
+				"https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/cadastro",
 				data
 			);
 			console.log("Usuário cadastrado com sucesso!", res.data);
@@ -170,7 +170,6 @@ export default function Register() {
 						onPress={handleSubmit(onSubmit, onInvalid)}
 					/>
 				</View>
-
 			</View>
 		</View>
 	);
@@ -186,7 +185,7 @@ const s = StyleSheet.create({
 	},
 	header: {
 		width: '100%',
-		marginTop: 200,
+		marginTop: 300,
 		marginBottom: 6,
 		flexDirection: "row",
 		justifyContent: "center",

@@ -29,7 +29,7 @@ export default function RecoverPassword() {
         setFeedbackMessage('');
         try {
             const res = await axios.post(
-                "http://localhost:3000/api/v1/linkmind/auth/reset-password-send",
+                "https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/reset-password-send",
                 data
             );
             setFeedbackMessage(res?.data?.message || "Se esse email estiver cadastrado, já foi enviado um email para recuperação de senha.");

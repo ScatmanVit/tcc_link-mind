@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export default async function list_Links(access_token: string) {
     try {
-        const res = await axios.get('http://localhost:3000/api/v1/linkmind/links/list', {
+        const res = await axios.get('https://tcc-link-mind.onrender.com/api/v1/linkmind/links/list', {
             headers: {
                 Authorization: `Bearer ${access_token}`
             }
