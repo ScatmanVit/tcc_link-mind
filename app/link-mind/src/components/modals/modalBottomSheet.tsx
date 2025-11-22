@@ -40,7 +40,8 @@ export default function ChooseOptionModal({
             <View style={[
                 styles.container,
                 pageNameModal === "Editar Link"  && { height: "78%" },
-                pageNameModal === "Resumir Link com IA"  && { height: "80%" }
+                pageNameModal === "Resumir Link com IA"  && { height: "80%" },
+                pageNameModal?.includes("__") && { height: "65%" }
             ]}>
                 {pageNameModal ? 
                 <View style={styles.header}>
@@ -63,7 +64,7 @@ export default function ChooseOptionModal({
                                 color={colors.gray[300]}
                             />
                         </Pressable>
-                        <Text style={styles.header_title}>
+                        <Text style={styles.header_title} numberOfLines={1}>
                             {pageNameModal}
                         </Text>
                     </View>
@@ -72,7 +73,8 @@ export default function ChooseOptionModal({
                         style={({ pressed }) => [
                             styles.close_button,
                             pressed && { backgroundColor: colors.gray[500] },
-                            pageNameModal && { marginTop: -2, marginBottom: 2, marginRight: 12 }
+                            pageNameModal && { marginTop: -2, marginBottom: 2, marginRight: 12 },
+                            pageNameModal?.includes("") && { marginLeft: -30 }
                         ]}
                     >
                         <FontAwesome6
@@ -126,7 +128,9 @@ const styles = StyleSheet.create({
         color: colors.gray[200],
         fontSize: 19,
         fontWeight: 600,
-        marginLeft: 6
+        marginLeft: 6,
+        maxWidth: "75%"
+
     },
     close_button: {
         alignSelf: "flex-start",

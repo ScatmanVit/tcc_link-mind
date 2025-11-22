@@ -9,14 +9,24 @@ export type LinkProps = {
     link_url: string,
     onOpen_url?: () => void,
     onDelete?: () => void,
-    onModalvisibleDetails?: () => void
+    onModalvisibleDetails?: () => void,
+    onModalOptionsVisibilityViewLink?: () => void
 }
 
-export default function Link({ title, link_url, onDelete, onOpen_url, onModalvisibleDetails }: LinkProps) {
+export default function Link({ 
+    title, 
+    link_url, 
+    onDelete, 
+    onOpen_url, 
+    onModalvisibleDetails,
+    onModalOptionsVisibilityViewLink 
+}: LinkProps) {
+
     return (
             <Pressable
-                delayLongPress={300}
+                onPress={onModalOptionsVisibilityViewLink}
                 onLongPress={onModalvisibleDetails}
+                delayLongPress={300}
                 style={({ pressed }) => [
                     style.container,
                     pressed && { backgroundColor: colors.gray[800]}

@@ -6,7 +6,8 @@ export type CreateLinkProps = {
     description?: string,
     categoriaId?: string,
     estadoId?: string,
-    notification?: boolean
+    notification?: boolean,
+    summary_link?: boolean
 }
 
 export default async function create_Link(access_token: string, data: CreateLinkProps) {

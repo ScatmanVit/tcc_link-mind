@@ -25,6 +25,7 @@ import ActionSelector from '@/src/components/actionSelector';
 import Input from '@/src/components/input';
 import CreateCategoryModal from '@/src/components/modals/createCategoryModal';
 import EditLink from './edit-link';
+import ViewLink from './view-link';
 
 
 export default function LinksIndex() {
@@ -169,6 +170,11 @@ export default function LinksIndex() {
         setBottomModalVisible(prev => !prev)
     }
     
+    function ChangeModalVIsibilityViewLink(title: string) {
+        setPageNameModal(`${title}`)
+        ChangeModalVisibility()
+    }
+
     function ChangePageNameModal(page: string | undefined) {
          ChangeModalVisibility()
          setTimeout(() => {
@@ -237,6 +243,7 @@ export default function LinksIndex() {
                             selectedCategory={selectedCategory}
                             setSelectCategory={setSelectCategory}
                             modalOptionsVisiblity={ChangeModalVisibility}
+                            modalOptionsVisibilityViewLink={ChangeModalVIsibilityViewLink}
                         />
                 )} 
                 <ChooseOptionModal 
@@ -246,9 +253,9 @@ export default function LinksIndex() {
                     ChangePageNameModal={ChangePageNameModal}
                     toggleModalClode={ChangeModalVisibilityClose}
                 >
-                    {pageNameModal ?
-                        pageNameModal === "Editar Link" 
-                         ? <EditLink
+                    {pageNameModal ? (
+                        pageNameModal === "Editar Link" ? (
+                            <EditLink
                                 linkId={link?.id}
                                 onUpdatedLink={onUpdated}
                                 data={{
@@ -258,9 +265,13 @@ export default function LinksIndex() {
                                     newCategoryId: link?.categoriaId
                                 }}
                                 toggleModal={ChangeModalVisibilityClose}
-                         /> 
-                         : <Text>NENHUM PAGE NAME MODAL</Text>
-                    :    
+                            />
+                        ) : pageNameModal.includes("Link ") ? (
+                            <ViewLink linkObj={link!!} />
+                        ) : (
+                            <Text>NENHUM PAGE NAME MODAL</Text>
+                        )
+                    ) : (
                         <View style={styles.content_modal}>
                             <ActionSelector nameAction='Editar' icon={"pencil"} onPress={() => {
                                 ChangePageNameModal("Editar Link")
@@ -273,7 +284,7 @@ export default function LinksIndex() {
                                 handleOnDelete_Link(link?.id!)
                             }}/>
                         </View>
-                    }
+                    )}
                 </ChooseOptionModal> 
             </View>
         </SafeAreaView>

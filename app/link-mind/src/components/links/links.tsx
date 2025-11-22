@@ -22,6 +22,7 @@ type LinksProps = {
     setLink: (link: LinkWithId) => void,
     categories: { id: string, nome: string }[],
     selectedCategory?: { id: string, nome?: string },
+    modalOptionsVisibilityViewLink: (link_url: string) => void,
     setSelectCategory: (category: { id: string, nome?: string }) => void
 }
 
@@ -33,7 +34,8 @@ export default function Links({
      selectedCategory, 
      onCreateCategory,
      setSelectCategory, 
-     modalOptionsVisiblity 
+     modalOptionsVisiblity,
+     modalOptionsVisibilityViewLink 
     }: LinksProps) {
 
     const router = useRouter()
@@ -122,6 +124,11 @@ export default function Links({
                                     modalOptionsVisiblity()
                                 }, 0)  
                             }}
+                            onModalOptionsVisibilityViewLink={
+                                () => {
+                                    modalOptionsVisibilityViewLink(item.title)
+                                    setLink(item)
+                                }}
                         />
                     </Pressable>
                 </View>
