@@ -1,8 +1,10 @@
 import { Stack } from 'expo-router';
+import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar"
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
+import { Text } from "react-native";
 import { colors } from '@/styles/colors'
 
 import AuthProvider from '@/context/auth';
@@ -41,10 +43,28 @@ async function initializeCategories() {
 }
 
 export default function RootLayout() {
+    
+    const [fontsLoaded] = useFonts({
+        Roboto: require("../assets/fonts/Roboto-Regular.ttf"),
+        RobotoItalic: require("../assets/fonts/Roboto-Italic-VariableFont_wdth,wght.ttf"),
+    });
 
     useEffect(() => {
         initializeCategories();
     }, []);
+
+    if (fontsLoaded) {
+        (Text as any).defaultProps = (Text as any).defaultProps || {};
+        (Text as any).defaultProps.style = { fontFamily: "Roboto" };
+    }
+
+    if (!fontsLoaded) {
+        return (
+            <SafeAreaProvider>
+                <SafeAreaView />
+            </SafeAreaProvider>
+        );
+    }
 
     return (
         <SafeAreaProvider>
