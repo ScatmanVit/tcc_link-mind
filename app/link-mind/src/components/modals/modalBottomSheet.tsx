@@ -13,7 +13,7 @@ type ConfirmModalProps = {
     pageNameModal?: string
     toggleModal: () => void,
     ChangePageNameModal: (page: string) => void,
-    toggleModalClode: () => void
+    toggleModalClose: () => void
 };
 
 export default function ChooseOptionModal({ 
@@ -22,13 +22,13 @@ export default function ChooseOptionModal({
         toggleModal, 
         modalVisible, 
         pageNameModal,
-        toggleModalClode, 
+        toggleModalClose, 
         ChangePageNameModal 
     }: ConfirmModalProps) {
     return (
         <Modal
             isVisible={modalVisible}
-            onBackdropPress={toggleModal}
+            onBackdropPress={toggleModalClose}
             animationIn="slideInUp"
             animationOut="slideOutDown"
             animationInTiming={100}   
@@ -39,9 +39,11 @@ export default function ChooseOptionModal({
         >
             <View style={[
                 styles.container,
-                pageNameModal === "Editar Link"  && { height: "78%" },
-                pageNameModal === "Resumir Link com IA"  && { height: "80%" },
-                pageNameModal?.includes("__") && { height: "65%" }
+                    pageNameModal === "Editar Link"
+                    ? { height: "78%" }
+                    : pageNameModal === "Resumir Link com IA"
+                    ? { height: "80%" }
+                    : pageNameModal && { height: "60%" }
             ]}>
                 {pageNameModal ? 
                 <View style={styles.header}>
@@ -69,7 +71,7 @@ export default function ChooseOptionModal({
                         </Text>
                     </View>
                     <Pressable
-                        onPress={toggleModalClode}
+                        onPress={toggleModalClose}
                         style={({ pressed }) => [
                             styles.close_button,
                             pressed && { backgroundColor: colors.gray[500] },

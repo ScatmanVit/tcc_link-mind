@@ -1,15 +1,22 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable, Linking, Alert } from "react-native";
 import * as Clipboard from "expo-clipboard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
+import { Octicons } from "@expo/vector-icons";
+import { colors } from "@/src/styles/colors";
+import FontAwesome from '@expo/vector-icons/FontAwesome'
+import Category from '@/components/categories/category'
 
 type LinkBoxProps = {
-    url: string;
-    isSummarized?: boolean;
+    url: string,
+    categoryLink?: string
+    isSummarized?: boolean,
 };
 
-export default function LinkBox({ url, isSummarized }: LinkBoxProps) {
-    const [copied, setCopied] = useState(false);
+export default function LinkBox({ url, isSummarized, categoryLink }: LinkBoxProps) {
+    
+    const [ copied, setCopied ] = useState(false);
+    const [ category, setCategory ] = useState<string | undefined>('')
 
     async function handleCopy() {
         await Clipboard.setStringAsync(url);
@@ -17,27 +24,85 @@ export default function LinkBox({ url, isSummarized }: LinkBoxProps) {
         setTimeout(() => setCopied(false), 1500);
     }
 
+    async function handleOpenUrl(link_url: string) {
+        let url = link_url.trim();
+        if (!link_url.includes('.') || link_url.includes(' ')) {
+            Alert.alert('Isso não parece um link válido');
+            return;
+        }
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'https://' + url;
+        }
+        const supported = await Linking.canOpenURL(url);
+
+        if (supported) {
+            await Linking.openURL(url);
+        } else {
+            Alert.alert(`Não é possível abrir a URL: ${url}`);
+        }
+    }
+
+    useEffect(() => {
+        setCategory(categoryLink)
+    }, [])
+
     return (
         <View style={styles.container}>
-            <View style={styles.row}>
-                
-                {isSummarized && (
-                    <View style={styles.badge}>
-                        <Text style={styles.badgeText}>⭐ Resumido</Text>
-                    </View>
-                )}
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <Text style={{ 
+                        fontSize: 17, 
+                        marginLeft: 5 ,
+                        color: colors.gray[100], 
+                    }}
+                >
+                    Link
+                </Text>
+                <View style={styles.row}>
+                    {category && 
+                        <Category 
+                            categoryName={category} 
+                            height={25.5}
+                            focused={true}
+                            onPress={() => { }}
+                            color={colors.gray[200]}
+                            marginTop={-4}
+                        />
+                    }
+                    {isSummarized && (
+                        <View style={styles.badge}>
+                            <Octicons
+                                name="north-star"
+                                size={19}
+                                color={colors.green[200]}
+                            />
+                        </View>
+                    )}
 
-                <TouchableOpacity onPress={handleCopy} style={styles.copyButton}>
-                    <Feather name={copied ? "check" : "copy"} size={18} color="#fff" />
-                </TouchableOpacity>
+                    <Pressable onPress={handleCopy} 
+                        style={({ pressed}) => [
+                            styles.copyButton,
+                            pressed && { backgroundColor: colors.gray[600] }
+                        ]}>
+                        <Feather name={copied ? "check" : "copy"} size={19} color="#fff" />
+                    </Pressable>
+                </View>
             </View>
 
-            {/* Link */}
-            <TouchableOpacity onPress={() => {}} style={styles.linkArea}>
-                <Text style={styles.linkText} numberOfLines={1}>
+            <Pressable onPress={() => {}} style={({ pressed }) => [
+                styles.linkArea,
+                url.length > 25 && ( pressed && { maxHeight: 120, height: 120 } )
+            ]}>
+                <Pressable onPress={() => handleOpenUrl(url)}>
+                    <FontAwesome
+                        style={{ marginTop: 3, marginRight: -4, padding: 2.5 }} 
+                        name="external-link" size={18.5} 
+                        color={colors.gray[100]} 
+                    />
+                </Pressable>
+                <Text style={styles.linkText} >
                     {url}
                 </Text>
-            </TouchableOpacity>
+            </Pressable>
         </View>
     );
 }
@@ -49,12 +114,11 @@ const styles = StyleSheet.create({
     },
     row: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-end",
         alignItems: "center",
-        marginBottom: 10,
+        marginBottom: 6,
     },
     badge: {
-        backgroundColor: "#4C8EF7",
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 8,
@@ -65,8 +129,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
     },
     copyButton: {
-        backgroundColor: "#4C8EF7",
-        paddingHorizontal: 14,
+        paddingHorizontal: 7,
         paddingVertical: 6,
         borderRadius: 8,
         flexDirection: "row",
@@ -74,13 +137,19 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     linkArea: {
-        backgroundColor: "#EBF2FF",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        borderRadius: 18,
+        backgroundColor: colors.gray[700],
+        maxHeight: 48,
         padding: 12,
-        borderRadius: 10,
     },
     linkText: {
-        color: "#1B4FAA",
+        color: colors.gray[200],
         fontSize: 14,
+        width: "90%",
         fontWeight: "500",
+        marginLeft: "5%",
+        marginRight: "1.5%"
     },
 });

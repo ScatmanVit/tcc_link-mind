@@ -2,20 +2,33 @@ import { Text, Pressable, StyleSheet } from 'react-native'
 import { colors } from '@/styles/colors'
 
 export type CategoryProps = {
-    categoryName: string
-    focused: boolean
-    onPress: () => void
+    categoryName: string,
+    focused: boolean,
+    onPress: () => void,
+    color?: string
+    height?: number,
+    marginTop?: number
+
 }
 
-export default function Category({ categoryName, focused, onPress }: CategoryProps) {
+export default function Category({ 
+    categoryName, 
+    focused, 
+    onPress, 
+    color, 
+    height,
+    marginTop 
+}: CategoryProps) {
     return (
         <Pressable
             onPress={onPress}
             style={({ pressed }) => [
                 styles.container,
+                height != null ? { height } : undefined,
+                height != null ? { borderWidth: 0.2 } : undefined,
                 {
                     backgroundColor: focused
-                        ? colors.gray[900]
+                        ? "transparent"
                         : pressed
                             ? colors.gray[900]
                             : "transparent",
@@ -23,7 +36,13 @@ export default function Category({ categoryName, focused, onPress }: CategoryPro
                 },
             ]}
         >
-            <Text style={styles.text}>{categoryName}</Text>
+            <Text style={[
+                    styles.text, 
+                    color && { color: color },
+                    marginTop != null ? { marginTop } : undefined                
+            ]}
+            > {categoryName}
+            </Text>
         </Pressable>
     )
 }
@@ -31,18 +50,19 @@ export default function Category({ categoryName, focused, onPress }: CategoryPro
 const styles = StyleSheet.create({
     container: {
         minWidth: 30,
-        minHeight: 33,
+        height: 33,
         borderRadius: 22,
         borderWidth: 0.5,
         justifyContent: 'center',
         alignItems: 'center',
     },
     text: {
-        flex: 1,
         paddingVertical: 6,
+        marginTop: -1,
+        marginLeft: -1,
         paddingHorizontal: 16,
         color: colors.gray[400],
         fontWeight: '600',
-        fontSize: 12.5
+        fontSize: 12.5,
     },
 })

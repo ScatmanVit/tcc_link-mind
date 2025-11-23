@@ -164,6 +164,7 @@ export default function LinksIndex() {
     function ChangeModalVisibilityClose() {
         setBottomModalVisible(prev => !prev)
         setPageNameModal("")
+
     }
     
     function ChangeModalVisibility() {
@@ -184,7 +185,9 @@ export default function LinksIndex() {
     }
 
     function ChangeModalVisibilityCategory() {
-        setModalCreateCategory(prev => !prev)
+        setTimeout(() => {
+            setModalCreateCategory(prev => !prev)
+        }, 100)
     }
 
     useEffect(() => {
@@ -251,7 +254,7 @@ export default function LinksIndex() {
                     toggleModal={ChangeModalVisibility}
                     pageNameModal={pageNameModal}
                     ChangePageNameModal={ChangePageNameModal}
-                    toggleModalClode={ChangeModalVisibilityClose}
+                    toggleModalClose={ChangeModalVisibilityClose}
                 >
                     {pageNameModal ? (
                         pageNameModal === "Editar Link" ? (
@@ -266,18 +269,16 @@ export default function LinksIndex() {
                                 }}
                                 toggleModal={ChangeModalVisibilityClose}
                             />
-                        ) : pageNameModal.includes("Link ") ? (
-                            <ViewLink linkObj={link!!} />
-                        ) : (
-                            <Text>NENHUM PAGE NAME MODAL</Text>
-                        )
+                        ) : pageNameModal === "Resumir com IA" ? ( <Text>PÁGINA DE RESUMIR COM IA</Text> )  
+                        : <ViewLink linkObj={link!!} categories={categories} />
+               
                     ) : (
                         <View style={styles.content_modal}>
                             <ActionSelector nameAction='Editar' icon={"pencil"} onPress={() => {
                                 ChangePageNameModal("Editar Link")
                             }}/>
                             <ActionSelector nameAction='Resumir com IA' icon={"north-star"} onPress={() => {
-                                ChangePageNameModal("Resumir Link com IA")
+                                ChangePageNameModal("Resumir com IA")
                             }}/>
                             <ActionSelector nameAction='Deletar' icon={"trash"} colorBack={colors.red[200]} onPress={() => {
                                 ChangeModalVisibility()

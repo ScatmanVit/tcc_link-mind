@@ -67,8 +67,10 @@ export default function TabLayout() {
 					<ItemSelector
 						name="Novo Link"
 						onPress={() => { 
-							router.push('/tabs/links/add-link')
 							ChangeModalVisibility()
+							setTimeout(() => {
+								router.push('/tabs/links/add-link')
+							}, 100)
 						}}
 					/>
 					<ItemSelector 
