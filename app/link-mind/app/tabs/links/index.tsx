@@ -163,7 +163,8 @@ export default function LinksIndex() {
 
     function ChangeModalVisibilityClose() {
         setBottomModalVisible(prev => !prev)
-        setPageNameModal("")
+        setTimeout(() => { setPageNameModal("") }, 300)
+        
 
     }
     

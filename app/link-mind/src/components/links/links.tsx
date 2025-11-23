@@ -68,7 +68,7 @@ export default function Links({
             ListHeaderComponent={
                 <View style={{ flexShrink: 0, flexDirection: "column", gap: 8, alignItems: "center", marginBottom: -20 }}>
                         <Pressable style={style.input_search} onPress={() => router.push("/pesquisa")}>
-                        <View pointerEvents='none'>
+                            <View pointerEvents='none'>
                                 <Input
                                     placeholder="Pesquise links, notas ou eventos"
                                     placeholderTextColor={colors.gray[400]}
@@ -150,5 +150,4 @@ const style = StyleSheet.create({
         marginVertical: 7,
         width: "95%"
     }
-
 })
