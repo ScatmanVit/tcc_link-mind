@@ -1,4 +1,4 @@
-import PrivateCategoriesUserControllers from "../../../../controllers/private/user/categories/private.categories.controllers.js";
+import PrivateCategoriesUserControllers from "../../../../controllers/private/user/categories/private.categories.user.controllers.js";
 import { Router } from "express";
 const router = Router()
 

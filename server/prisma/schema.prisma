@@ -12,6 +12,12 @@ enum Role {
   ADMIN
 }
 
+enum StatusNotificationEvent  {
+  scheduled
+  send
+  failed
+}
+
 model User {
   id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String
@@ -42,7 +48,6 @@ model Estado {
   id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   nome        String
   links       Link[]
-  eventos     Evento[]
   compras     Compra[]
   anotacoes   Anotacao[]
 }
@@ -64,8 +69,6 @@ model TagRelacionada {
   linkId      String?     @db.Uuid
   link        Link?       @relation(fields: [linkId], references: [id])
 
-  eventoId    String?     @db.Uuid
-  evento      Evento?     @relation(fields: [eventoId], references: [id])
 
   compraId    String?     @db.Uuid
   compra      Compra?     @relation(fields: [compraId], references: [id])
@@ -101,12 +104,16 @@ model Evento {
   id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId      String      @db.Uuid
   user        User        @relation(fields: [userId], references: [id])
-  categoriaId String      @db.Uuid
-  categoria   Categoria   @relation(fields: [categoriaId], references: [id])
-  estadoId    String      @db.Uuid
-  estado      Estado      @relation(fields: [estadoId], references: [id])
-  // Campos específicos do evento aqui
-  tagRelacionadas TagRelacionada[]
+  title       String
+  address      String?
+  description String?
+  date        DateTime?
+  notification Boolean?
+  scheduleAt   DateTime?
+  expired      DateTime?
+  statusNotification       StatusNotificationEvent?
+  categoriaId String?      @db.Uuid
+  categoria   Categoria?   @relation(fields: [categoriaId], references: [id])
 }
 
 model Compra {
