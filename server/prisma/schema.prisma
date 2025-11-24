@@ -13,9 +13,10 @@ enum Role {
 }
 
 enum StatusNotificationEvent  {
-  scheduled
-  send
-  failed
+  PENDING
+  SCHEDULED
+  SENT
+  FAILED
 }
 
 model User {
@@ -31,6 +32,7 @@ model User {
   compras     Compra[]
   anotacoes   Anotacao[]
   tags        Tag[]
+  device_token DeviceToken[]
   newsletter  Newsletter?
 }
 
@@ -114,6 +116,15 @@ model Evento {
   statusNotification       StatusNotificationEvent?
   categoriaId String?      @db.Uuid
   categoria   Categoria?   @relation(fields: [categoriaId], references: [id])
+}
+
+model DeviceToken {
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String      @db.Uuid
+  user        User        @relation(fields: [userId], references: [id])
+  token       String      @unique
+  createdAt   DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 }
 
 model Compra {
