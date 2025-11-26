@@ -80,7 +80,7 @@ export default function TabLayout() {
 								router.push('/tabs/links/add-link')
 							}, 100)
 						}}
-					/>
+					/> 
 					<ItemSelector 
 						name="Nova Anotação"
 						onPress={() => { }} 
