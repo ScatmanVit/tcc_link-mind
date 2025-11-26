@@ -1,7 +1,7 @@
 import { Image, StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Tabs, usePathname, useRouter } from 'expo-router';
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import { ToastProvider } from 'react-native-toast-notifications';
 
 
@@ -14,6 +14,7 @@ import { colors } from '@/styles/colors';
 import ItemSelector from '@/src/components/itemSelector';
 import OptionsModal from '@/src/components/modals/optionsModal';
 import { StatusBar } from 'expo-status-bar';
+import { handleDailyExpoTokenRegister } from '@/src/services/device-token/expoTokenManager';
 
 export default function TabLayout() {
 	const { user } = useContext(AuthContext);
@@ -51,6 +52,13 @@ export default function TabLayout() {
 	function ChangeModalVisibility() {
         setModalVisible(prev => !prev) 
     }
+
+	useEffect(() => {
+		if (user?.access_token_prov) {
+			handleDailyExpoTokenRegister(user.access_token_prov);
+		}
+	}, [user?.access_token_prov]);
+
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<StatusBar style="light" backgroundColor={colors.gray[950]} />
