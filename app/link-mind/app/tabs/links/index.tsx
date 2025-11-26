@@ -197,6 +197,12 @@ export default function LinksIndex() {
             syncCategories_and_fetchCategories()
         }
     }, [])
+
+    useEffect(() => {
+        if (!modalCreateCategory) {
+            syncCategories_and_fetchCategories()
+        }    
+    }, [modalCreateCategory])
     
     useEffect(() => {
         console.log("🔗 Link salvo no estado:", link)    
@@ -269,6 +275,7 @@ export default function LinksIndex() {
                                     newCategoryId: link?.categoriaId
                                 }}
                                 toggleModal={ChangeModalVisibilityClose}
+                                setCategoriesPageHome={setCategories}
                             />
                         ) : pageNameModal === "Resumir com IA" ? ( <Text>PÁGINA DE RESUMIR COM IA</Text> )  
                         : <ViewLink linkObj={link!!} categories={categories} />

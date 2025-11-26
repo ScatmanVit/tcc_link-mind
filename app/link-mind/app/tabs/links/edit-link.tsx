@@ -9,6 +9,8 @@ import { AuthContext } from '@/context/auth'
 import Button from "@/components/button/button";
 import Categories from "@/components/categories//categories";
 import { useCategory } from "@/components/categories/useCategory";
+import { type Dispatch, type SetStateAction } from "react";
+
 
 import { type CategoryPropsItem } from "../../_layout";
 import { type UpdateLinkProps } from '@/src/services/links/updateLink'
@@ -18,11 +20,13 @@ import CreateCategoryModal from "@/src/components/modals/createCategoryModal";
 import category_Create from "@/src/services/categories/createCategories";
 import { LinkWithId } from "@/src/components/links/links";
 
+
 type EditLinkPageProps = {
     data: UpdateLinkProps
     toggleModal: () => void
     linkId: string | undefined,
     onUpdatedLink: (linkUpdated: LinkWithId) => void,
+    setCategoriesPageHome: Dispatch<SetStateAction<CategoryPropsItem[]>>
 }
 
 
@@ -31,6 +35,7 @@ export default function EditLink({
     linkId,
     toggleModal,
     onUpdatedLink,
+    setCategoriesPageHome
     }: EditLinkPageProps) {
     const toast = useToast()
     const { user } = useContext(AuthContext) // provisório pegar do estado o token, não da para usar o secure store no web
@@ -201,6 +206,7 @@ export default function EditLink({
                 if(resList?.message) {
                     setCategories(() => [...resList.categories, { id: "123123123", nome: "+" }])
                     ChangeModalVisibilityCategory()
+                    setCategoriesPageHome(() => [...resList.categories, { id: "123123123", nome: "+" }])
                 }
             }
         } catch(err: any) {

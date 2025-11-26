@@ -5,7 +5,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import { Text } from "react-native";
-import { colors } from '@/styles/colors'
+import { colors } from '@/styles/colors' 
 
 import AuthProvider from '@/context/auth';
 
