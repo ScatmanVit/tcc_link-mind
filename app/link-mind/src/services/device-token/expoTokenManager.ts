@@ -3,6 +3,9 @@ import deviceToken_register from "./deviceToken";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants"; 
 import { Platform } from "react-native";
+import { EAS_PROJECT_ID } from "@env";
+
+
 
 async function registerAndSave(token: string, access_token: string) {
     
@@ -61,11 +64,15 @@ export async function handleDailyExpoTokenRegister(access_token: string) {
             return;
         }
 
-        // 3. SEU CÓDIGO ORIGINAL (BLINDADO)
-        const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+        // 3. PROJECT ID (Agora blindado)
+        // Tenta pegar do config. Se falhar, usa o ID fixo que sabemos que é o seu.
+        const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? 
+                          Constants?.easConfig?.projectId ?? EAS_PROJECT_ID
+              
 
         if (!projectId) {
-            console.log("AVISO: Project ID não encontrado. O EAS Init foi rodado?");
+            console.log("ERRO CRÍTICO: Project ID não encontrado nem no código nem no config.");
+            return;
         }
 
         const devicePushToken = await Notifications.getExpoPushTokenAsync({

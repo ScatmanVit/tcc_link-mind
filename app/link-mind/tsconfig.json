@@ -23,5 +23,9 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "src/styles/themes"
+  ],
+  "exclude": [
+    "node_modules", // <-- Adicione esta linha
+    "**/node_modules"
   ]
 }
