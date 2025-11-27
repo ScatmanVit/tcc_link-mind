@@ -118,8 +118,7 @@ async function event_Controller_NOTIFICATION(req, res) {
     const {
         scheduleAt,
         bodyMessage,
-        titleMessage,
-    } = req.body
+        titleMessage } = req.body
 
     if (!userId) {
         return res.status(401).json({

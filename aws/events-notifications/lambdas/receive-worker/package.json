@@ -13,7 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.940.0",
+    "@aws-sdk/client-scheduler": "^3.940.0",
     "archiver": "^7.0.1",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "pg": "^8.16.3"
   }
 }
