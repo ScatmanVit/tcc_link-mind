@@ -1,4 +1,8 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 export const handler = async (event) => {
-  console.log("Lambda rodando...");
-  return { ok: true };
+  console.log("Lambda recebeu...")
+  console.log(event)
+  return
 };

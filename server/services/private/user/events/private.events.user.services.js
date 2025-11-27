@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
+import { sendToQueue } from "../../../aws/sendJob_SQS.js";
 const prisma = new PrismaClient()
+
+
 
 async function event_CREATE(newEvent, idUser) {
     if (!idUser) {
@@ -86,14 +89,31 @@ async function event_DELETE(idUser, eventId) {
         return eventDeleted.count > 0
     } catch (err) {
         if (err.code === 'P2025') {
-			return { 
-				error: "O evento que você tentou deletar não existe",
-				statusCode: 404
-			}
-		}
+            return {
+                error: "O evento que você tentou deletar não existe",
+                statusCode: 404
+            }
+        }
         console.error(err)
         return {
             error: "Não foi possível deletar o evento"
+        }
+    }
+}
+
+async function event_NOTIFICATION(
+    idUser, eventId, scheduleAt, bodyMessage, titleMessage
+) {
+    try {
+        const response = await sendToQueue(
+            { idUser, eventId, scheduleAt, bodyMessage, titleMessage }
+        );
+        if (response?.MessageId) return true
+        return { error: "Notificação de evento não agendada." }
+    } catch (err) {
+        console.log("Erro ao enviar para SQS:", err);
+        return {
+            error: "Não foi possível agendar notificação."
         }
     }
 }
@@ -102,5 +122,6 @@ async function event_DELETE(idUser, eventId) {
 export default {
     event_CREATE,
     event_DELETE,
-    event_LIST
+    event_LIST,
+    event_NOTIFICATION
 }
