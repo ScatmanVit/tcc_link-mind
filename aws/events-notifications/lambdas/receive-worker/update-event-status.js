@@ -18,9 +18,9 @@ export async function updateEventStatus(eventId, userId, status) {
         }
     } catch (err) {
         console.error("Erro ao atualizar evento ", err);
-        return { 
-            success: false, 
-            error: err.message 
+        return {
+            success: false,
+            error: err.message
         }
     }
 }

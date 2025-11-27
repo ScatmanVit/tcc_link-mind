@@ -1,4 +1,4 @@
-import { client_db } from "./client-db"
+import { client_db } from "./client-db.js"
 
 export async function checkStatusEvent(eventId, userId) {
     try {

@@ -10,7 +10,7 @@ export const handler = async (event) => {
 		const {
 			idUser,
 			eventId,
-			scheduleAt,
+			scheduleAt, 
 			bodyMessage,
 			titleMessage } = sqs_payload
 
@@ -19,8 +19,8 @@ export const handler = async (event) => {
 			console.error("Falha ao verificar status do evento")
 			return
 		}
-		const currentStatus = statusData.data?.statusnotification
-		console.log("Status atual do evento:", currentStatus)
+		const currentStatus = statusData.data?.statusnotification.toUpperCase()
+		console.log("Status atual do evento ", currentStatus)
 
 		if (currentStatus === "SCHEDULED") {
 			console.log("Evento já SCHEDULED. Nada a fazer.")
@@ -31,9 +31,12 @@ export const handler = async (event) => {
 		const scheduleName = `event-${eventId}-${Date.now()}`
 
 		try {
+			const localDate = new Date(`${scheduleAt}:00`)
+			const scheduleUTC = localDate.toISOString()
+
 			await createScheduleEventBridge({
 				scheduleName,
-				dateTime: scheduleAt, // tem que mandar no padrão aceito event bridge. ex: 2025-11-27T15:30:00 UTC
+				dateTime: scheduleUTC,
 				payload: schedulePayload
 			});
 			console.log("Schedule criado no EventBridge com sucesso")
