@@ -19,7 +19,11 @@ export const handler = async (event) => {
 			console.error("Falha ao verificar status do evento")
 			return
 		}
-		const currentStatus = statusData.data?.statusnotification.toUpperCase()
+		console.log("STATUS EVENTO", statusData.data)
+		if (!statusData.data?.statusNotification) {
+			console.log("Evento sem statusNotification")
+		}
+		const currentStatus = statusData.data?.statusNotification.toUpperCase()
 		console.log("Status atual do evento ", currentStatus)
 
 		if (currentStatus === "SCHEDULED") {
@@ -31,13 +35,10 @@ export const handler = async (event) => {
 		const scheduleName = `event-${eventId}-${Date.now()}`
 
 		try {
-			const localDate = new Date(`${scheduleAt}:00`)
-			const scheduleUTC = localDate.toISOString()
-
 			await createScheduleEventBridge({
-				scheduleName,
-				dateTime: scheduleUTC,
-				payload: schedulePayload
+			scheduleName,
+			scheduleAt,
+			payload: schedulePayload
 			});
 			console.log("Schedule criado no EventBridge com sucesso")
 		} catch (err) {

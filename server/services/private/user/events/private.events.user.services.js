@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { sendToQueue } from "../../../aws/sendJob_SQS.js";
+import { Expo } from "expo-server-sdk";
+
+
 const prisma = new PrismaClient()
 
 
@@ -105,9 +108,31 @@ async function event_NOTIFICATION(
     idUser, eventId, scheduleAt, bodyMessage, titleMessage
 ) {
     try {
+        const tokens = await prisma.deviceToken.findMany({
+            where: { userId: idUser },
+            select: { token: true }
+        })
+
+        if (!tokens.length) {
+            return { 
+                statusCode: 404,
+                error: "Usuário não possui nenhum push token registrado." 
+            }
+        }
+        const expoTokens = tokens
+            .map(token => token.token)
+            .filter(token => Expo.isExpoPushToken(token));
+
+        if (!expoTokens.length) {
+            return { 
+                statusCode: 404,
+                error: "Nenhum push token válido encontrado." 
+            }
+        }
+
         const response = await sendToQueue(
             { idUser, eventId, scheduleAt, bodyMessage, titleMessage }
-        );
+        )
         if (response?.MessageId) return true
         return { error: "Notificação de evento não agendada." }
     } catch (err) {
