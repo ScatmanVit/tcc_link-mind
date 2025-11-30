@@ -15,32 +15,54 @@ async function event_CREATE(newEvent, idUser) {
         }
     }
 
-    try {
-        const eventObj = {
-            user: { connect: { id: idUser } },
-            date: newEvent.date,
-            title: newEvent.title,
-            address: newEvent.address,
-            expired: newEvent.expired,
-            scheduleAt: newEvent.scheduleAt,
-            categoriaId: newEvent.categoriaId,
-            description: newEvent.description,
-            notification: newEvent.notification,
-            statusNotification: newEvent.statusNotification
-        }
+    const eventData = {
+        user: { connect: { id: idUser } },
+        title: newEvent.title,
+        address: newEvent.address,
+        description: newEvent.description,
+        date: newEvent.date,
+        notification: newEvent.notification,
+        scheduleAt: newEvent.scheduleAt,
+        expired: newEvent.expired,
+        statusNotification: newEvent.statusNotification,
+        categoriaId: newEvent.categoriaId,
+    };
 
-        for (const key in eventObj) {
-            if (eventObj[key] == null || eventObj[key] === "") {
-                delete eventObj[key]
+    for (const key in eventData) {
+        if (eventData[key] == null || eventData[key] === "") {
+            delete eventData[key]
+        }
+    }
+
+    const categoriaId = eventData.categoriaId;
+    delete eventData.categoriaId; 
+    
+    const categoryConnect = categoriaId ? {
+        categoria: {
+            connect: {
+                id: categoriaId
             }
         }
+    } : {};
 
+    try {
         const eventCreated = await prisma.evento.create({
-            data: eventObj
-        })
-        return eventCreated
+            data: {
+                ...eventData,       
+                ...categoryConnect, 
+            }
+        });
+        
+        return eventCreated;
+        
     } catch (err) {
-        console.log(err)
+        console.error("Erro ao criar evento no Prisma:", err);
+        if (err.clientVersion) {
+             return {
+                error: "Dados inválidos ou Categoria não encontrada.",
+            }
+        }
+        
         return {
             error: "Não foi possível criar o evento."
         }
