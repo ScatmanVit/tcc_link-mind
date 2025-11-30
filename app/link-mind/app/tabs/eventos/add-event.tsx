@@ -139,10 +139,12 @@ export default function CreateEvent() {
                     type: 'danger',
                     placement: "top",
                     duration: 3000,
-                    dangerIcon: err.message.includes("Forneça um título para o seu novo evento.") 
+                    dangerIcon: err.message.includes("Informações necessárias para agendamento do evento não fornecidas.") 
+                    || err.message.includes("Data de disparo da notificação não fornecida.")
                         ? <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />
                         : <FontAwesome6 name="triangle-exclamation" size={20} color="#F44336" />,
-                    style: err.message.includes("Forneça um título para o seu novo evento.") 
+                    style: err.message.includes("Informações necessárias para agendamento do evento não fornecidas.") 
+                    || err.message.includes("Data de disparo da notificação não fornecida.") 
                         ? { backgroundColor: colors.amber[500] }
                         : { backgroundColor: colors.red[500] }
 

@@ -39,6 +39,7 @@
     "react-hook-form": "^7.66.1",
     "react-native": "0.81.5",
     "react-native-calendars": "^1.1313.0",
+    "react-native-date-picker": "^5.0.13",
     "react-native-modal": "^14.0.0-rc.1",
     "react-native-reanimated": "~4.1.0",
     "react-native-safe-area-context": "5.6.1",

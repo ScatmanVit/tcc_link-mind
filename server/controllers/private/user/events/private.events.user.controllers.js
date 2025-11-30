@@ -125,7 +125,7 @@ async function event_Controller_NOTIFICATION(req, res) {
         return res.status(401).json({
             error: "Id do usuário não fornecido."
         })
-    }
+    } 
     if (!scheduleAt) {
         return res.status(400).json({
             error: "Data de disparo da notificação não fornecida."

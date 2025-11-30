@@ -61,6 +61,7 @@ export default function EventNotify({
                     value={notification.bodyMessage}
                     onChangeText={(bodyMessage) => handleChangeNotification('bodyMessage', bodyMessage)}
                     autoCapitalize="none"
+                    multiline
                 />
             </View>
             <View style={styles.selectDateNotify}>

@@ -33,15 +33,25 @@ export default function Event({
 
     const formattedDate = date ? format(new Date(date), "dd 'de' MMM, HH:mm", { locale: ptBR }) : 'Sem data';
     const hasAddress = !!address;
-    const isFailed = statusNotification === "FAILED";
+    
+    const statusDotColor = (status: StatusNotificationEvent | undefined) => {
+        switch (status) {
+            case "SENT":
+                return colors.greenSuccess; 
+            case "SCHEDULED":
+                return colors.amber[500]; 
+            case "FAILED":
+                return colors.red[500];
+            default:
+                return 'transparent'; 
+        }
+    };
 
     const actionStatusIconInfo = {
-        icon: isFailed ? 'notifications-off' : 'notifications-active',
-        color: isFailed ? colors.red[500] : colors.gray[500], 
-    }
-
-    const statusTextColor = isFailed ? colors.red[500] : colors.gray[500];
-    const statusTextBg = isFailed ? colors.red[500] + '15' : colors.gray[700]; 
+        icon: statusNotification === "FAILED" ? 'notifications-off' : 'notifications-active',
+        color: statusNotification === "FAILED" ? colors.red[500] : colors.gray[500], 
+    };
+    
     
     return (
         <Pressable
@@ -69,16 +79,9 @@ export default function Event({
                     
                     {statusNotification && statusNotification !== "PENDING" && (
                         <View style={[
-                            style.statusPill, 
-                            { backgroundColor: statusTextBg }
-                        ]}>
-                            <Text style={[
-                                style.statusText, 
-                                { color: statusTextColor }
-                            ]}>
-                                {statusNotification}
-                            </Text>
-                        </View>
+                            style.statusDot, 
+                            { backgroundColor: statusDotColor(statusNotification) }
+                        ]} />
                     )}
                 </View>
 
@@ -141,7 +144,7 @@ const style = StyleSheet.create({
         maxWidth: '100%',
         flexDirection: 'row', 
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     leadingIcon: {
         marginRight: 10,
@@ -164,19 +167,14 @@ const style = StyleSheet.create({
         fontSize: 16, 
         fontWeight: '700', 
         flexShrink: 1,
+        marginRight: 8, 
     },
-    statusPill: {
-        marginLeft: 10,
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: 4,
-        alignSelf: 'center',
+    statusDot: {
+        width: 10,  
+        height: 10, 
+        borderRadius: 5
     },
-    statusText: {
-        fontSize: 10,
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-    },
+
     detailItem: {
         flexDirection: 'row',
         alignItems: 'center',

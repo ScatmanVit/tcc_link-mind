@@ -262,6 +262,7 @@ export default function LinksIndex() {
                     pageNameModal={pageNameModal}
                     ChangePageNameModal={ChangePageNameModal}
                     toggleModalClose={ChangeModalVisibilityClose}
+                    pageOrigin="links"
                 >
                     {pageNameModal ? (
                         pageNameModal === "Editar Link" ? (

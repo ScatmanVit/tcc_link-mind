@@ -5,7 +5,9 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import { Text } from "react-native";
-import { colors } from '@/styles/colors' 
+import { colors } from '@/styles/colors'
+import * as Notifications from "expo-notifications";
+
 
 import AuthProvider from '@/context/auth';
 
@@ -13,10 +15,10 @@ export type CategoryPropsItem = {
     nome: string;
     id: string;
 };
- 
+
 const defaultCategories: CategoryPropsItem[] = [
     { id: '1', nome: 'Todas' },
-    { id: '2', nome: "Sem categoria"},
+    { id: '2', nome: "Sem categoria" },
     { id: '3', nome: 'Estudos' },
     { id: '4', nome: 'Trabalho' },
     { id: '5', nome: 'Finanças' },
@@ -43,7 +45,8 @@ async function initializeCategories() {
 }
 
 export default function RootLayout() {
-    
+
+
     const [fontsLoaded] = useFonts({
         Roboto: require("../assets/fonts/Roboto-Regular.ttf"),
         RobotoItalic: require("../assets/fonts/Roboto-Italic-VariableFont_wdth,wght.ttf"),
@@ -52,6 +55,16 @@ export default function RootLayout() {
     useEffect(() => {
         initializeCategories();
     }, []);
+
+    Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: true,
+            shouldSetBadge: true,
+            shouldShowBanner: true,
+            shouldShowList: true,
+        }),
+    });
 
     if (fontsLoaded) {
         (Text as any).defaultProps = (Text as any).defaultProps || {};

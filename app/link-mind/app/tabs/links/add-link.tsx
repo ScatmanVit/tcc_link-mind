@@ -206,7 +206,7 @@ export default function CreateLink() {
                 />
 
             <View style={{ flex: 1, flexDirection: "column", justifyContent:"flex-end" }}>
-                <View style={{ height: 50, marginBottom: 50 }}>
+                <View style={{ height: 50, marginBottom: 35 }}>
                     <Button
                         text={loading ? "Carregando..." : "Criar Link"}
                         colorBack={loading ? colors.gray[400] : undefined}

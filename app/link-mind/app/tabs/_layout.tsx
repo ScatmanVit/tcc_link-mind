@@ -26,7 +26,7 @@ export default function TabLayout() {
 
 
 	const baseRoutes = ["links", "anotacoes", "eventos", "pesquisa"];
-	const subRoutes = ["add-link", "add-event"]
+	const subRoutes = ["add-link", "add-event", "add-note"]
 	function handleArrowBack() {
 		const activeBase = baseRoutes.find((route) =>
 			pathname.includes(`/${route}/`)

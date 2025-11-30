@@ -4,7 +4,9 @@ import Categories from '@/src/components/categories/categories';
 import { colors } from '@/src/styles/colors';
 import { useRouter } from 'expo-router';
 import Input from '../input'; 
-export type EventWithId = EventProps & { id: string, categoriaId?: string }; 
+export type EventWithId = EventProps & { id: string, categoriaId?: string, 
+    scheduleAt?: string;
+    statusNotification?: StatusNotificationEvent; }; 
 
 type EventsProps = { 
     data: EventWithId[];

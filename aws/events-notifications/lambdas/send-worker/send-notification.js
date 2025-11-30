@@ -32,9 +32,9 @@ export async function sendNotification({ eventId, idUser, title, body }) {
                 sentAt: Date.now(),
                 eventId,
                 action: "open_event",
-            },
-            richContent: {
-                image: "https://i.postimg.cc/GTbmJTj0/icon.png"
+            android: { 
+                    imageUrl: "https://i.postimg.cc/GTbmJTj0/icon.png"
+                }            
             }
         }))
 

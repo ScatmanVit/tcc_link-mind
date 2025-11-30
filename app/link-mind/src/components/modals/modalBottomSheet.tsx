@@ -6,12 +6,13 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Modal from 'react-native-modal';
 import { ArrowLeft } from "lucide-react-native";
 
-type ConfirmModalProps = {
-    item?: string, // para passar com prop para as páginas de edição de link e Resumir com IA
+type ChooseOptionModalProps = {
+    item?: string, 
     modalVisible: boolean,
     children: React.ReactNode,
     pageNameModal?: string
     toggleModal: () => void,
+    pageOrigin?: string
     ChangePageNameModal: (page: string) => void,
     toggleModalClose: () => void
 };
@@ -22,9 +23,10 @@ export default function ChooseOptionModal({
         toggleModal, 
         modalVisible, 
         pageNameModal,
-        toggleModalClose, 
+        toggleModalClose,
+        pageOrigin, 
         ChangePageNameModal 
-    }: ConfirmModalProps) {
+    }: ChooseOptionModalProps) {
     return (
         <Modal
             isVisible={modalVisible}
@@ -36,6 +38,8 @@ export default function ChooseOptionModal({
             useNativeDriver
             style={styles.modal}
             backdropOpacity={0}
+            onBackButtonPress={toggleModalClose}
+            onDismiss={toggleModalClose}
         >
             <View style={[
                 styles.container,
@@ -43,9 +47,13 @@ export default function ChooseOptionModal({
                     ? { height: "78%" }
                     : pageNameModal === "Resumir Link com IA"
                     ? { height: "80%" }
-                    : pageNameModal 
-                    ? { height: "60%" }
-                    : pageNameModal === "Editar Evento" && { height: "90%" }
+                    : pageNameModal === "Editar Evento" 
+                    ? { height: "90%" }
+                    : pageNameModal === "Notificar Evento" 
+                    ? { height: "65%" }
+                    : pageNameModal && pageOrigin === "events" 
+                    ? { height: "80%" }
+                    : pageNameModal && pageOrigin === "links" && { height: "60%" }
 
                     
             ]}>
@@ -89,8 +97,8 @@ export default function ChooseOptionModal({
                             color={colors.gray[300]}
                         />
                     </Pressable>
-                </View> :
-                    <Pressable
+                </View> 
+                : <Pressable
                         onPress={toggleModal}
                         style={({ pressed }) => [
                             styles.close_button,

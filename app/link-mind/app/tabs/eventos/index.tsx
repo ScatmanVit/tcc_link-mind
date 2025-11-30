@@ -15,6 +15,7 @@ import {
 import EventSkeleton from '@/src/components/events/eventSkeleton';
 import Events, { EventWithId } from '@/src/components/events/events'; // CORREÇÃO 1: Removido StatusNotificationEvent daqui
 import { StatusNotificationEvent } from '@/src/components/events/event'; // CORREÇÃO 1: Importado do componente event
+import { CreateEventProps } from '@/src/services/events/createEvent'
 
 // Importe seus serviços de API para eventos
 import list_Events from '@/src/services/events/listEvents'; 
@@ -26,6 +27,7 @@ import categories_List from '@/src/services/categories/listCategories';
 import ChooseOptionModal from '@/src/components/modals/modalBottomSheet';
 import ActionSelector from '@/src/components/actionSelector';
 import CreateCategoryModal from '@/src/components/modals/createCategoryModal';
+import NotifyEvent from './notify-event';
 // import EditEvent from './edit-event';
 // import ViewEvent from './view-event';
 
@@ -83,7 +85,7 @@ export default function EventsIndex() {
                     setEvents(prev => prev.filter(e => e.id !== id));
                     ChangeModalVisibilityClose(); // Fecha o modal após deletar
                 }
-            } catch (err: any) {
+            } catch (err: any) { 
                 console.log("Erro ao deletar evento:", err.message);
             }
         } else {
@@ -113,10 +115,18 @@ export default function EventsIndex() {
     // }
 
     function onUpdatedEvent(updatedEvent: EventWithId) {
-        // CORREÇÃO 2: Tipando 'e' explicitamente
         setEvents(prev =>
             prev.map((e: EventWithId) =>
                 e.id === updatedEvent.id ? { ...e, ...updatedEvent, date: updatedEvent.date ? new Date(updatedEvent.date) : undefined } : e
+            )
+        );
+    }
+    function onScheduledEvent(eventId: string) {
+        setEvents(prev => 
+            prev.map(event =>
+                event.id === eventId
+                    ? { ...event, statusNotification: "SCHEDULED" }
+                    : event
             )
         );
     }
@@ -174,7 +184,7 @@ export default function EventsIndex() {
         }
         try {
             const res = await category_Create(user.access_token_prov,
-                                     [{ id: "TEMP_ID", nome: name }]); // TEMP_ID será substituído pela API
+                                     [{ id: "TEMP_ID", nome: name }]); 
             if(res?.message) {
                 const resList = await categories_List(user.access_token_prov);
                 if(resList?.message) {
@@ -189,7 +199,7 @@ export default function EventsIndex() {
 
     function ChangeModalVisibilityClose() {
         setBottomModalVisible(prev => !prev);
-        setTimeout(() => { setPageNameModal(""); }, 300);
+        setTimeout(() => { setPageNameModal(undefined); }, 300);
     }
 
     function ChangeModalVisibility() {
@@ -197,7 +207,7 @@ export default function EventsIndex() {
     }
 
     function ChangeModalVisibilityViewEvent(title: string) {
-        setPageNameModal(`${title}`); // O título do evento no modal
+        setPageNameModal(`${title}`); 
         ChangeModalVisibility();
     }
 
@@ -244,7 +254,10 @@ export default function EventsIndex() {
 
     useEffect(() => {
         console.log(event)
-    }, [event])
+        console.log(pageNameModal)
+    }, [event, pageNameModal])
+
+    
 
     return (
         <SafeAreaView style={{ flex: 1, paddingTop: -25.8, paddingBottom: -15 }}>
@@ -284,9 +297,9 @@ export default function EventsIndex() {
                     pageNameModal={pageNameModal}
                     ChangePageNameModal={ChangePageNameModal}
                     toggleModalClose={ChangeModalVisibilityClose}
+                    pageOrigin="events"
                 >
                     {pageNameModal ? (
-                        // Aqui você renderizaria as telas de "Editar Evento", "Visualizar Evento", etc.
                         pageNameModal === "Editar Evento" ? (
                             <Text>PÁGINA DE EDITAR EVENTO (CRIAR)</Text>
                             // <EditEvent
@@ -297,10 +310,20 @@ export default function EventsIndex() {
                             //     }}
                             //     toggleModal={ChangeModalVisibilityClose}
                             // />
-                        ) : pageNameModal === "Resumir com IA" ? ( <Text>PÁGINA DE RESUMIR COM IA</Text> )
+                        ) : pageNameModal === "Notificar Evento" ? ( 
+                            <NotifyEvent
+                                toggleModal={ChangeModalVisibilityClose}
+                                onScheduled={onScheduledEvent}  
+                                data={{
+                                    eventId: event?.id!!,
+                                    scheduleAt: event?.scheduleAt!!,
+                                    statusNotification: event?.statusNotification!!
+                                }}
+                            /> 
+                        )
                         : (
-                            <Text>PÁGINA DE VISUALIZAR EVENTO (CRIAR)</Text>
-                            // <ViewEvent eventObj={event!!} categories={categories} />
+                             null
+
                         )
                     ) : (
                         <View style={styles.content_modal}>
@@ -308,7 +331,7 @@ export default function EventsIndex() {
                                 ChangePageNameModal("Editar Evento")
                             }}/>
                             <ActionSelector nameAction='Notificar' icon={"bell"} onPress={() => {
-                                ChangePageNameModal("Editar Evento")
+                                ChangePageNameModal("Notificar Evento")
                             }}/>
                             <ActionSelector nameAction='Deletar' icon={"trash"} colorBack={colors.red[200]} onPress={() => {
                                 ChangeModalVisibility()
