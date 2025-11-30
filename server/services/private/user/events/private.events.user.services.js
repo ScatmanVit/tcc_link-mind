@@ -44,7 +44,9 @@ async function event_CREATE(newEvent, idUser) {
             }
         }
     } : {};
-
+    
+    console.log("CATEGORIA", categoriaId)
+    console.log("EVENTO", eventData)
     try {
         const eventCreated = await prisma.evento.create({
             data: {

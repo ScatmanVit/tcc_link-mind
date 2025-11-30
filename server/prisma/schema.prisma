@@ -111,8 +111,8 @@ model Evento {
   description String?
   date        DateTime?
   notification Boolean?
-  scheduleAt   DateTime?
-  expired      DateTime?
+  scheduleAt   String?
+  expired      Boolean?
   statusNotification       StatusNotificationEvent?
   categoriaId String?      @db.Uuid
   categoria   Categoria?   @relation(fields: [categoriaId], references: [id])
