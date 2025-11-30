@@ -62,18 +62,6 @@ export default function Link({
                         color={colors.gray[400]} 
                     />
                 </Pressable>
-
-                {/* <Pressable
-                    onPress={onDetails}
-                    style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-                >
-                    <Feather 
-                        style={style.more_horizontal} 
-                        name="more-horizontal" 
-                        size={22} 
-                        color={colors.gray[400]} 
-                    />
-                </Pressable> */}
             </View>    
         </Pressable>
     ) 
@@ -92,7 +80,7 @@ const style = StyleSheet.create({
     },
     title: {
         color: colors.gray[50],
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: 500,
         width: 290,
         marginBottom: 1

@@ -26,7 +26,7 @@ export default function TabLayout() {
 
 
 	const baseRoutes = ["links", "anotacoes", "eventos", "pesquisa"];
-	const subRoutes = ["add-link"]
+	const subRoutes = ["add-link", "add-event"]
 	function handleArrowBack() {
 		const activeBase = baseRoutes.find((route) =>
 			pathname.includes(`/${route}/`)
@@ -45,8 +45,14 @@ export default function TabLayout() {
 			pathname.includes(`/${route}`)
 		);
 		console.log(nameActionPage)
-		if (nameActionPage === "add-link") return "Criar novo link"
-		// conmtinuar para as demais páginas
+		switch (nameActionPage){
+			case "add-link":
+				return  "Criar novo Link"
+			case "add-event": 
+				return "Criar novo Evento"
+			case "add-note":
+				return "Criar nova Anotação"
+		}
 	}
 
 	function ChangeModalVisibility() {
@@ -60,7 +66,7 @@ export default function TabLayout() {
 	}, [user?.access_token_prov]);
 
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: colors.gray[950] }}>
 			<StatusBar style="light" backgroundColor={colors.gray[950]} />
 			<ToastProvider
 				offset={10}   
@@ -87,7 +93,12 @@ export default function TabLayout() {
 					/>
 					<ItemSelector 
 						name="Novo Evento"
-						onPress={() => { }} 
+						onPress={() => { 
+							ChangeModalVisibility()
+							setTimeout(() => {
+								router.push('/tabs/eventos/add-event')
+							}, 100)
+						}} 
 					/>
 				</OptionsModal>
 				<View style={style.header}>
@@ -225,6 +236,8 @@ const style = StyleSheet.create({
 	viewNameActionPage: {
 		flexDirection: "row",
 		justifyContent: "center",
+		alignItems: "center",
+		marginLeft: 3,
 		gap: 10
 	},
 	nameActionPage: {

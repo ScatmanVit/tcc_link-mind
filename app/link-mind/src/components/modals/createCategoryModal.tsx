@@ -28,6 +28,8 @@ export default function CreateCategoryModal({
             onBackdropPress={toggleModal}
             animationIn="fadeIn"
             animationOut="fadeOut"
+            animationInTiming={20}   
+            animationOutTiming={20}  
             useNativeDriver
         >
             <View style={styles.container}>

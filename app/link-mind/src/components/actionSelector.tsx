@@ -5,7 +5,7 @@ import { Octicons } from "@expo/vector-icons";
 
 type ActionSelectorProps = {
     nameAction: string;
-    colorBack?: string; // cor do ícone opcional
+    colorBack?: string; 
     icon: keyof typeof Octicons.glyphMap;
     onPress?: () => void;
 };

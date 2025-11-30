@@ -303,13 +303,14 @@ export default function LinksIndex() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 5,
+        padding: 10,
+        marginTop: -5,
         backgroundColor: colors.gray[950],
     },
     content_modal: {
         flex: 1,
         gap: 19,
-        marginTop: -6,
+        marginTop: -15,
         marginBottom: 3,
         flexDirection: "row",
         alignItems: "center",

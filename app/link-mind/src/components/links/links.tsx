@@ -63,10 +63,10 @@ export default function Links({
             nestedScrollEnabled
             data={data}
             keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator
+            showsVerticalScrollIndicator={false}
             style={{ flex: 1 }}
             ListHeaderComponent={
-                <View style={{ flexShrink: 0, flexDirection: "column", gap: 8, alignItems: "center", marginBottom: -20 }}>
+                <View style={{ flexShrink: 0, flexDirection: "column", gap: 7, alignItems: "center", marginBottom: -19 }}>
                         <Pressable style={style.input_search} onPress={() => router.push("/pesquisa")}>
                             <View pointerEvents='none'>
                                 <Input
@@ -80,7 +80,7 @@ export default function Links({
                                 />
                         </View>
                     </Pressable>
-                    <View pointerEvents="box-none" style={{ flexShrink: 0, width: "100%" }}>
+                    <View pointerEvents="box-none" style={{ flexShrink: 0, width: "100%", marginLeft: "-3%" }}>
                         <Categories
                             data={categories}
                             selectedCategory={selectedCategory}
@@ -102,7 +102,7 @@ export default function Links({
                     </Pressable>
 
                 </View>
-            }
+            } 
             contentContainerStyle={{ padding: 3, gap: 12 }}
             renderItem={({ item }) => (
                 <View style={{ marginHorizontal: 11 }}>
@@ -148,6 +148,6 @@ const style = StyleSheet.create({
     input_search: {
         marginHorizontal: 7,
         marginVertical: 7,
-        width: "95%"
+        width: "98%"
     }
 })

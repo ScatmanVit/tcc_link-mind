@@ -43,7 +43,11 @@ export default function ChooseOptionModal({
                     ? { height: "78%" }
                     : pageNameModal === "Resumir Link com IA"
                     ? { height: "80%" }
-                    : pageNameModal && { height: "60%" }
+                    : pageNameModal 
+                    ? { height: "60%" }
+                    : pageNameModal === "Editar Evento" && { height: "90%" }
+
+                    
             ]}>
                 {pageNameModal ? 
                 <View style={styles.header}>
@@ -144,7 +148,7 @@ const styles = StyleSheet.create({
     },
     container: {
         width: "100%",
-        height: "28%",
+        height: "24%",
         backgroundColor: colors.gray[800],
         borderTopLeftRadius: 22,
         borderTopRightRadius: 22,

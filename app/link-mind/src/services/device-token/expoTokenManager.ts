@@ -3,8 +3,6 @@ import deviceToken_register from "./deviceToken";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants"; 
 import { Platform } from "react-native";
-import { EAS_PROJECT_ID } from "@env";
-
 
 
 async function registerAndSave(token: string, access_token: string) {
@@ -66,8 +64,7 @@ export async function handleDailyExpoTokenRegister(access_token: string) {
 
         // 3. PROJECT ID (Agora blindado)
         // Tenta pegar do config. Se falhar, usa o ID fixo que sabemos que é o seu.
-        const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? 
-                          Constants?.easConfig?.projectId ?? EAS_PROJECT_ID
+        const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? "45742bc7-b70d-4e77-9116-c603aae096e7"
               
 
         if (!projectId) {

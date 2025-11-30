@@ -17,6 +17,7 @@ export const colors = {
       200: "#00f9c7ff",
       300: "#01d0b4ff", // sucesso mesmo, ( cor principal da apicação )
     },
+    greenSuccess: "#97ec7fff",
 
       gold: "#FACC15", 
                 
