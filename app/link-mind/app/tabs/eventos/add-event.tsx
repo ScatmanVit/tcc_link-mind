@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TextInput, ScrollView, Pressable } from "react-native";
 import { useToast } from 'react-native-toast-notifications';
 import { FontAwesome6 } from '@expo/vector-icons';
 
@@ -8,7 +8,7 @@ import { AuthContext } from '@/context/auth'
 import Button from "@/components/button/button";
 import Categories from "@/components/categories//categories";
 import { useCategory } from "@/components/categories/useCategory";
-import ButtonToggle from '@/src/components/button/buttonToggle'; // Ajuste o caminho conforme onde você salvou
+import ButtonToggle from '@/src/components/button/buttonToggle'; 
 
 import { type CategoryPropsItem } from "../../_layout";
 import categories_List from "@/src/services/categories/listCategories";
@@ -19,10 +19,12 @@ import { type CreateEventProps } from "@/src/services/events/createEvent";
 import { type NotificationEvent } from '@/src/services/events/sendEventNotification'
 import create_Event from '@/src/services/events/createEvent'
 import send_Notification_Event from '@/src/services/events/sendEventNotification'
+import { formatDateToSchedule } from "@/src/utils/formatDate";
+import EventNotify from "@/src/components/events/eventNotify";
 
 export default function CreateEvent() {
     const toast = useToast()
-    const { user } = useContext(AuthContext) // provisório pegar do estado o token, não da para usar o secure store no web
+    const { user } = useContext(AuthContext)
 
 
     const [ event, setEvent ] = useState<Partial<CreateEventProps>>({
@@ -38,7 +40,9 @@ export default function CreateEvent() {
         scheduleAt: '',
         eventId: ''
     })
-    const [ loading, setLoading ] = useState(false)
+    const [ open, setOpen ] = useState<boolean>(false)
+    const [ date, setDate ] = useState(new Date()) 
+    const [ loading, setLoading ] = useState<boolean>(false)
     const { selectedCategory, setSelectCategory } = useCategory();
     const [ categories, setCategories ] = useState<CategoryPropsItem[]>([])
     const [ modalCreateCategory, setModalCreateCategory ] = useState<boolean>(false)
@@ -88,8 +92,7 @@ export default function CreateEvent() {
                     eventId: eventCreated.eventCreated.id
                 }))
                 setSelectCategory(undefined)
-                setToggleButtonSelect(undefined)
-                toast.show(eventCreated.message, {
+                toast.show(eventCreated.message, { 
                     type: 'success',
                     placement: "top",
                     duration: 2000,
@@ -110,6 +113,10 @@ export default function CreateEvent() {
                     : { backgroundColor: colors.red[500] }
 
             });
+        } finally {
+            if (!toggleButtonSelect) {
+                setLoading(false)
+            }
         }
     }
 
@@ -144,34 +151,28 @@ export default function CreateEvent() {
                 setLoading(false)
             }
         }
-        if (notification.eventId && toggleButtonSelect) {
-            if (!notification.bodyMessage
-                || !notification.titleMessage
-            ) {
-                toast.show("Preencha os dados da notificação por favor.", {
-                    type: 'danger',
-                    placement: "top",
-                    duration: 2000,
-                    icon: <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />,
-                    style: { backgroundColor: colors.amber[500] }
-                })
-            return
-            } else {
-                notificationEvent(notification)
-            }
-        } else return
+            if (notification.eventId && toggleButtonSelect) {
+                if (!notification.bodyMessage
+                    || !notification.titleMessage
+                ) {
+                    toast.show("Preencha os dados da notificação por favor.", {
+                        type: 'danger',
+                        placement: "top",
+                        duration: 2000,
+                        icon: <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />,
+                        style: { backgroundColor: colors.amber[500] }
+                    })
+                return
+                } else {
+                    notificationEvent(notification)
+                }
+            } else return
+       
     }, [notification?.eventId])
-    
-    // COLOCAR NA API EM TODOS OS RETORNOS DE ERRO 400 UM ATRIBUTO NA RSPOSTA CHAMADO TYPE ERROR COM OS SEGUINTES POSSÍVEIS VALORES:
-    /* 
-        erros 400... = typeError: "alert"
-        erros 200... = typeError: "success"
-        erros 500... = typeError: "error"
-    */ 
     
     async function fetch_Categories() {
         if (!user || !user.access_token_prov) {
-            console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
+            console.log("Usuário não autenticado") 
             return
         }
         try {   
@@ -296,34 +297,15 @@ export default function CreateEvent() {
                     <ButtonToggle isEnabled={toggleButtonSelect!!} onToggle={buttonToggleSelect}/>
                 </View>
                 
-                {toggleButtonSelect ? 
-                    <View>
-                        <View style={[styles.inputContainer, { marginBottom: 29}]}>
-                            <Text style={styles.label}>Titúlo da notificação</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Digite o título"
-                                placeholderTextColor={colors.gray[300]}
-                                underlineColorAndroid="transparent"
-                                value={notification?.bodyMessage}
-                                onChangeText={(bodyMessage) => setNotification(prevNotify => ({ ...prevNotify, bodyMessage }))}
-                                autoCapitalize="none"
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Descrição da notificação</Text>
-                            <TextInput
-                                style={[styles.input, styles.textArea]}
-                                placeholder="Digite uma descrição breve"
-                                placeholderTextColor={colors.gray[300]}
-                                underlineColorAndroid="transparent"
-                                value={notification?.titleMessage}
-                                onChangeText={(titleMessage) => setNotification(prevNotify => ({ ...prevNotify, titleMessage }))}
-                                autoCapitalize="none"
-                            />
-                        </View>
-                    </View>
-                // FAZER ESCOLHA DE DIA E HORÁRIO, FORMATAR A DATA, E SALVAR NO ESTADO NOTIFICATION
+            { toggleButtonSelect ? 
+                    <EventNotify 
+                        open={open}
+                        date={date} 
+                        setOpen={setOpen}
+                        notification={notification}
+                        setNotification={setNotification}
+                        formatDateToSchedule={formatDateToSchedule}
+                />
                 : null    
             }
                 <View style={{ flex: 1, flexDirection: "column", justifyContent:"flex-end", marginTop: "5%" }}>
@@ -394,11 +376,11 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "flex-start",
         paddingRight: 10,
-        marginBottom: 28
+        marginBottom: 31
     },
     buttonNotification_text: {
         flexDirection: "column",
-        maxWidth: "70%",
+        maxWidth: "80%",
         gap: 5
     },
     sideBar: {

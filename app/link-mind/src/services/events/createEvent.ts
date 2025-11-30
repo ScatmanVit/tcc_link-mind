@@ -16,6 +16,7 @@ export default async function create_Event(access_token: string, data: CreateEve
         console.error("TOKEN NÃO RECEBIDO")
         throw new Error("Token não recebido")
     }
+    console.log(data)
     try {
         const res = await axios.post("https://tcc-link-mind.onrender.com/api/v1/linkmind/event/create", 
             data,
