@@ -110,7 +110,7 @@ async function event_DELETE(idUser, eventId) {
         })
         if (eventDeleted.count === 0) {
             return {
-                error: "O evento não foi alterado"
+                error: "O evento não foi deletado"
             }
         }
         return eventDeleted.count > 0
