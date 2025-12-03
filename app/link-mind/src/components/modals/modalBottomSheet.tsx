@@ -48,7 +48,7 @@ export default function ChooseOptionModal({
                     : pageNameModal === "Resumir Link com IA"
                     ? { height: "80%" }
                     : pageNameModal === "Editar Evento" 
-                    ? { height: "81%" }
+                    ? { height: "95%" }
                     : pageNameModal === "Notificar Evento" 
                     ? { height: "70%" }
                     : pageNameModal && pageOrigin === "events" 

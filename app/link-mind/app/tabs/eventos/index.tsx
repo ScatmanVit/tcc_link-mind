@@ -267,7 +267,7 @@ export default function EventsIndex() {
                     {pageNameModal ? (
                         pageNameModal === "Editar Evento" ? (
 
-                            <EditEvent 
+                            <EditEvent  
                                 data={{
                                     title: event?.title!!,
                                     address: event?.address,
@@ -275,7 +275,10 @@ export default function EventsIndex() {
                                     date: event?.date,
                                     categoriaId: event?.categoriaId
                                 }}
+                                eventIdProps={event?.id!!}
                                 categoriesProps={categories}
+                                onUpdate={onUpdatedEvent}
+                                onChangeModalVisibilityClose={ChangeModalVisibilityClose}
                             />
                         ) : pageNameModal === "Notificar Evento" ? ( 
                             <NotifyEvent

@@ -19,6 +19,8 @@ import { type CreateEventProps } from "@/src/services/events/createEvent";
 import create_Event from '@/src/services/events/createEvent' 
 import DatePicker from "react-native-date-picker";
 import { formatDateCustom } from "@/src/utils/formateDateCustom";
+import update_Event, { UpdateEventProps } from "@/src/services/events/updateEvent";
+import { EventWithId } from "@/src/components/events/events";
 
 type InitialEventState = {
     title: string | undefined;
@@ -36,15 +38,21 @@ type EditEvent = {
         date?: Date,
         categoriaId?: string 
     }
+    eventIdProps: string,
     categoriesProps: {
         id: string,
         nome: string
-    }[]
+    }[],
+    onUpdate: (eventUpdated: EventWithId) => void
+    onChangeModalVisibilityClose: () => void
 }
 
 export default function EditEvent({
     data,
-    categoriesProps
+    onUpdate,
+    eventIdProps,
+    categoriesProps,
+    onChangeModalVisibilityClose
 }: EditEvent) {
     const toast = useToast()
     const { user } = useContext(AuthContext)
@@ -56,14 +64,12 @@ export default function EditEvent({
         title: '',
         date: undefined, 
         address: '',
-        scheduleAt: '',
         description: ''
     });
 
-
-
-    const [ openEventDatePicker, setOpenEventDatePicker ] = useState<boolean>(false)
+    const [ eventId, setEventId ] = useState<string>(eventIdProps)
     const [ dateEvent, setDateEvent ] = useState(new Date()) 
+    const [ openEventDatePicker, setOpenEventDatePicker ] = useState<boolean>(false)
     const [ loading, setLoading ] = useState<boolean>(false)
     const [ categories, setCategories ] = useState<CategoryPropsItem[]>(categoriesProps)
     const [ modalCreateCategory, setModalCreateCategory ] = useState<boolean>(false)
@@ -111,23 +117,13 @@ export default function EditEvent({
     }
 
     async function handleEditEvent() {
-        if (!event.title?.trim()) {
-            toast.show("O título é obrigatório", {
-                type: 'danger',
-                placement: "top",
-                duration: 2000,
-                icon: <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />,
-                style: { backgroundColor: colors.amber[500] }
-            })
-            return
-        }
         
         if (!hasChanges()) {
             toast.show("Nada foi alterado", {
                 type: 'normal',
                 placement: "top",
                 duration: 3000,
-                icon: <FontAwesome6 name="exclamation-triangle" size={20} color={colors.gray[50]} />,
+                icon: <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />,
                 style: { backgroundColor: colors.amber[500] }
             })
             return
@@ -137,25 +133,27 @@ export default function EditEvent({
             console.log("Usuário não autenticado") 
             return
         }
-        
-        console.log({
-            event
-        });
-        
+
+        const newDateAsDate = event.date 
+            ? new Date(event.date)
+            : undefined;
         try {
             setLoading(true)
-            const eventUpdated = await create_Event(
-                user.access_token_prov,
-                {
-                    title: event?.title,
-                    date: event?.date, 
-                    address: event?.address,
-                    description: event?.description,
-                    categoriaId: selectedCategory?.id
-                } as CreateEventProps
-            )
+            const eventUpdated = await update_Event({
+                access_token: user.access_token_prov,
+                eventId: eventId,
+                data: {
+                    newTitle: event?.title as string,
+                    newDate: newDateAsDate, 
+                    newAddress: event?.address,
+                    newDescription: event?.description,
+                    newCategoriaId: selectedCategory?.id
+                }
+            })
             
             if (eventUpdated?.success) {
+                onUpdate(eventUpdated.eventUpdated)
+                onChangeModalVisibilityClose()
                 toast.show(eventUpdated.message, { 
                     type: 'success',
                     placement: "top",
@@ -169,14 +167,16 @@ export default function EditEvent({
                 type: 'danger',
                 placement: "top",
                 duration: 3000,
-                dangerIcon: err.message.includes("Forneça um título para o seu novo evento.") 
+                dangerIcon: err.message.includes("O evento que voce tentou alterar não existe.") 
+                    || err.message.includes("Id do usuário ou do evento não fornecidos.") 
                     ? <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />
                     : <FontAwesome6 name="triangle-exclamation" size={20} color="#F44336" />,
-                style: err.message.includes("Forneça um título para o seu novo evento.") 
+                style: err.message.includes("O evento que voce tentou alterar não existe.") 
+                    || err.message.includes("Id do usuário ou do evento não fornecidos.")  
                     ? { backgroundColor: colors.amber[500] }
                     : { backgroundColor: colors.red[500] }
 
-            });
+            }); 
         } finally {
             setLoading(false)
         }

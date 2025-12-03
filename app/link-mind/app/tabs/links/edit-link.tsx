@@ -136,7 +136,7 @@ export default function EditLink({
                     duration: 2000,
                     icon: <FontAwesome6 name="check-circle" size={20} color="#4CAF50" />
                 });
-            }
+            } 
         } catch (err: any) {
             console.log(err.message)
             toast.show(err.message, {

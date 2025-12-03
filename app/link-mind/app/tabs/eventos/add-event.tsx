@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.gray[950],
         paddingHorizontal: 9,
-        paddingTop: "5%",
+        paddingTop: "4%",
         gap: 12
     },
     title: {
