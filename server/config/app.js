@@ -9,7 +9,7 @@ import AuthRoutes from '../routes/auth/auth.routes.js'
 import cookieParser from 'cookie-parser';
 import express from 'express'
 import helmet from 'helmet'
-import cors from 'cors'// para ambiente de desenvolvimeto, será configurado futuramente
+import cors from 'cors'
 
 const app = express()
 

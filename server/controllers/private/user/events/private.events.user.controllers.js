@@ -167,50 +167,57 @@ async function event_Controller_NOTIFICATION(req, res) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 async function event_update_Controller_PUT(req, res) {
-
+	const userId = req.user?.id
+	const IdEvent = req.params.id
+    const {
+        newTitle,
+        newDate,
+        newAddress,
+        newDescription,
+        newCategoriaId
+    } = req.body
+    if (!userId || !IdEvent) {
+        return res.status(400).json({
+            error: "Id do usuário ou do evento não fornecidos."
+        })
+    }
+    try {
+        const userExist = await findOneUser("", userId)
+        if (!userExist) {
+            return res.status(404).json({
+                error: "Usuário não encontrado. Não é possível editar evento."
+            })
+        }
+        const eventUpdated = await PrivateUserServiceEvents.event_UPDATE({
+                userId: userId,
+                eventId: IdEvent,
+                newTitle,
+                newDate,
+                newAddress,
+                newDescription,
+                newCategoriaId
+        })
+        if (eventUpdated.error) {
+            return res.status(eventUpdated.statusCode || 500).json({
+                error: eventUpdated.error
+            })
+        } else {
+            return res.status(200).json({
+                success: true,
+                message: "Seu evento foi alterado com sucesso!",
+                eventUpdated: eventUpdated
+            })
+        }
+    } catch (err) {
+        console.error("Ocorreu um erro no servidor [ EDIT EVENT ]", err)
+        return res.status(500).json({
+            error: "Ocorreu um erro no servidor."
+        })
+    }
 }
+
+
 
 
 

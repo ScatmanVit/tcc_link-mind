@@ -122,7 +122,7 @@ async function links_UPDATE(dataUptdatedink) {
 		}
 		console.error(err)
 		return {
-			error: "Não possível alterar o link"
+			error: "Não possível alterar o link."
 		}
 	}
 }

@@ -128,6 +128,50 @@ async function event_DELETE(idUser, eventId) {
     }
 }
 
+async function event_UPDATE(dataUpdatedEvent) {
+    const {
+        userId,
+        eventId,
+        newTitle,
+        newDate,
+        newAddress,
+        newDescription,
+        newCategoriaId
+    } = dataUpdatedEvent
+
+    try {
+        const newEventData = Object.fromEntries(
+            Object.entries({
+                title: newTitle,
+                date: newDate,
+                address: newAddress,
+                description: newDescription,
+                categoriaId: newCategoriaId
+            }).filter(([_, value]) => value != null && value !== "")
+        )
+        const eventUpdated = await prisma.evento.update({
+             where: {
+                userId: userId,
+                id: eventId
+             },
+             data: newEventData
+        })
+        return eventUpdated
+    } catch (err) {
+         if (err.code === 'P2025') {
+            return {
+                error: "O evento que voce tentou alterar não existe.",
+                statusCode: 404
+            }
+         }
+         console.error(err)
+         return {
+            error: "Não foi possível alterar o evento."
+         }
+    }
+}
+
+
 async function event_NOTIFICATION(
     idUser, eventId, scheduleAt, bodyMessage, titleMessage
 ) {
@@ -171,6 +215,7 @@ async function event_NOTIFICATION(
 export default {
     event_CREATE,
     event_DELETE,
+    event_UPDATE,
     event_LIST,
     event_NOTIFICATION
 }
