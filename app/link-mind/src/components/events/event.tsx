@@ -15,7 +15,6 @@ export type EventProps = {
     notification?: boolean;
     onDelete?: () => void;
     onOpenDetails?: () => void;
-    onToggleNotification?: () => void;
     statusNotification?: StatusNotificationEvent;
     onModalOptionsVisibilityViewEvent?: () => void;
 };
@@ -27,7 +26,6 @@ export default function Event({
     onDelete,
     onOpenDetails,
     statusNotification,
-    onToggleNotification,
     onModalOptionsVisibilityViewEvent,
 }: EventProps) {
 
@@ -105,22 +103,19 @@ export default function Event({
             </View>
 
             <View style={style.right_content}>
-                {onToggleNotification && (
-                    <Pressable
-                        onPress={onToggleNotification}
-                        style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1, marginRight: 10 })}
-                    >
-                        <MaterialIcons
-                            name={actionStatusIconInfo.icon as any} 
-                            size={24}
-                            color={actionStatusIconInfo.color}
-                        />
-                    </Pressable>
-                )}
+            
                 {onDelete && (
                     <Pressable
-                        onPress={onDelete}
-                        style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                        onPress={(event) => {
+                            if (event.stopPropagation) {
+                                event.stopPropagation();
+                            }
+                            onDelete()
+                        }}
+                        style={({ pressed }) => ([
+                                style.deleteButtonAbsolute,
+                                { opacity: pressed ? 0.6 : 1 }
+                            ])}
                     >
                         <FontAwesome6
                             name="trash"
@@ -199,5 +194,9 @@ const style = StyleSheet.create({
         flexDirection: 'row', 
         alignItems: 'center',
         gap: 12,
+    },
+    deleteButtonAbsolute: {
+        position: 'absolute', 
+        zIndex: 10,          
     },
 });

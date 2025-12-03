@@ -13,14 +13,10 @@ import {
 } from '@/src/async-storage/categories';
 
 import EventSkeleton from '@/src/components/events/eventSkeleton';
-import Events, { EventWithId } from '@/src/components/events/events'; // CORREÇÃO 1: Removido StatusNotificationEvent daqui
-import { StatusNotificationEvent } from '@/src/components/events/event'; // CORREÇÃO 1: Importado do componente event
-import { CreateEventProps } from '@/src/services/events/createEvent'
+import Events, { EventWithId } from '@/src/components/events/events';
 
-// Importe seus serviços de API para eventos
 import list_Events from '@/src/services/events/listEvents'; 
 import delete_Event from '@/src/services/events/deleteEvent'; 
-// import toggle_Event_Notification from '@/src/services/events/toggleEventNotification'; // CORREÇÃO 3: Descomentado
 import category_Create from '@/src/services/categories/createCategories';
 import categories_List from '@/src/services/categories/listCategories';
 
@@ -28,7 +24,7 @@ import ChooseOptionModal from '@/src/components/modals/modalBottomSheet';
 import ActionSelector from '@/src/components/actionSelector';
 import CreateCategoryModal from '@/src/components/modals/createCategoryModal';
 import NotifyEvent from './notify-event';
-// import EditEvent from './edit-event';
+import EditEvent from './edit-event';
 // import ViewEvent from './view-event';
 
 
@@ -49,7 +45,6 @@ export default function EventsIndex() {
         if (user && user.access_token_prov) {
             try {
                 setIsLoading(true);
-                // Adapte para sua função de listagem de eventos
                 const eventsRes = await list_Events(user.access_token_prov);
                 if (Array.isArray(eventsRes?.events)) {
                     console.log(eventsRes.message);
@@ -79,40 +74,18 @@ export default function EventsIndex() {
                 const deleteEventRes = await delete_Event({
                     access_token: user.access_token_prov,
                     eventId: id
-                });
+                })
                 if (deleteEventRes?.message) {
-                    console.log(deleteEventRes.message);
-                    setEvents(prev => prev.filter(e => e.id !== id));
-                    ChangeModalVisibilityClose(); // Fecha o modal após deletar
+                    console.log(deleteEventRes.message)
+                    setEvents(prev => prev.filter(e => e.id !== id))
                 }
             } catch (err: any) { 
-                console.log("Erro ao deletar evento:", err.message);
+                console.log("Erro ao deletar evento:", err.message)
             }
         } else {
-            console.log("Usuário não autenticado para deletar evento");
+            console.log("Usuário não autenticado para deletar evento")
         }
     }
-
-    // async function handleToggleNotification_Event(id: string, currentStatus: boolean) {
-    //     if (user && user.access_token_prov) {
-    //         try {
-    //             const newStatus = !currentStatus;
-    //             const toggleRes = await toggle_Event_Notification({
-    //                 access_token: user.access_token_prov,
-    //                 id_event: id,
-    //                 notification_status: newStatus
-    //             });
-    //             if (toggleRes?.message) {
-    //                 console.log(toggleRes.message);
-    //                 setEvents(prev => prev.map(e => (e.id === id ? { ...e, notification: newStatus } : e)));
-    //             }
-    //         } catch (err: any) {
-    //             console.log("Erro ao alternar notificação:", err.message);
-    //         }
-    //     } else {
-    //         console.log("Usuário não autenticado para alternar notificação");
-    //     }
-    // }
 
     function onUpdatedEvent(updatedEvent: EventWithId) {
         setEvents(prev =>
@@ -132,7 +105,6 @@ export default function EventsIndex() {
     }
 
     async function syncCategories_and_fetchCategories() {
-        // Lógica idêntica à de LinksIndex para categorias
         if (!user || !user.access_token_prov) {
             console.log("Usuário não autenticado");
             return;
@@ -199,11 +171,11 @@ export default function EventsIndex() {
 
     function ChangeModalVisibilityClose() {
         setBottomModalVisible(prev => !prev);
-        setTimeout(() => { setPageNameModal(undefined); }, 300);
+        setTimeout(() => { setPageNameModal(undefined); }, 500);
     }
 
     function ChangeModalVisibility() {
-        setBottomModalVisible(prev => !prev);
+            setBottomModalVisible(prev => !prev);
     }
 
     function ChangeModalVisibilityViewEvent(title: string) {
@@ -251,12 +223,6 @@ export default function EventsIndex() {
             setEventsFiltered(null);
         }
     }, [selectedCategory, events]);
-
-    useEffect(() => {
-        console.log(event)
-        console.log(pageNameModal)
-    }, [event, pageNameModal])
-
     
 
     return (
@@ -282,7 +248,6 @@ export default function EventsIndex() {
                         setEvent={setEvent}
                         categories={categories}
                         onDelete={handleOnDelete_Event}
-                        // onToggleNotification={handleToggleNotification_Event}
                         onCreateCategory={ChangeModalVisibilityCategory}
                         selectedCategory={selectedCategory}
                         setSelectCategory={setSelectCategory}
@@ -301,15 +266,17 @@ export default function EventsIndex() {
                 >
                     {pageNameModal ? (
                         pageNameModal === "Editar Evento" ? (
-                            <Text>PÁGINA DE EDITAR EVENTO (CRIAR)</Text>
-                            // <EditEvent
-                            //     eventId={event?.id}
-                            //     onUpdatedEvent={onUpdatedEvent}
-                            //     data={{
-                            //         // Passar os dados para o formulário de edição
-                            //     }}
-                            //     toggleModal={ChangeModalVisibilityClose}
-                            // />
+
+                            <EditEvent 
+                                data={{
+                                    title: event?.title!!,
+                                    address: event?.address,
+                                    description: event?.description,
+                                    date: event?.date,
+                                    categoriaId: event?.categoriaId
+                                }}
+                                categoriesProps={categories}
+                            />
                         ) : pageNameModal === "Notificar Evento" ? ( 
                             <NotifyEvent
                                 toggleModal={ChangeModalVisibilityClose}
@@ -334,7 +301,9 @@ export default function EventsIndex() {
                                 ChangePageNameModal("Notificar Evento")
                             }}/>
                             <ActionSelector nameAction='Deletar' icon={"trash"} colorBack={colors.red[200]} onPress={() => {
-                                ChangeModalVisibility()
+                                setTimeout(() => {
+                                    ChangeModalVisibility()
+                                }, 50)
                                 handleOnDelete_Event(event?.id!)
                             }}/>
                         </View>

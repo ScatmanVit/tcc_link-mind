@@ -21,6 +21,8 @@ import create_Event from '@/src/services/events/createEvent'
 import send_Notification_Event from '@/src/services/events/sendEventNotification'
 import { formatDateToSchedule } from "@/src/utils/formatDate";
 import EventNotify from "@/src/components/events/eventNotify";
+import DatePicker from "react-native-date-picker";
+import { formatDateCustom } from "@/src/utils/formateDateCustom";
 
 export default function CreateEvent() {
     const toast = useToast()
@@ -29,7 +31,7 @@ export default function CreateEvent() {
 
     const [ event, setEvent ] = useState<Partial<CreateEventProps>>({
         title: '',
-        date: '',
+        date: undefined,
         address: '',
         scheduleAt: '',
         description: ''
@@ -40,8 +42,10 @@ export default function CreateEvent() {
         scheduleAt: '',
         eventId: ''
     })
-    const [ open, setOpen ] = useState<boolean>(false)
-    const [ date, setDate ] = useState(new Date()) 
+    const [ openEventDatePicker, setOpenEventDatePicker ] = useState<boolean>(false) 
+    const [ openNotifyDatePicker, setOpenNotifyDatePicker ] = useState<boolean>(false)
+    const [ date, setDate ] = useState(new Date) 
+    const [ dateNotify, setDateNotify ] = useState(new Date())
     const [ loading, setLoading ] = useState<boolean>(false)
     const { selectedCategory, setSelectCategory } = useCategory();
     const [ categories, setCategories ] = useState<CategoryPropsItem[]>([])
@@ -126,6 +130,9 @@ export default function CreateEvent() {
                 const eventNotifyScheduled = await send_Notification_Event(user?.access_token_prov, notification)
                 if (eventNotifyScheduled?.success) {
                     setToggleButtonSelect(undefined)
+                    setNotification(prev => ({
+                        ...prev, scheduleAt: ''
+                    }))
                     toast.show(eventNotifyScheduled.message, {
                         type: 'success',
                         placement: "top",
@@ -276,8 +283,40 @@ export default function CreateEvent() {
                         multiline
                     />
                 </View>
-
-                <View style={{ marginBottom: 20 }}>
+                    <Text style={styles.label}>Data</Text>
+                    <View style={styles.selectDateNotify}>
+                        <Pressable 
+                            onPress={() => setOpenEventDatePicker(true)}
+                            style={styles.datePickerButton} 
+                        >
+                        <FontAwesome6 name="calendar" size={22} color={colors.green[300]} /> 
+                            <Text style={styles.datePickerButtonText}>
+                                {"Selecione a data"}
+                            </Text>
+                        </Pressable>
+                        {event.date ?
+                            <View>
+                                <Text style={{ color: colors.gray[400], marginTop: 10, marginBottom: 5 }}>Data selecionada</Text> 
+                                <Text style={{ color: colors.gray[200] }}>{formatDateCustom(event.date)}</Text>
+                            </View> 
+                            : null
+                        } 
+                        <DatePicker
+                            modal
+                            open={openEventDatePicker}
+                            date={date}
+                            mode="datetime"
+                            onConfirm={(dateSelected) => {
+                                setOpenEventDatePicker(false)
+                                setEvent(prev => ({
+                                    ...prev,
+                                    date: dateSelected.toISOString()
+                                }))
+                            }}
+                            onCancel={() => setOpenEventDatePicker(false)}
+                        />
+                    </View>
+                    <View style={{ marginBottom: 20 }}>
                     <Text style={styles.label}>Categoria</Text>
                     <Categories
                         data={categories}
@@ -301,9 +340,9 @@ export default function CreateEvent() {
                 
             { toggleButtonSelect ? 
                     <EventNotify 
-                        open={open}
-                        date={date} 
-                        setOpen={setOpen}
+                        open={openNotifyDatePicker}
+                        date={dateNotify} 
+                        setOpen={setOpenNotifyDatePicker}
                         notification={notification}
                         setNotification={setNotification}
                         formatDateToSchedule={formatDateToSchedule}
@@ -394,5 +433,27 @@ const styles = StyleSheet.create({
     toastText: {
         color: '#000',
         flexShrink: 1,
-    }
+    },
+    selectDateNotify: {
+            marginBottom: 25
+    },
+    datePickerButton: { 
+        borderWidth: 1,
+        borderColor: colors.gray[700],
+        borderRadius: 10,              
+        backgroundColor: colors.gray[950], 
+        paddingHorizontal: 14,
+        paddingVertical: 10,
+        flexDirection: "row",
+        alignItems: 'center',          
+        justifyContent: 'flex-start',
+        minWidth: 150, 
+        alignSelf: 'flex-start',
+        gap: 10 
+    },
+    datePickerButtonText: { 
+        color: colors.gray[100], 
+        fontSize: 15,
+        fontWeight: '500',
+    },
 });

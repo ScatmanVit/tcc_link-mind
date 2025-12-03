@@ -48,9 +48,9 @@ export default function ChooseOptionModal({
                     : pageNameModal === "Resumir Link com IA"
                     ? { height: "80%" }
                     : pageNameModal === "Editar Evento" 
-                    ? { height: "90%" }
+                    ? { height: "81%" }
                     : pageNameModal === "Notificar Evento" 
-                    ? { height: "65%" }
+                    ? { height: "70%" }
                     : pageNameModal && pageOrigin === "events" 
                     ? { height: "80%" }
                     : pageNameModal && pageOrigin === "links" && { height: "60%" }
@@ -71,12 +71,12 @@ export default function ChooseOptionModal({
                                     alignItems: "center",
                                 },
                                 pressed && { backgroundColor: colors.gray[500] }
-                            ]}
+                            ]} 
                         > 
-                            <ArrowLeft
-                                size={24}
-                                color={colors.gray[300]}
-                            />
+                        <ArrowLeft
+                            size={24}
+                            color={colors.gray[300]}
+                        />
                         </Pressable>
                         <Text style={styles.header_title} numberOfLines={1}>
                             {pageNameModal}

@@ -2,6 +2,7 @@ import { View, Text, Pressable, StyleSheet, TextInput } from "react-native";
 import DatePicker from "react-native-date-picker";
 import { FontAwesome6 } from '@expo/vector-icons'; 
 import { colors } from "@/styles/colors"; 
+import { formatDateCustom } from "@/src/utils/formateDateCustom";
 
 type EventNotifyProps = {
     open: boolean;
@@ -74,6 +75,13 @@ export default function EventNotify({
                         {"Selecione a data e hora"}
                     </Text>
                 </Pressable>
+                {notification.scheduleAt ?
+                    <View style={{ marginBottom: 15 }}>
+                        <Text style={{ color: colors.gray[400], marginTop: 10, marginBottom: 5 }}>Data selecionada</Text> 
+                        <Text style={{ color: colors.gray[200] }}>{formatDateCustom(notification.scheduleAt)}</Text>
+                    </View> 
+                    : null
+                } 
                 <DatePicker
                     modal
                     open={open}

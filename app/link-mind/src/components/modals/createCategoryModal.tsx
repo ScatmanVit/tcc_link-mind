@@ -30,6 +30,7 @@ export default function CreateCategoryModal({
             animationOut="fadeOut"
             animationInTiming={20}   
             animationOutTiming={20}  
+            backdropOpacity={0}
             useNativeDriver
         >
             <View style={styles.container}>
@@ -73,7 +74,7 @@ export default function CreateCategoryModal({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: colors.gray[800],
+        backgroundColor: colors.gray[900],
         padding: 20,
         minHeight: "28.5%",
         borderRadius: 14

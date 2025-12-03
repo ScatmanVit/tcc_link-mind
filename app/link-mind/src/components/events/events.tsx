@@ -12,7 +12,6 @@ type EventsProps = {
     data: EventWithId[];
     onCreateCategory: () => void;
     onDelete: (id: string) => void;
-    onToggleNotification?: (id: string, currentStatus: boolean) => void;
     modalOptionsVisibility: () => void;
     setEvent: (event: EventWithId) => void; 
     categories: { id: string; nome: string }[];
@@ -25,7 +24,6 @@ export default function Events({
     data,
     setEvent,
     onDelete,
-    onToggleNotification,
     categories,
     selectedCategory,
     onCreateCategory,
@@ -77,17 +75,7 @@ export default function Events({
             contentContainerStyle={{ paddingHorizontal: 11, gap: 12, paddingBottom: 200 }} 
             renderItem={({ item }) => (
                 <Pressable
-                    onPress={() => {
-                        setEvent(item);
-                        modalOptionsVisibilityViewEvent(item.title);
-                    }}
-                    onLongPress={() => {
-                        setEvent(item);
-                        setTimeout(() => {
-                            modalOptionsVisibility();
-                        }, 0);
-                    }}
-                    delayLongPress={300}
+  
                     style={({ pressed }) => [ 
                         { flex: 1 },
                         pressed && { backgroundColor: colors.gray[800], opacity: 0.7, borderRadius: 8 }
@@ -99,7 +87,6 @@ export default function Events({
                         address={item.address}
                         date={item.date}
                         statusNotification={item.statusNotification}
-                        // onToggleNotification={() => onToggleNotification(item.id, item.notification || false)}
                         onDelete={() => onDelete(item.id)}
                         onOpenDetails={() => {
                                 setEvent(item);
