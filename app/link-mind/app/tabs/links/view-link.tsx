@@ -1,7 +1,7 @@
 import { colors } from "@/src/styles/colors"
 import { View, StyleSheet, ScrollView } from "react-native"
 import { CreateLinkProps } from '@/src/services/links/createLink'
-import LinkBox from '@/components/links/linkBox'
+import LinkBox from '@/src/components/links/linkBox'
 import { useEffect } from "react"
 import DescriptionBox from "@/src/components/decriptionBox"
 import { type CategoryPropsItem } from "../../../app/_layout";

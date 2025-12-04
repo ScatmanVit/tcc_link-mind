@@ -10,7 +10,7 @@ import Category from '@/components/categories/category'
 type LinkBoxProps = {
     url: string,
     categoryLink?: string
-    isSummarized?: boolean,
+    isSummarized?: boolean
 };
 
 export default function LinkBox({ url, isSummarized, categoryLink }: LinkBoxProps) {

@@ -316,7 +316,7 @@ export default function EditEvent({
                             onCancel={() => setOpenEventDatePicker(false)}
                         />
                     </View>
-                    <View style={{ marginBottom: 20 }}>
+                <View style={{ marginBottom: 15 }}>
                     <Text style={styles.label}>Categoria</Text>
                     <Categories
                         data={categories}
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.gray[800],
         paddingHorizontal: 9,
         paddingTop: "3%",
-        gap: 12
+        gap: "0.5%"
     },
     title: {
         color: colors.gray[50],

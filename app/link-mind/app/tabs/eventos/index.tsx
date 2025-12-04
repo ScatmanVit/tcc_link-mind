@@ -25,6 +25,7 @@ import ActionSelector from '@/src/components/actionSelector';
 import CreateCategoryModal from '@/src/components/modals/createCategoryModal';
 import NotifyEvent from './notify-event';
 import EditEvent from './edit-event';
+import ViewEvent from './view-event';
 // import ViewEvent from './view-event';
 
 
@@ -292,7 +293,7 @@ export default function EventsIndex() {
                             /> 
                         )
                         : (
-                             null
+                             <ViewEvent eventObj={event} categories={categories} />
 
                         )
                     ) : (
