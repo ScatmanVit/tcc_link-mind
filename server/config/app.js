@@ -1,3 +1,4 @@
+import UserAnnotationsPrivateRoutes from '../routes/private/user/annotations/private.annotations.user.routes.js'
 import UserCategoryPrivateRoutes from '../routes/private/user/categories/private.categories.user.routes.js'
 import UserEventPrivateRoutes from '../routes/private/user/events/private.events.user.routes.js'
 import UserLinkPrivateRoutes from '../routes/private/user/links/private.links.user.routes.js'
@@ -28,6 +29,7 @@ app.use('/api/v1/linkmind', auth, UserPrivateRoutes)
 app.use('/api/v1/linkmind', auth, UserLinkPrivateRoutes)
 app.use('/api/v1/linkmind', auth, UserEventPrivateRoutes)
 app.use('/api/v1/linkmind', auth, UserCategoryPrivateRoutes)
+app.use('/api/v1/linkmind', auth, UserAnnotationsPrivateRoutes)
 app.use('/api/v1/linkmind/admin', auth, isAdmin, AdminPrivateRoutes)
 app.post('/api/v1/linkmind/check-admin', auth, isAdmin, (req, res) => {
     res.status(200).json({

@@ -29,7 +29,6 @@ model User {
   status      Boolean     @default(true)
   links       Link[]
   eventos     Evento[]
-  compras     Compra[]
   anotacoes   Anotacao[]
   tags        Tag[]
   device_token DeviceToken[]
@@ -42,7 +41,6 @@ model Categoria {
   userId      String      @db.Uuid
   links       Link[]
   eventos     Evento[]
-  compras     Compra[]
   anotacoes   Anotacao[]
 }
 
@@ -50,8 +48,6 @@ model Estado {
   id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   nome        String
   links       Link[]
-  compras     Compra[]
-  anotacoes   Anotacao[]
 }
 
 model Tag {
@@ -71,12 +67,6 @@ model TagRelacionada {
   linkId      String?     @db.Uuid
   link        Link?       @relation(fields: [linkId], references: [id])
 
-
-  compraId    String?     @db.Uuid
-  compra      Compra?     @relation(fields: [compraId], references: [id])
-
-  anotacaoId  String?     @db.Uuid
-  anotacao    Anotacao?   @relation(fields: [anotacaoId], references: [id])
 }
 
 model Newsletter {
@@ -124,20 +114,9 @@ model DeviceToken {
   user        User        @relation(fields: [userId], references: [id])
   token       String      @unique
   createdAt   DateTime    @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+  updatedAt   DateTime    @updatedAt @db.Timestamptz(6)
 }
 
-model Compra {
-  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId      String      @db.Uuid
-  user        User        @relation(fields: [userId], references: [id])
-  categoriaId String      @db.Uuid
-  categoria   Categoria   @relation(fields: [categoriaId], references: [id])
-  estadoId    String      @db.Uuid
-  estado      Estado      @relation(fields: [estadoId], references: [id])
-  // Campos específicos do compra aqui
-  tagRelacionadas TagRelacionada[]
-}
 
 model Anotacao {
   id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -145,8 +124,7 @@ model Anotacao {
   user        User        @relation(fields: [userId], references: [id])
   categoriaId String      @db.Uuid
   categoria   Categoria   @relation(fields: [categoriaId], references: [id])
-  estadoId    String      @db.Uuid
-  estado      Estado      @relation(fields: [estadoId], references: [id])
-  // Campos específicos da anotacao aqui
-  tagRelacionadas TagRelacionada[]
+  title       String      
+  annotation  String
+  updatedAt   DateTime    @updatedAt @db.Timestamptz(6)
 }

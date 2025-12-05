@@ -127,7 +127,7 @@ async function event_DELETE(idUser, eventId) {
         }
     }
 }
-
+ 
 async function event_UPDATE(dataUpdatedEvent) {
     const {
         userId,
