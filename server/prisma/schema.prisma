@@ -122,8 +122,8 @@ model Anotacao {
   id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId      String      @db.Uuid
   user        User        @relation(fields: [userId], references: [id])
-  categoriaId String      @db.Uuid
-  categoria   Categoria   @relation(fields: [categoriaId], references: [id])
+  categoriaId String?      @db.Uuid
+  categoria   Categoria?   @relation(fields: [categoriaId], references: [id])
   title       String      
   annotation  String
   updatedAt   DateTime    @updatedAt @db.Timestamptz(6)
