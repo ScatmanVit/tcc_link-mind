@@ -26,21 +26,20 @@ import CreateCategoryModal from '@/src/components/modals/createCategoryModal';
 import NotifyEvent from './notify-event';
 import EditEvent from './edit-event';
 import ViewEvent from './view-event';
-// import ViewEvent from './view-event';
 
 
 export default function EventsIndex() {
     const { user } = useContext(AuthContext);
     const { selectedCategory, setSelectCategory } = useCategory();
 
-    const [events, setEvents] = useState<EventWithId[]>([]);
-    const [event, setEvent] = useState<EventWithId | undefined>(undefined); 
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [bottomModalVisible, setBottomModalVisible] = useState<boolean>(false);
-    const [categories, setCategories] = useState<CategoryPropsItem[]>([]);
-    const [eventsFiltered, setEventsFiltered] = useState<EventWithId[] | null>(null);
-    const [pageNameModal, setPageNameModal] = useState<string | undefined>(undefined);
-    const [modalCreateCategory, setModalCreateCategory] = useState<boolean>(false);
+    const [ events, setEvents ] = useState<EventWithId[]>([]);
+    const [ event, setEvent ] = useState<EventWithId | undefined>(undefined); 
+    const [ isLoading, setIsLoading ] = useState<boolean>(false);
+    const [ bottomModalVisible, setBottomModalVisible ] = useState<boolean>(false);
+    const [ categories, setCategories ] = useState<CategoryPropsItem[]>([]);
+    const [ eventsFiltered, setEventsFiltered ] = useState<EventWithId[] | null>(null);
+    const [ pageNameModal, setPageNameModal ] = useState<string | undefined>(undefined);
+    const [ modalCreateCategory, setModalCreateCategory ] = useState<boolean>(false);
 
     async function fetch_Events() {
         if (user && user.access_token_prov) {

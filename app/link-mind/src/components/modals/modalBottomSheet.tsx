@@ -53,8 +53,9 @@ export default function ChooseOptionModal({
                     ? { height: "70%" }
                     : pageNameModal && pageOrigin === "events" 
                     ? { height: "80%" }
-                    : pageNameModal && pageOrigin === "links" && { height: "60%" }
-
+                    : pageNameModal && pageOrigin === "links" 
+                    ? { height: "60%" }
+                    : pageNameModal && pageOrigin === "annotations" && { height: "70%" }
                     
             ]}>
                 {pageNameModal ? 

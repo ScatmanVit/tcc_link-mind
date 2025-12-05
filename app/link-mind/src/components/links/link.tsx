@@ -1,7 +1,7 @@
 import { StyleSheet, Text, Pressable, View } from 'react-native'
 import { colors } from '@/styles/colors'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-import { FontAwesome6 } from '@expo/vector-icons'
+import { FontAwesome6, MaterialIcons } from '@expo/vector-icons'
 
 export type LinkProps = {
     id: string,
@@ -32,7 +32,15 @@ export default function Link({
                     pressed && { backgroundColor: colors.gray[800]}
                 ]}
             >
-            <View>
+            
+            <MaterialIcons 
+                name="link" 
+                size={23} 
+                color={colors.green[300]} 
+                style={style.leadingIcon} 
+            />
+
+            <View style={style.text_content}>
                 <Text style={style.title} numberOfLines={1}>
                     {title}
                 </Text>
@@ -40,26 +48,32 @@ export default function Link({
                     {link_url}
                 </Text>
             </View>
+
             <View style={style.right_content}> 
                 <Pressable
-                    onPress={onDelete}
+                    onPress={(event) => {
+                        event.stopPropagation();
+                        onDelete?.();
+                    }}
                     style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
                 >
                     <FontAwesome6 
                         name="trash" 
-                        size={13.5} 
-                        color={colors.gray[400]} 
+                        size={15.5} 
+                        color={colors.gray[500]} 
                     />
                 </Pressable>
 
                 <Pressable
-                    onPress={onOpen_url}
+                    onPress={(event) => {
+                        event.stopPropagation();
+                        onOpen_url?.();
+                    }}
                     style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
                 >
                     <FontAwesome 
-                        style={style.external_link_icon} 
-                        name="external-link" size={14.5} 
-                        color={colors.gray[400]} 
+                        name="external-link" size={15.5} 
+                        color={colors.gray[500]} 
                     />
                 </Pressable>
             </View>    
@@ -67,38 +81,40 @@ export default function Link({
     ) 
 }
 
-
 const style = StyleSheet.create({
     container: {
         flex: 1,
+        paddingVertical: 10,
         paddingHorizontal: 1,
-        paddingBottom: 2,
         flexDirection: 'row',
         alignItems: "center",
         justifyContent: "space-between",
         maxWidth: "100%",
     },
+    leadingIcon: {
+        marginRight: 10,
+        alignSelf: 'center',
+    },
+    text_content: { 
+        flex: 1,
+        justifyContent: 'center',
+    },
     title: {
         color: colors.gray[50],
-        fontSize: 17,
-        fontWeight: 500,
-        width: 290,
+        fontSize: 18,
+        fontWeight: '600',
         marginBottom: 1
     },
     link_url: {
-        color: colors.gray[500],
+        color: colors.gray[400],
         fontSize: 14,
-        width: 250
     },
     right_content: {
         paddingLeft: 10,
-        marginTop: -7,
+        marginTop: 0,
         flexDirection: "row",
         alignItems: "center",
         gap: 14
-    },
-    external_link_icon: {
-        marginTop: 2
     },
     more_horizontal: {
         marginLeft: -3

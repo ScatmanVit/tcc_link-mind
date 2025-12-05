@@ -8,6 +8,7 @@ import { ToastProvider } from 'react-native-toast-notifications';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ArrowLeft } from "lucide-react-native";
 import { Ionicons } from '@expo/vector-icons';
+import Octicons from '@expo/vector-icons/Octicons';
 
 import { AuthContext } from '../../src/context/auth';
 import { colors } from '@/styles/colors';
@@ -170,7 +171,7 @@ export default function TabLayout() {
 						name="anotacoes"
 						options={{
 							tabBarIcon: ({ color, size }) => (
-								<Ionicons name="bag-sharp" size={size} color={color} />
+								<Octicons name="note" size={size} color={color} />
 							),
 						}}
 					/>

@@ -327,7 +327,7 @@ export default function EditEvent({
                 </View>
                 
                 <View style={{ flex: 1, flexDirection: "column", justifyContent:"flex-end", marginTop: "5%" }}>
-                    <View style={{ height: 50, marginBottom: "15%" }}>
+                    <View style={{ height: 50 }}>
                         <Button
                             text={loading ? "Carregando..." : "Salvar Edição"}
                             colorBack={loading ? colors.gray[400] : undefined}

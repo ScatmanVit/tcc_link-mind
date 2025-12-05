@@ -135,7 +135,7 @@ const style = StyleSheet.create({
         backgroundColor: colors.gray[950], 
         borderRadius: 8, 
         paddingVertical: 10,
-        paddingHorizontal: 9,
+        paddingHorizontal: 15,
         maxWidth: '100%',
         flexDirection: 'row', 
         justifyContent: 'space-between',
@@ -143,7 +143,7 @@ const style = StyleSheet.create({
     },
     leadingIcon: {
         marginRight: 10,
-        alignSelf: 'flex-start',
+        alignSelf: 'center',
         marginTop: 4,
     },
     text_content: {
@@ -178,7 +178,7 @@ const style = StyleSheet.create({
     },
     detailText: {
         color: colors.gray[400],
-        fontSize: 13,
+        fontSize: 14,
         fontWeight: '500', 
         flexShrink: 1,
     },
@@ -196,6 +196,7 @@ const style = StyleSheet.create({
         gap: 12,
     },
     deleteButtonAbsolute: {
+
         position: 'absolute', 
         zIndex: 10,          
     },

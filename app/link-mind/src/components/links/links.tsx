@@ -70,7 +70,7 @@ export default function Links({
                         <Pressable style={style.input_search} onPress={() => router.push("/pesquisa")}>
                             <View pointerEvents='none'>
                                 <Input
-                                    placeholder="Pesquise links, notas ou eventos"
+                                    placeholder="Pesquise em Links"
                                     placeholderTextColor={colors.gray[400]}
                                     iconColor={colors.gray[400]}
                                     icon="magnifying-glass"
@@ -100,10 +100,9 @@ export default function Links({
                             {categories.length === 1 ? 'Adicione uma categoria!' : null}
                         </Text>
                     </Pressable>
-
                 </View>
             } 
-            contentContainerStyle={{ padding: 3, gap: 12 }}
+            contentContainerStyle={{ padding: 3, gap: 15 }}
             renderItem={({ item }) => (
                 <View style={{ marginHorizontal: 11 }}>
                     <Pressable onPress={() => {

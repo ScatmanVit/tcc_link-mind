@@ -30,4 +30,7 @@ export const colors = {
     amber: {
       500: "#b07b1fff", // aviso
     },
+    purple: {
+        400: '#8A2BE2' 
+    }
 }

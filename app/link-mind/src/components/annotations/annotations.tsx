@@ -1,35 +1,33 @@
 import { FlatList, View, Text, StyleSheet, Pressable } from 'react-native';
-import Event, { EventProps, StatusNotificationEvent } from './event'; 
 import Categories from '@/src/components/categories/categories';
 import { colors } from '@/src/styles/colors';
 import { useRouter } from 'expo-router';
 import Input from '../input'; 
-export type EventWithId = EventProps & { id: string, categoriaId?: string, 
-    scheduleAt?: string;
-    statusNotification?: StatusNotificationEvent; }; 
+import { AnnotationProps } from './annotation';
+import Anotacao from './annotation'
 
 type EventsProps = { 
-    data: EventWithId[];
+    data: AnnotationProps[]; 
     onCreateCategory: () => void;
     onDelete: (id: string) => void;
     modalOptionsVisibility: () => void;
-    setEvent: (event: EventWithId) => void; 
+    setAnnotation: (annotation: AnnotationProps) => void; 
     categories: { id: string; nome: string }[];
     selectedCategory?: { id: string; nome?: string };
-    modalOptionsVisibilityViewEvent: (title: string) => void; 
+    modalOptionsVisibilityViewAnnotation: (title: string) => void; 
     setSelectCategory: (category: { id: string; nome?: string }) => void;
 };
 
-export default function Events({
+export default function Annotations({
     data,
-    setEvent,
+    setAnnotation,
     onDelete,
     categories,
     selectedCategory,
     onCreateCategory,
     setSelectCategory,
     modalOptionsVisibility,
-    modalOptionsVisibilityViewEvent,
+    modalOptionsVisibilityViewAnnotation,
 }: EventsProps) {
     const router = useRouter();
 
@@ -45,7 +43,7 @@ export default function Events({
                     <Pressable style={style.input_search} onPress={() => router.push("/pesquisa")}>
                         <View pointerEvents='none'>
                             <Input
-                                placeholder="Pesquise em Eventos"
+                                placeholder="Pesquise em Anotações"
                                 placeholderTextColor={colors.gray[400]}
                                 iconColor={colors.gray[400]}
                                 icon="magnifying-glass"
@@ -72,7 +70,7 @@ export default function Events({
                     )}
                 </View>
             }
-            contentContainerStyle={{ paddingHorizontal: 11, gap: 12, paddingBottom: 200 }} 
+            contentContainerStyle={{ paddingHorizontal: 11, gap: "1%", paddingBottom: 200 }} 
             renderItem={({ item }) => (
                 <Pressable
   
@@ -81,24 +79,21 @@ export default function Events({
                         pressed && { backgroundColor: colors.gray[800], opacity: 0.7, borderRadius: 8 }
                     ]}
                 > 
-                    <Event
-                        id={item.id}
-                        title={item.title}
-                        address={item.address}
-                        date={item.date}
-                        statusNotification={item.statusNotification}
-                        onDelete={() => onDelete(item.id)}
-                        onOpenDetails={() => {
-                                setEvent(item);
-                                setTimeout(() => {
-                                    modalOptionsVisibility()
-                                }, 0)  
-                            }}
-                        onModalOptionsVisibilityViewEvent={() => {
-                            setEvent(item);
-                            modalOptionsVisibilityViewEvent(item.title);
+                <Anotacao 
+                    title={item.title}
+                    annotation={item.annotation}
+                    onDelete={() => onDelete(item.id)}
+                    onOpenDetails={() => {
+                        setAnnotation(item);
+                        setTimeout(() => {
+                            modalOptionsVisibility()
+                        }, 0)  
+                    }}
+                    modalOptionsVisibilityViewAnnotation={() => {
+                            setAnnotation(item);
+                            modalOptionsVisibilityViewAnnotation(item.title);
                         }}
-                    />
+                />
                 </Pressable>
             )}
             ListFooterComponent={<View style={{ height: 200 }} />}
