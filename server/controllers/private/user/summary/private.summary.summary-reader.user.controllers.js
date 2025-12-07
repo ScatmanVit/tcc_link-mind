@@ -1,14 +1,22 @@
-import PrivateUserServiceSummaryLink from '../../../../services/private/user/links/private.summary-link.user.services.js'
+import PrivateUserServiceSummary from '../../../../services/private/user/summary/private.summary-reader.user.services.js'
 import { findOneUser } from '../../../../utils/utils.js'
 
 
 async function summary_link_Controller(req, res) {
-    const { linkId, linkUrl, userId } = req.body
+    const userId = req.user?.id
+    const { 
+        instructionsFromUser, 
+        linkUrl, 
+        linkType, 
+        linkId, 
+        categoriaId, 
+     } = req.body
     if (!userId) { 
         return res.status(401).json({
             error: "Usuário não autenticado. Token inválido ou ausente."
         })
     }
+    console.log(req.body)
     if (!linkId) {
         return res.status(401).json({
             error:"Id do link não foi fornecido para ser resumido."
@@ -26,8 +34,15 @@ async function summary_link_Controller(req, res) {
                 error: "Usuário não encontrado. Não é possível resumir Link"
             })
         }
-        const summaryLink = await PrivateUserServiceSummaryLink
-            .summary_link(userId, linkUrl, linkId, userExist.name)
+        const summaryLink = await PrivateUserServiceSummary
+            .summary_CREATE(
+                instructionsFromUser, 
+                userId, 
+                linkUrl, 
+                linkType, 
+                linkId, 
+                categoriaId, 
+                userExist.name)
 
         if (summaryLink?.error) {
             return res.status(summaryLink.statusCode || 500).json({
@@ -37,7 +52,6 @@ async function summary_link_Controller(req, res) {
 
         return res.status(200).json({
             summary: summaryLink.summary,
-            summaryId: summaryLink.summaryId
         })
 
     } catch(err) {
@@ -48,11 +62,6 @@ async function summary_link_Controller(req, res) {
     }
 }
 
-async function summary_link_sendEmail_Controller(req, res) {
-
-}
-
 export default {
-    summary_link_Controller,
-    summary_link_sendEmail_Controller
+    summary_link_Controller
 }
