@@ -100,7 +100,7 @@ async function event_DELETE(idUser, eventId) {
             statusCode: 400,
             error: "Id do usuário ou Evento não fornecido para a exclusão do evento"
         }
-    }
+    } 
     try {
         const eventDeleted = await prisma.evento.deleteMany({
             where: {

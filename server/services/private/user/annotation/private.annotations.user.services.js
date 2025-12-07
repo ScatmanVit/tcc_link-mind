@@ -79,9 +79,47 @@ async function annotation_DELETE(userId, annotationId) {
     }
 }
 
+async function annotation_UPDATE(dataNewAnnotation) {
+    const {
+        userId,
+        annotationId,
+        newTitle,
+        newAnnotation,
+        newCategoriaId
+    } = dataNewAnnotation
+    try {
+        const newAnnotationData = Object.fromEntries(
+            Object.entries({
+                title: newTitle,
+                annotation: newAnnotation,
+                categoriaId: newCategoriaId
+            }).filter(([_, value]) => value != null && value !== "")
+        )
+        const annotationUpdated = await prisma.anotacao.update({
+            where: {
+                userId: userId,
+                id: annotationId
+            }, 
+            data: newAnnotationData
+        })
+        return annotationUpdated
+    } catch (err) {
+         if (err.code === 'P2025') {
+            return {
+                error: "A anotação que voce tentou alterar não existe.",
+                statusCode: 404
+            }
+         }
+         console.error(err)
+         return {
+            error: "Não foi possível alterar a anotação."
+         }
+    }
+}
 
  export default {
     annotation_CREATE,
     annotation_DELETE,    
+    annotation_UPDATE,
     annotation_LIST
 }
