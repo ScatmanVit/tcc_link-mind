@@ -31,9 +31,6 @@ export default function CreateLink() {
     const [ modalCreateCategory, setModalCreateCategory ] = useState<boolean>(false)
     const { selectedCategory, setSelectCategory } = useCategory();
 
-    useEffect(() => {
-        console.log("Categorias do estado", categories)
-    }, [categories])
 
     async function handleCreateLink() {
         if (!link.title?.trim() || !link.link?.trim()) {

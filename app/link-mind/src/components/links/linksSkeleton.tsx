@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.gray[900],
+    backgroundColor: colors.gray[950],
     paddingVertical: 12,
     paddingHorizontal: 14,
     borderRadius: 10,
@@ -44,12 +44,12 @@ const styles = StyleSheet.create({
     width: '70%',
     height: 14,
     borderRadius: 6,
-    backgroundColor: colors.gray[800],
+    backgroundColor: colors.gray[900],
   },
   url: {
     width: '50%',
     height: 10,
     borderRadius: 6,
-    backgroundColor: colors.gray[800],
+    backgroundColor: colors.gray[900],
   }
 })

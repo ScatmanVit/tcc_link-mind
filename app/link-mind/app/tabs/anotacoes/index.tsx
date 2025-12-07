@@ -19,6 +19,7 @@ import ActionSelector from "@/src/components/actionSelector";
 import { getCategoriesToSync, invalidateCategoriesStorage } from "@/src/async-storage/categories";
 import list_Annotations from "@/src/services/annotations/listAnnotations";
 import { useRouter } from "expo-router";
+import delete_Annotation from "@/src/services/annotations/deleteAnnotation";
 
 export default function AnotacoesIndex() {
     const { user } = useContext(AuthContext);
@@ -34,7 +35,7 @@ export default function AnotacoesIndex() {
     const [ categories, setCategories ] = useState<CategoryPropsItem[]>([]);
     const [ annotations, setAnnotations ] = useState<AnnotationProps[]>([])
     const [ annotation, setAnnotation ] = useState<AnnotationProps>()
-    const [ filteredAnnotations, setFilteredAnnotations ] = useState<AnnotationProps[]>([])
+    const [ filteredAnnotations, setFilteredAnnotations ] = useState<AnnotationProps[] | undefined>([])
 
 
     async function fetch_Annotations() {
@@ -107,23 +108,22 @@ export default function AnotacoesIndex() {
 
 
     async function handleOnDelete_Event(id: string) {
-        // if (user && user.access_token_prov) {
-        //     try {
-        //         const deleteEventRes = await delete_Event({
-        //             access_token: user.access_token_prov,
-        //             eventId: id
-        //         })
-        //         if (deleteEventRes?.message) {
-        //             console.log(deleteEventRes.message)
-        //             setEvents(prev => prev.filter(e => e.id !== id))
-        //         }
-        //     } catch (err: any) { 
-        //         console.log("Erro ao deletar evento:", err.message)
-        //     }
-        // } else {
-        //     console.log("Usuário não autenticado para deletar evento")
-        // }
-        return true
+        if (user && user.access_token_prov) {
+            try {
+                const deleteEventRes = await delete_Annotation({
+                    annotationId: annotation?.id!!,
+                    access_token:  user.access_token_prov
+                })
+                if (deleteEventRes?.success) {
+                    console.log(deleteEventRes.message)
+                    setAnnotations(prev => prev.filter(e => e.id !== id))
+                }
+            } catch (err: any) { 
+                console.log("Erro ao deletar evento:", err.message)
+            }
+        } else {
+            console.log("Usuário não autenticado para deletar evento")
+        }
     }
 
     async function handle_CreateCategory(name: string) {
@@ -150,10 +150,6 @@ export default function AnotacoesIndex() {
             setBottomModalVisible(prev => !prev);
     }
     
-    function ChangeModalVisibilityViewAnnotation(title: string) {
-        setPageNameModal(`${title}`); 
-        ChangeModalVisibility();
-    }
 
     function ChangeModalVisibilityClose() {
         setBottomModalVisible(prev => !prev);
@@ -173,6 +169,34 @@ export default function AnotacoesIndex() {
             setModalCreateCategory(prev => !prev);
         }, 100);
     }
+
+    function NavigateToPageAnnotation(item: AnnotationProps) {
+        router.push({
+            pathname: '/tabs/anotacoes/annotations-actions',
+            params: {
+                id: item.id,
+                title: item.title,
+                annotation: item.annotation,
+                categoriaId: item.categoriaId,
+                categoriesParams: JSON.stringify(categories)
+            }
+        })
+    }
+
+    useEffect(() => {
+        if (!selectedCategory) {
+            setFilteredAnnotations(undefined);
+        } else if (selectedCategory.nome === "Sem categoria") {
+            const eventsFilter = annotations.filter(e => !e.categoriaId || e.categoriaId === "");
+            setFilteredAnnotations(eventsFilter);
+        } else if (selectedCategory.nome !== "Todas") {
+            const eventsFilter = annotations.filter(e => e.categoriaId === selectedCategory.id);
+            setFilteredAnnotations(eventsFilter);
+        } else {
+            setFilteredAnnotations(undefined);
+        }
+        console.log('FILTERED',filteredAnnotations)
+    }, [selectedCategory, annotations]);
 
     useEffect(() => {
         if (user?.access_token_prov) {
@@ -198,10 +222,9 @@ export default function AnotacoesIndex() {
                         <AnotacaoSkeleton/>
                         <AnotacaoSkeleton/>
                     </>
-
-                ): 
+                ) : 
                     <Annotations
-                        data={annotations ? annotations : filteredAnnotations}
+                        data={filteredAnnotations ? filteredAnnotations : annotations}
                         categories={categories}
                         setAnnotation={setAnnotation}
                         onDelete={handleOnDelete_Event}
@@ -209,10 +232,9 @@ export default function AnotacoesIndex() {
                         setSelectCategory={setSelectCategory}
                         modalOptionsVisibility={ChangeModalVisibility}
                         onCreateCategory={ChangeModalVisibilityCategory}
-                        modalOptionsVisibilityViewAnnotation={ChangeModalVisibilityViewAnnotation}
+                        navigationPageViewAnnotation={NavigateToPageAnnotation}
                     />
                 }
-                
                  <ChooseOptionModal
                     modalVisible={bottomModalVisible}
                     toggleModal={ChangeModalVisibility}
@@ -233,7 +255,7 @@ export default function AnotacoesIndex() {
                                 setTimeout(() => {
                                     ChangeModalVisibility()
                                 }, 50)
-                                handleOnDelete_Event(annotation?.id!)
+                                handleOnDelete_Event(annotation?.id!!)
                             }}/>
                         </View>
                 </ChooseOptionModal>

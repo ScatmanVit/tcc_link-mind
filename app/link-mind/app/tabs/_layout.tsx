@@ -1,6 +1,6 @@
 import { Image, StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Tabs, usePathname, useRouter } from 'expo-router';
+import { Tabs, usePathname, useRouter, useLocalSearchParams } from 'expo-router';
 import { useContext, useState, useRef, useEffect } from 'react';
 import { ToastProvider } from 'react-native-toast-notifications';
 
@@ -22,12 +22,16 @@ export default function TabLayout() {
 	
 	const router = useRouter();
 	const pathname = usePathname();
-	
+	const searchParams = useLocalSearchParams();
+
 	const [ modalVisible, setModalVisible ] = useState<boolean>(false)
 
 
 	const baseRoutes = ["links", "anotacoes", "eventos", "pesquisa"];
-	const subRoutes = ["add-link", "add-event", "add-note"]
+	const subRoutes = ["add-link", "add-event", "add-note", "annotations-actions"]
+
+	const isSubRoute = subRoutes.some((route) => pathname.includes(`/${route}`));
+
 	function handleArrowBack() {
 		const activeBase = baseRoutes.find((route) =>
 			pathname.includes(`/${route}/`)
@@ -51,8 +55,13 @@ export default function TabLayout() {
 				return  "Criar novo Link"
 			case "add-event": 
 				return "Criar novo Evento"
-			case "add-note":
-				return "Criar nova Anotação"
+			case "annotations-actions":
+            	const isEditing = !!searchParams.id;
+				if (isEditing) {
+					return "Editar Anotação";
+				} else {
+					return "Criar nova Anotação";
+				}
 		}
 	}
 
@@ -90,7 +99,10 @@ export default function TabLayout() {
 					/> 
 					<ItemSelector 
 						name="Nova Anotação"
-						onPress={() => { }} 
+						onPress={() => {
+							ChangeModalVisibility() 
+							router.push('/tabs/anotacoes/annotations-actions')
+						 }} 
 					/>
 					<ItemSelector 
 						name="Novo Evento"
@@ -143,20 +155,23 @@ export default function TabLayout() {
 
 				<Tabs
 					screenOptions={{
+						animation: "none",
 						headerShown: false,
 						tabBarShowLabel: true,
 						tabBarInactiveTintColor: colors.gray[400],
 						tabBarActiveTintColor: colors.green[300],
-						tabBarStyle: {
-							backgroundColor: colors.gray[900],
-							borderTopColor: colors.gray[800],
-							paddingTop: 9,
-							height: 95,
-							margin: -8,
-							marginBottom: -20,
-							borderTopLeftRadius: 25,
-							borderTopRightRadius: 25,
-						},
+						tabBarStyle: isSubRoute
+                            ? { display: 'none' } 
+                            : { 
+                                backgroundColor: colors.gray[900],
+                                borderTopColor: colors.gray[800],
+                                paddingTop: 9,
+                                height: 95,
+                                margin: -8,
+                                marginBottom: -20,
+                                borderTopLeftRadius: 25,
+                                borderTopRightRadius: 25,
+                        }
 					}}
 				>
 					<Tabs.Screen

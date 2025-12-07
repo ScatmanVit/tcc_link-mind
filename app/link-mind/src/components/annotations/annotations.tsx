@@ -11,10 +11,10 @@ type EventsProps = {
     onCreateCategory: () => void;
     onDelete: (id: string) => void;
     modalOptionsVisibility: () => void;
-    setAnnotation: (annotation: AnnotationProps) => void; 
     categories: { id: string; nome: string }[];
     selectedCategory?: { id: string; nome?: string };
-    modalOptionsVisibilityViewAnnotation: (title: string) => void; 
+    setAnnotation: (annotation: AnnotationProps) => void; 
+    navigationPageViewAnnotation: (item: AnnotationProps) => void; 
     setSelectCategory: (category: { id: string; nome?: string }) => void;
 };
 
@@ -27,7 +27,7 @@ export default function Annotations({
     onCreateCategory,
     setSelectCategory,
     modalOptionsVisibility,
-    modalOptionsVisibilityViewAnnotation,
+    navigationPageViewAnnotation,
 }: EventsProps) {
     const router = useRouter();
 
@@ -82,16 +82,13 @@ export default function Annotations({
                 <Anotacao 
                     title={item.title}
                     annotation={item.annotation}
-                    onDelete={() => onDelete(item.id)}
+                    onDelete={() => { onDelete(item.id) }}
                     onOpenDetails={() => {
                         setAnnotation(item);
-                        setTimeout(() => {
-                            modalOptionsVisibility()
-                        }, 0)  
+                        modalOptionsVisibility()
                     }}
                     modalOptionsVisibilityViewAnnotation={() => {
-                            setAnnotation(item);
-                            modalOptionsVisibilityViewAnnotation(item.title);
+                            navigationPageViewAnnotation(item);
                         }}
                 />
                 </Pressable>

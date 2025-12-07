@@ -2,7 +2,7 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, TextInput, ScrollView, Pressable } from "react-native";
 import { useToast } from 'react-native-toast-notifications';
 import { FontAwesome6 } from '@expo/vector-icons';
-import equal from "fast-deep-equal"; // Importando para comparação profunda
+import equal from "fast-deep-equal"; 
 
 import { colors } from "@/styles/colors";
 import { AuthContext } from '@/context/auth'
