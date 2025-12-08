@@ -12,7 +12,7 @@ export default async function updateUser(
     
     try {
         const userUpdated = await axios.put(
-            `http://localhost:3000/api/v1/linkmind/admin/update-user/${idUser}`,
+            `https://tcc-link-mind.onrender.com/api/v1/linkmind/admin/update-user/${idUser}`,
             {
                 newName: userUpdatedNew.name,
                 newEmail: userUpdatedNew.email,

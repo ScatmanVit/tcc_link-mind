@@ -9,7 +9,7 @@ export default async function deleteUser(
     } 
     try {
         const userDeleted = await axios.delete(
-            `http://localhost:3000/api/v1/linkmind/admin/delete-user/${idUser}`, 
+            `https://tcc-link-mind.onrender.com/api/v1/linkmind/admin/delete-user/${idUser}`, 
             {
                 headers: {
                     'Content-Type': 'application/json',

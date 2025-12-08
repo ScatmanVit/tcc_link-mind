@@ -11,7 +11,7 @@ export default async function loginUser({ email, password, login }: LoginAdm) {
     let userId
 	try {
 		const res = await axios.post(
-			"http://localhost:3000/api/v1/linkmind/auth/login",
+			"https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/login",
 			{ email, password, platform: "web" },
 			{ withCredentials: true }
 		)
@@ -23,7 +23,7 @@ export default async function loginUser({ email, password, login }: LoginAdm) {
 		if (access_token) {
 			try {
 				const isAdmin = await axios.post(
-					"http://localhost:3000/api/v1/linkmind/check-admin",
+					"https://tcc-link-mind.onrender.com/api/v1/linkmind/check-admin",
 					{},
 					{
 						headers: {

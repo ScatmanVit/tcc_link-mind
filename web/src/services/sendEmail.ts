@@ -19,7 +19,7 @@ export default async function emailSend({ name, email, message, subject, access_
     } 
     try {
         const emailSend = await axios.post(
-            "http://localhost:3000/api/v1/linkmind/admin/send-email-comunicate",
+            "https://tcc-link-mind.onrender.com/api/v1/linkmind/admin/send-email-comunicate",
             { name, email, message, subject },
             {
                 headers: {

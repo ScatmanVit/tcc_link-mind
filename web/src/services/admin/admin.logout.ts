@@ -8,7 +8,7 @@ export default async function logout_Admin({ logout }: logoutType ) {
 
     try {
         const res = await axios.post(
-            "http://localhost:3000/api/v1/linkmind/auth/logout",
+            "https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/logout",
             { platform: "web" },
             { withCredentials: true }
         )

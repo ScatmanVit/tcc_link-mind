@@ -16,7 +16,7 @@ export default async function createUser(
 
 	try {
 		const res = await axios.post(
-			"http://localhost:3000/api/v1/linkmind/admin/create-user",
+			"https://tcc-link-mind.onrender.com/api/v1/linkmind/admin/create-user",
 			dataUser,
 			{
 				headers: {

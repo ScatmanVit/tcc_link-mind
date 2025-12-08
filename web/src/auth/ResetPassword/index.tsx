@@ -31,7 +31,7 @@ function ResetPasswordPage() {
 
 		try {
 			const response = await axios.post(
-				"http://localhost:3000/api/v1/linkmind/auth/reset-password",
+				"https://tcc-link-mind.onrender.com/api/v1/linkmind/auth/reset-password",
 				{ token, newPassword },
 				{ timeout: 5000 }
 			);
