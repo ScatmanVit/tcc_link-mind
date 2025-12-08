@@ -15,13 +15,19 @@ import cors from 'cors'
 
 const app = express()
 
+const FRONTEND_URL = process.env.FRONT_END_URL || 'http://localhost:5173'
+
 const corsOptions = {
-  origin: ['http://localhost:5173', 'http://localhost:8081'],
-  credentials: true
-};
+  origin: [FRONTEND_URL, 'http://localhost:5173', 'http://localhost:8081'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}
 
 app.use(cors(corsOptions))
-app.use(helmet())
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}))
+
 app.use(cookieParser())
 app.use(express.json()) 
 
@@ -35,7 +41,7 @@ app.use('/api/v1/linkmind', auth, UserAnnotationsPrivateRoutes)
 app.use('/api/v1/linkmind/admin', auth, isAdmin, AdminPrivateRoutes)
 app.post('/api/v1/linkmind/check-admin', auth, isAdmin, (req, res) => {
     res.status(200).json({
-        seccess: true,
+        success: true,
         message: "Usuário é admin"
     })
 })

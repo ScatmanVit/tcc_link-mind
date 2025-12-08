@@ -1,9 +1,11 @@
 import { captalize, findOneUser, formatEmail } from "../../utils/utils.js"
 import UserAuthService from "../../services/auth/auth.services.js"
 import redis from '../../config/redis.js'
-
+import dotenv from 'dotenv'
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
+
+dotenv.config()
 
 const jwt_secret = process.env.JWT_SECRET
 
@@ -99,14 +101,13 @@ async function loginUserController(req, res) {
 		}
 
 		if (platform === "web") {
-			res.cookie("refresh_token", refresh_token, {
-				httpOnly: true,
-				// secure: process.env.NODE_ENV === "production",
-				// sameSite: "strict",
-				secure: false, // TESTE LOCAL
-				sameSite: "lax", // TESTE LOCAL
-				maxAge: 7 * 24 * 60 * 60 * 1000,
-			});
+			const isProduction = process.env.NODE_ENV === "production"; 
+            res.cookie("refresh_token", refresh_token, {
+                httpOnly: true,
+                secure: isProduction, 
+                sameSite: isProduction ? "none" : "lax", 
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
 			return res.status(200).json({
 				message: "Login efetuado com sucesso!",
 				access_token,
@@ -200,14 +201,13 @@ async function refreshTokenController(req, res) {
 		}
 
 		if (platform === "web") {
-			res.cookie("refresh_token", refresh_token, {
-				httpOnly: true,
-				// secure: process.env.NODE_ENV === "production",
-				// sameSite: "strict",
-				secure: false, // TESTE LOCAL
-				sameSite: "lax", // TESTE LOCAL
-				maxAge: 7 * 24 * 60 * 60 * 1000,
-			});
+			const isProduction = process.env.NODE_ENV === "production"; 
+            res.cookie("refresh_token", refresh_token, {
+                httpOnly: true,
+                secure: isProduction, 
+                sameSite: isProduction ? "none" : "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
 			return res.status(200).json({
 				success: true,
 				message: "Sessão renovada com sucesso",
@@ -272,13 +272,13 @@ async function logoutController(req, res) {
 		}
 
 		if (platform === "web") {
-			res.clearCookie("refresh_token", {
-				httpOnly: true,
-				// secure: process.env.NODE_ENV === "production",
-				// sameSite: "strict",
-				secure: false, // TESTE LOCAL
-				sameSite: "lax", // TESTE LOCAL
-			});
+            const isProduction = process.env.NODE_ENV === "production"; 
+            res.clearCookie("refresh_token", {
+                httpOnly: true,
+                secure: isProduction, 
+                sameSite: isProduction ? "none" : "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
 		}
 		return res.status(200).json({
 			message: "Logout efetuado com sucesso!"
