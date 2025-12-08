@@ -51,6 +51,8 @@ async function summary_link_Controller(req, res) {
         }
 
         return res.status(200).json({
+            success: true,
+            message: "Link resumido com sucesso!",
             summary: summaryLink.summary,
         })
 
