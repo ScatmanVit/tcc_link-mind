@@ -1,4 +1,5 @@
-import { FlatList, View, Text, StyleSheet, Pressable } from 'react-native';
+import { FlatList, View, Text, StyleSheet, Pressable, RefreshControl } from 'react-native';
+import { useState, useCallback } from 'react';
 import Categories from '@/src/components/categories/categories';
 import { colors } from '@/src/styles/colors';
 import { useRouter } from 'expo-router';
@@ -16,6 +17,7 @@ type EventsProps = {
     setAnnotation: (annotation: AnnotationProps) => void; 
     navigationPageViewAnnotation: (item: AnnotationProps) => void; 
     setSelectCategory: (category: { id: string; nome?: string }) => void;
+    onFetchData: () => Promise<void>; 
 };
 
 export default function Annotations({
@@ -28,8 +30,22 @@ export default function Annotations({
     setSelectCategory,
     modalOptionsVisibility,
     navigationPageViewAnnotation,
+    onFetchData, 
 }: EventsProps) {
     const router = useRouter();
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        try {
+            await onFetchData(); 
+        } catch (error) {
+            console.error("Erro ao atualizar dados:", error);
+        } finally {
+            setRefreshing(false);
+        }
+    }, [onFetchData]);
 
     return (
         <FlatList
@@ -38,6 +54,13 @@ export default function Annotations({
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             style={{ flex: 1 }}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    progressBackgroundColor={colors.gray[50]}
+                />
+            }
             ListHeaderComponent={
                 <View style={{ flexShrink: 0, flexDirection: 'column', gap: 8, alignItems: 'center', marginBottom: 16 }}>
                     <Pressable style={style.input_search} onPress={() => router.push("/pesquisa")}>
@@ -82,7 +105,9 @@ export default function Annotations({
                 <Anotacao 
                     title={item.title}
                     annotation={item.annotation}
-                    onDelete={() => { onDelete(item.id) }}
+                    onDelete={() => { onDelete(item.id)
+                        console.log('delete', item)
+                     }}
                     onOpenDetails={() => {
                         setAnnotation(item);
                         modalOptionsVisibility()

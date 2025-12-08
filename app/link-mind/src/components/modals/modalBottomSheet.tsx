@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
         fontSize: 19,
         fontWeight: 600,
         marginLeft: 6,
-        maxWidth: "75%"
+        maxWidth: "77%"
 
     },
     close_button: {

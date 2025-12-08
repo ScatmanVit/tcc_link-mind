@@ -26,6 +26,7 @@ import Input from '@/src/components/input';
 import CreateCategoryModal from '@/src/components/modals/createCategoryModal';
 import EditLink from './edit-link';
 import ViewLink from './view-link';
+import SummaryLink from './summary-link';
 
 
 export default function LinksIndex() {
@@ -191,6 +192,8 @@ export default function LinksIndex() {
         }, 100)
     }
 
+    // function ChangeModal
+
     useEffect(() => {
         if (user?.access_token_prov) {
             fetch_Links()
@@ -278,8 +281,14 @@ export default function LinksIndex() {
                                 toggleModal={ChangeModalVisibilityClose}
                                 setCategoriesPageHome={setCategories}
                             />
-                        ) : pageNameModal === "Resumir com IA" ? ( <Text>PÁGINA DE RESUMIR COM IA</Text> )  
-                        : <ViewLink linkObj={link!!} categories={categories} />
+                        ) : pageNameModal === "Resumir Link com IA" ? ( 
+                            <SummaryLink
+                                linkType="web"
+                                linkId={link?.id!!}
+                                linkUrl={link?.link!!}
+                            />
+                         )  
+                        :  <ViewLink linkObj={link!!} categories={categories} />
                
                     ) : (
                         <View style={styles.content_modal}>
@@ -287,7 +296,7 @@ export default function LinksIndex() {
                                 ChangePageNameModal("Editar Link")
                             }}/>
                             <ActionSelector nameAction='Resumir com IA' icon={"north-star"} onPress={() => {
-                                ChangePageNameModal("Resumir com IA")
+                                ChangePageNameModal("Resumir Link com IA")
                             }}/>
                             <ActionSelector nameAction='Deletar' icon={"trash"} colorBack={colors.red[200]} onPress={() => {
                                 ChangeModalVisibility()

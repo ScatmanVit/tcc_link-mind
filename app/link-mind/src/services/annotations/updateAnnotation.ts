@@ -1,30 +1,35 @@
 import axios from 'axios'
-import { AnnotationProps } from '@/src/components/annotations/annotation'
 
-export type CreateAnnotationProps = {
+
+type UpdateAnnotationProps = {
     access_token: string,
-    data: Omit<AnnotationProps, "id">
+    annotationId: string,
+    dataNewAnnotation: {
+        newTitle?: string,
+        newAnnotation?: string,
+        newCategoriaId?: string
+    }
 }
 
-export default async function create_Annotation({access_token, data}: CreateAnnotationProps) {
+export default async function update_Annotation({ access_token, dataNewAnnotation, annotationId }: UpdateAnnotationProps) {
     if (!access_token) {
         console.error("TOKEN NÃO RECEBIDO")
         throw new Error("Token não recebido")
     }
     try {
-        console.log('SERVICE', data)
-        const res = await axios.post('https://tcc-link-mind.onrender.com/api/v1/linkmind/annotation/create',
-            data,
-            { 
+        const res = await axios.put(`https://tcc-link-mind.onrender.com/api/v1/linkmind/annotation/update/${annotationId}`, 
+            dataNewAnnotation,
+            {
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 }
-        })
+            }
+        )
         if (res.data?.success) {
             return {
                 success: true,
                 message: res.data.message,
-                annotationCreated: res.data.annotationCreated
+                annotationUpdated: res.data.annotationUpdated
             }
         }
     } catch (err: any) {
@@ -33,12 +38,12 @@ export default async function create_Annotation({access_token, data}: CreateAnno
             throw new Error(
                 err.response.data.error || 
                 err.response.error.message || 
-                "Ocorreu um erro ao criar anotação"
+                "Ocorreu um erro ao editar anotação"
             )
 		} else if (err instanceof Error) {
             throw err;
 		} else {
-			throw new Error("Erro desconhecido ao criar anotação");
+			throw new Error("Erro desconhecido ao editar anotação");
 		}
     }
 }

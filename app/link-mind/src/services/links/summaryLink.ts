@@ -1,44 +1,50 @@
 import axios from 'axios'
-import { AnnotationProps } from '@/src/components/annotations/annotation'
 
-export type CreateAnnotationProps = {
-    access_token: string,
-    data: Omit<AnnotationProps, "id">
+type SummaryLinkProps = {
+    data: {
+        linkUrl: string,
+        linkType: string,
+        linkId: string,
+        instructionsFromUser: string
+    },
+    access_token: string
 }
 
-export default async function create_Annotation({access_token, data}: CreateAnnotationProps) {
+export default async function link_Summary({
+    data,
+    access_token
+}: SummaryLinkProps) {
     if (!access_token) {
         console.error("TOKEN NÃO RECEBIDO")
         throw new Error("Token não recebido")
     }
     try {
-        console.log('SERVICE', data)
-        const res = await axios.post('https://tcc-link-mind.onrender.com/api/v1/linkmind/annotation/create',
-            data,
-            { 
+        const res = await axios.post('https://tcc-link-mind.onrender.com/api/v1/linkmind/summary/link', 
+           data, 
+           {
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 }
-        })
+           } 
+        )
         if (res.data?.success) {
             return {
                 success: true,
                 message: res.data.message,
-                annotationCreated: res.data.annotationCreated
+                summary: res.data.summary
             }
         }
     } catch (err: any) {
-        console.log(err)
         if (err.response?.data?.error || err.response?.data?.error?.message) {
             throw new Error(
                 err.response.data.error || 
                 err.response.error.message || 
-                "Ocorreu um erro ao criar anotação"
+                "Ocorreu um erro ao resumir link"
             )
 		} else if (err instanceof Error) {
             throw err;
 		} else {
-			throw new Error("Erro desconhecido ao criar anotação");
+			throw new Error("Erro desconhecido ao resumir link.");
 		}
-    }
-}
+    } 
+}   

@@ -50,7 +50,7 @@ export default function Input({
             <View
                 style={[
                     s.inputWrapper,
-                    { height: height, borderColor: hasError ? colors.red[500] : colors.gray[500], borderRadius: radius ? radius : 14 },
+                    { height: height, borderColor: hasError ? colors.red[500] : colors.gray[700], borderRadius: radius ? radius : 14 },
                 ]}
             >
                 {icon && (

@@ -297,7 +297,6 @@ const styles = StyleSheet.create({
         backgroundColor: colors.gray[800],
         paddingHorizontal: 18,
         paddingTop: 20
-
     },
     title: {
         color: colors.gray[50],

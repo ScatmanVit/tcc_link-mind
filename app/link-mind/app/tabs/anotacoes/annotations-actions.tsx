@@ -15,7 +15,7 @@ import create_Annotation from "@/src/services/annotations/createAnnotation";
 import { useToast } from 'react-native-toast-notifications';
 import { FontAwesome6 } from "@expo/vector-icons";
 import equal from "fast-deep-equal"; 
-
+import update_Annotation from "@/src/services/annotations/updateAnnotation";
 
 
 type InitialAnnotationState = {
@@ -72,8 +72,12 @@ export default function AnnotationActions() {
         const finalAnnotation = textNoteRef.current;
         const finalCategoriaId = categoriaIdRef.current
         
+        if (!finalAnnotation?.trim() && !finalTitle?.trim()) {
+            return;
+        }
+
         if (id) {
-            if (hasChanges({
+            if (!hasChanges({
                 title: finalTitle,
                 annotation: finalAnnotation,
                 categoriaId: finalCategoriaId?.id
@@ -86,24 +90,37 @@ export default function AnnotationActions() {
                     style: { backgroundColor: colors.amber[500] }
                 })
                 return
+            } 
+            
+            if (!finalAnnotation?.trim()) {
+                toast.show("A anotação é obrigatória", {
+                    type: 'danger',
+                    placement: "top",
+                    duration: 2000,
+                    icon: <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />,
+                    style: { backgroundColor: colors.amber[500] }
+                })
+                return
             }
+
             if (!user || !user.access_token_prov) {
                 console.log("Usuário não autenticado")
                 return
             }
 
             try {
-                const annotationCreated = await create_Annotation({
+                const annotationUpdated = await update_Annotation({
                     access_token: user.access_token_prov,
-                    data: {
-                        title: finalTitle.trim() ? finalTitle : "Sem título",
-                        annotation: finalAnnotation,
-                        categoriaId: finalCategoriaId?.id
+                    annotationId: id,
+                    dataNewAnnotation: {
+                        newTitle: finalTitle.trim() ? finalTitle : "Sem título",
+                        newAnnotation: finalAnnotation,
+                        newCategoriaId: finalCategoriaId?.id
                     }
                 })
-                if (annotationCreated?.success) {
-                    console.log(annotationCreated)
-                    toast.show(annotationCreated.message, {
+                if (annotationUpdated?.success) {
+                    console.log(annotationUpdated)
+                    toast.show(annotationUpdated.message, {
                         type: 'success',
                         placement: "top",
                         duration: 2000,
@@ -112,14 +129,14 @@ export default function AnnotationActions() {
                 }
             } catch (err: any) {
                 console.log(err.message)
-                toast.show(err.message, {
+                toast.show(err.message.includes("Campos obrigatórios não recebidos.") && "Por favor preencha o título e a anotação.", {
                     type: 'danger',
                     placement: "top",
                     duration: 3000,
-                    dangerIcon: err.message.includes("O Título e a anotação deve ter sido escritos para salvar anotação.") 
+                    dangerIcon: err.message.includes("Campos obrigatórios não recebidos.") 
                         ? <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />
                         : <FontAwesome6 name="triangle-exclamation" size={20} color="#F44336" />,
-                    style: err.message.includes("O Título e a anotação deve ter sido escritos para salvar anotação.") 
+                    style: err.message.includes("Campos obrigatórios não recebidos.") 
                         ? { backgroundColor: colors.amber[500] }
                         : { backgroundColor: colors.red[500] }
 
@@ -235,20 +252,16 @@ export default function AnnotationActions() {
         textNoteRef.current = annotationText
         textTitleNoteRed.current = titleText
         categoriaIdRef.current = selectedCategory
-        
-        const initial: InitialAnnotationState = {
-            title: annotationText,
-            annotation: titleText,
-            categoriaId: selectedCategory?.id
-        } 
-        initialRef.current = initial
 
     }, [annotationText, titleText, selectedCategory])
 
 
     useEffect(() => {
-        setTitleText(title as string || '');
-        setAnnotationText(annotation as string || '');
+        const initialTitle = title as string || '';
+        const initialAnnotation = annotation as string || '';
+
+        setTitleText(initialTitle);
+        setAnnotationText(initialAnnotation);
         
         let initialCategories: CategoryPropsItem[] = [];
         if (categoriesParams) {
@@ -258,7 +271,7 @@ export default function AnnotationActions() {
                 console.error("Erro ao parsear categoriesParams:", e);
             }
         }
-        
+
         async function loadAndSelectCategories() {
             let finalCategories: CategoryPropsItem[] = [];
 
@@ -270,26 +283,34 @@ export default function AnnotationActions() {
             
             setCategories(finalCategories); 
 
+            let initialCategory: CategoryPropsItem | undefined;
             if (categoriaId) {
-                const originalCategory = finalCategories.find(cat => cat.id === categoriaId);
-                if (originalCategory) {
-                    setSelectCategory(originalCategory);
-                } else {
-                    setSelectCategory(undefined);
-                }
-            } else {
-                setSelectCategory(undefined);
+                initialCategory = finalCategories.find(cat => cat.id === categoriaId);
             }
+            
+            setSelectCategory(initialCategory);
+
+            initialRef.current = {
+                title: initialTitle,
+                annotation: initialAnnotation,
+                categoriaId: categoriaId
+            };
         }
 
         loadAndSelectCategories();
         
-        const unsubscribe = navigation.addListener('blur', async () => {
+        const unsubscribeBeforeRemove = navigation.addListener('beforeRemove', async (e) => {
             await sendToApi();
         });
+        const unsubscribeBlur = navigation.addListener('blur', async () => {
+            await sendToApi(); 
+        });
 
-        return unsubscribe;
-    }, [navigation, id, title, annotation, categoriaId, categoriesParams, user?.access_token_prov]);
+        return () => {
+            unsubscribeBeforeRemove();
+            unsubscribeBlur(); 
+        };
+    }, [navigation, id, title, annotation, categoriaId, categoriesParams, user?.access_token_prov, fetchCategories]);
 
     function handleInputChange (text: string, isTitle: boolean) {
         if (isTitle) {
