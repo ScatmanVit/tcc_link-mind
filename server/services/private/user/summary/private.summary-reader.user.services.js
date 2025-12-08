@@ -20,16 +20,16 @@ async function summary_CREATE(
     nameUser 
 ) {
     try {
-        const today = new Date().toISOString().split('T')[0];
-        const redisKey = `summary:${userId}:${today}`
-        const currentCount = await redis.get(redisKey);
+        // const today = new Date().toISOString().split('T')[0];
+        // const redisKey = `summary:${userId}:${today}`
+        // const currentCount = await redis.get(redisKey);
         
-        if (currentCount && parseInt(currentCount) >= 2) {
-            return { 
-                error: 'Limite diário atingido' ,
-                statusCode: 429
-            }
-        }
+        // if (currentCount && parseInt(currentCount) >= 2) {
+        //     return { 
+        //         error: 'Limite diário atingido' ,
+        //         statusCode: 429
+        //     }
+        // }
         
         const linkResource = await prisma.link.findFirst({
             where: {
@@ -43,12 +43,12 @@ async function summary_CREATE(
                 statusCode: 404
             }
         }
-        if (linkResource.summary_link) {
-            return {
-                error: "Esse link já foi resumido",
-                statusCode: 429
-            }
-        }
+        // if (linkResource.summary_link) {
+        //     return {
+        //         error: "Esse link já foi resumido",
+        //         statusCode: 429
+        //     }
+        // }
         
         let summary_text = ""
         
@@ -96,19 +96,19 @@ async function summary_CREATE(
         });
 
 
-        await prisma.link.update({
-            where: { 
-                id: resourceId 
-            },
-            data: { 
-                summary_link: true 
-            }
-        });
+        // await prisma.link.update({
+        //     where: { 
+        //         id: resourceId 
+        //     },
+        //     data: { 
+        //         summary_link: true 
+        //     }
+        // });
 
-        const newCount = await redis.incr(redisKey)
-        if (newCount === 1) {
-            await redis.expire(redisKey, 86400);
-        }
+        // const newCount = await redis.incr(redisKey)
+        // if (newCount === 1) {
+        //     await redis.expire(redisKey, 86400);
+        // }
 
         return {
             summary: summary_text
