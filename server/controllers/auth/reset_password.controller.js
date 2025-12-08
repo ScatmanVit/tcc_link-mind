@@ -1,8 +1,11 @@
 import UserServiceResetPassword from '../../services/auth/auth.reset_password.services.js'
 import { captalize, findOneUser, formatEmail } from "../../utils/utils.js"
 import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const jwt_secret = process.env.JWT_SECRET
+const FRONT_URL = process.env.FRONT_END_URL
 
 async function sendEmailResetPassword_Controller(req, res) {
 	const { email } = req.body
@@ -24,7 +27,7 @@ async function sendEmailResetPassword_Controller(req, res) {
 			jwt_secret,
 			{ expiresIn: "15m" }
 		);
-		const urlResetPassword = `http://localhost:5173/reset-password?token=${tokenResetPassword}`
+		const urlResetPassword = `${FRONT_URL}/reset-password?token=${tokenResetPassword}`
 		const resSendEmail = await UserServiceResetPassword
 			.sendEmailResetPassword_Service({
 				email,
