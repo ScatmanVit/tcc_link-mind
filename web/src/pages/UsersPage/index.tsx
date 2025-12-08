@@ -245,7 +245,7 @@ export default function UsersPage() {
 											<td>{user.role}</td>
 											<td>
 												<span className={"tag " +
-													(user.is_active ? 'green' : 'gray')}>{user.is_active ? 'Ativo' : 'Inativo'}
+													(true ? 'green' : 'gray')}>{'Ativo'}
 												</span>
 											</td>
 											<td className="sticky-col">
