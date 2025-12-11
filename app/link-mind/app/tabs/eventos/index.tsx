@@ -253,6 +253,10 @@ export default function EventsIndex() {
                         setSelectCategory={setSelectCategory}
                         modalOptionsVisibility={ChangeModalVisibility}
                         modalOptionsVisibilityViewEvent={ChangeModalVisibilityViewEvent}
+                        onFetchData={async () => {
+                            fetch_Events();
+                            syncCategories_and_fetchCategories();
+                        }}
                     />
                 )}
 

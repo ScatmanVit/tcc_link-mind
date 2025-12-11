@@ -31,9 +31,9 @@ const style = StyleSheet.create({
         backgroundColor: colors.gray[800],
         paddingVertical: 15,
         borderRadius: 22,
-        maxWidth: 180,
-        marginTop: -500,
-        marginRight: 25,
+        maxWidth: 200,
+        marginTop: "-145%",
+        marginRight: "-0.5%",
         alignSelf: "flex-end",
         alignItems: "flex-end",
         maxHeight: 180

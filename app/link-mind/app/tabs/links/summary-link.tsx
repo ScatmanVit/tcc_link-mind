@@ -6,18 +6,17 @@ import { useState, useEffect, useRef, useContext } from "react"
 import { View, StyleSheet, ActivityIndicator, Animated, Text, ScrollView } from "react-native"
 import { AuthContext } from "@/src/context/auth"
 import link_Summary from "@/src/services/links/summaryLink"
-import { MaterialIcons } from "@expo/vector-icons" // Certifique-se de ter @expo/vector-icons instalado
 
 type SummaryLinksProps = {
     linkUrl: string,
     linkType?: string,
-    linkId?: string,
+    linkId?: string
 }
 
 export default function SummaryLink({ 
     linkUrl, 
     linkId, 
-    linkType, 
+    linkType,
 }: SummaryLinksProps) {
 
     const { user } = useContext(AuthContext)
@@ -29,6 +28,7 @@ export default function SummaryLink({
             console.log("Usuário não autenticado") 
             return
         }
+        console.log('NOME USUÁRIO', user.name)
         try {
             const res = await link_Summary({
                 access_token: user.access_token_prov,
@@ -36,7 +36,7 @@ export default function SummaryLink({
                     linkUrl: linkUrl, 
                     linkId: linkId!!, 
                     linkType: linkType!!,
-                    instructionsFromUser: "Comunique bem as ideias, e resuma com concisão e gradatividade, seja eloquente, e humano na resposta." 
+                    instructionsFromUser: `Meu nome é ${user.name}. Se refira a mim usando esse nome, mas não seja formal, e nem intimo demais, comunique bem as ideias, e resuma com concisão e gradatividade, seja eloquente, e humano na resposta.`
                 }
             })
             if (res?.success) {
@@ -61,7 +61,7 @@ export default function SummaryLink({
             Animated.sequence([
                 Animated.timing(colorAnim, {
                     toValue: 1,
-                    duration: 500, // Aumentei um pouco para ficar mais suave
+                    duration: 500, 
                     useNativeDriver: false
                 }),
                 Animated.timing(colorAnim, {

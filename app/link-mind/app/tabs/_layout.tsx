@@ -25,7 +25,7 @@ export default function TabLayout() {
 	const searchParams = useLocalSearchParams();
 
 	const [ modalVisible, setModalVisible ] = useState<boolean>(false)
-
+	const [ modalVisibleProfile, setModalVisibleProfile ] = useState<boolean>(false)
 
 	const baseRoutes = ["links", "anotacoes", "eventos", "pesquisa"];
 	const subRoutes = ["add-link", "add-event", "add-note", "annotations-actions"]
@@ -84,6 +84,37 @@ export default function TabLayout() {
 				animationType="slide-in"
 				swipeEnabled={false}
 			>
+				<OptionsModal 
+					toggleVisible={() => setModalVisibleProfile(prev => !prev)} 
+					isVisible={modalVisibleProfile}
+				>
+					<ItemSelector 
+						name="Configurações"
+						icon="gear"
+						onPress={() => {
+							setModalVisibleProfile(prev => !prev)
+						 }} 
+					/>
+					<ItemSelector 
+						name="Meus Resumos"
+						icon="brain"
+						onPress={() => {
+							setModalVisibleProfile(prev => !prev)
+						 }} 
+					/>
+					<ItemSelector
+						name="Sair"
+						icon={"right-from-bracket"}
+						iconColor={colors.red[100]}
+						textColor={colors.red[100]}
+						onPress={() => { 
+							setModalVisibleProfile(prev => !prev)
+							setTimeout(() => {
+								router.replace('/auth/login')
+							}, 1500)
+						}}
+					/> 
+				</OptionsModal>
 				<OptionsModal 
 					toggleVisible={ChangeModalVisibility} 
 					isVisible={modalVisible}
@@ -145,7 +176,7 @@ export default function TabLayout() {
 							/>
 						</TouchableOpacity>
 
-						<TouchableOpacity activeOpacity={0.8}>
+						<TouchableOpacity onPress={() => setModalVisibleProfile(prev => !prev)} activeOpacity={0.8}>
 							<View style={style.photo_profile}>
 								<Text style={style.profile_text}>{user?.email ? user.email[0].toUpperCase() : "?"}</Text>
 							</View>

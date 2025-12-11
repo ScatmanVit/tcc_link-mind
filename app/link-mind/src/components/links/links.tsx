@@ -1,10 +1,11 @@
-import { FlatList, Linking, Alert, View, Text, StyleSheet, Pressable } from 'react-native'
+import { FlatList, Linking, Alert, View, Text, StyleSheet, Pressable, RefreshControl } from 'react-native'
 import Link from "@/components/links/link"
 import Categories from '@/src/components/categories/categories'
 import { colors } from '@/src/styles/colors'
 import { CreateLinkProps } from '@/src/services/links/createLink'
 import { useRouter } from 'expo-router'
 import Input from '../input'
+import { useCallback, useState } from 'react'
 
 type LinksPropsComponent = {
     id: string,
@@ -15,7 +16,8 @@ type LinksPropsComponent = {
 export type LinkWithId = CreateLinkProps & { id: string }
 
 type LinksProps = {
-    data: LinksPropsComponent[]
+    data: LinksPropsComponent[],
+    onFetchData: () => Promise<void>,
     onCreateCategory: () => void
     onDelete: (id: string) => void,
     modalOptionsVisiblity: () => void,
@@ -29,8 +31,9 @@ type LinksProps = {
 export default function Links({
      data,
      setLink, 
-     onDelete, 
+     onDelete,
      categories, 
+     onFetchData, 
      selectedCategory, 
      onCreateCategory,
      setSelectCategory, 
@@ -58,6 +61,19 @@ export default function Links({
         }
     }
 
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        try {
+            await onFetchData(); 
+        } catch (error) {
+            console.error("Erro ao atualizar dados:", error);
+        } finally {
+            setRefreshing(false);
+        }
+    }, [onFetchData]);
+
     return (
         <FlatList
             nestedScrollEnabled
@@ -65,6 +81,13 @@ export default function Links({
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             style={{ flex: 1 }}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    progressBackgroundColor={colors.gray[50]}
+                />
+            }
             ListHeaderComponent={
                 <View style={{ flexShrink: 0, flexDirection: "column", gap: 7, alignItems: "center", marginBottom: -19 }}>
                         <Pressable style={style.input_search} onPress={() => router.push("/pesquisa")}>

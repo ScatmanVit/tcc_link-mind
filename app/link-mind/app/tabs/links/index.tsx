@@ -192,7 +192,6 @@ export default function LinksIndex() {
         }, 100)
     }
 
-    // function ChangeModal
 
     useEffect(() => {
         if (user?.access_token_prov) {
@@ -257,6 +256,10 @@ export default function LinksIndex() {
                             setSelectCategory={setSelectCategory}
                             modalOptionsVisiblity={ChangeModalVisibility}
                             modalOptionsVisibilityViewLink={ChangeModalVIsibilityViewLink}
+                            onFetchData={async () => {
+                                fetch_Links();
+                                syncCategories_and_fetchCategories();
+                            }}
                         />
                 )} 
                 <ChooseOptionModal 

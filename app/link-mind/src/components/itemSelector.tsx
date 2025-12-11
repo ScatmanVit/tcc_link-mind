@@ -29,7 +29,7 @@ export default function ItemSelector({
                 {icon && (
                     <FontAwesome6
                         name={icon}
-                        size={18}
+                        size={20}
                         color={iconColor}
                         style={{ marginLeft: -1 }}
                     />

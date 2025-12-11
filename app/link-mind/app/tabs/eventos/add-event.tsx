@@ -71,9 +71,20 @@ export default function CreateEvent() {
             console.log("Usuário não autenticado") 
             return
         }
-        console.log({
-            event
-        });
+
+        if (toggleButtonSelect) {
+            if (!notification.bodyMessage || !notification.titleMessage || !notification.scheduleAt) {
+                 toast.show("Preencha os dados e horário da notificação para continuar.", {
+                    type: 'danger',
+                    placement: "top",
+                    duration: 3000,
+                    icon: <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />,
+                    style: { backgroundColor: colors.amber[500] }
+                })
+                return;
+            }
+        }
+
         try {
             setLoading(true)
             const eventCreated = await create_Event(
@@ -88,20 +99,51 @@ export default function CreateEvent() {
                     statusNotification: 'PENDING'
                 } as CreateEventProps
             )
+
             if (eventCreated?.success) {
-                console.log(eventCreated)
-                setEvent({ title: '', address: '', description: '' })
-                setNotification(prev => ({
-                    ...prev, 
-                    eventId: eventCreated.eventCreated.id
-                }))
-                setSelectCategory(undefined)
+                const newEventId = eventCreated.eventCreated.id;
+
                 toast.show(eventCreated.message, { 
                     type: 'success',
                     placement: "top",
                     duration: 2000,
                     icon: <FontAwesome6 name="check-circle" size={20} color="#4CAF50" />
                 });
+
+                if (toggleButtonSelect) {
+                    try {
+                        const notificationData = {
+                            ...notification,
+                            eventId: newEventId 
+                        };
+
+                        const notifyResponse = await send_Notification_Event(
+                            user?.access_token_prov, 
+                            notificationData
+                        );
+
+                        if (notifyResponse?.success) {
+                             toast.show("Notificação agendada com sucesso!", {
+                                type: 'success',
+                                placement: "top",
+                                duration: 2000,
+                                icon: <FontAwesome6 name="check-circle" size={20} color="#4CAF50" />
+                            });
+                        }
+                    } catch (notifyErr: any) {
+                        console.log(notifyErr);
+                        toast.show(`Erro ao agendar notificação: ${notifyErr.message}`, {
+                            type: 'warning',
+                            placement: "top",
+                            duration: 4000,
+                        });
+                    }
+                }
+
+                setEvent({ title: '', address: '', description: '', date: undefined });
+                setSelectCategory(undefined);
+                setNotification({ bodyMessage: '', titleMessage: '', scheduleAt: '', eventId: '' });
+                setToggleButtonSelect(false);
             }
         } catch (err: any) {
             console.log(err.message)
@@ -118,66 +160,9 @@ export default function CreateEvent() {
 
             });
         } finally {
-            if (!toggleButtonSelect) {
-                setLoading(false)
-            }
+            setLoading(false)
         }
     }
-
-    useEffect(() => {
-        async function notificationEvent(notification: NotificationEvent) {
-            try {
-                const eventNotifyScheduled = await send_Notification_Event(user?.access_token_prov, notification)
-                if (eventNotifyScheduled?.success) {
-                    setToggleButtonSelect(undefined)
-                    setNotification(prev => ({
-                        ...prev, scheduleAt: ''
-                    }))
-                    toast.show(eventNotifyScheduled.message, {
-                        type: 'success',
-                        placement: "top",
-                        duration: 2000,
-                        icon: <FontAwesome6 name="check-circle" size={20} color="#4CAF50" />
-                    });
-                } 
-            } catch (err: any) {
-                console.log(err.message)
-                toast.show(err.message, {
-                    type: 'danger',
-                    placement: "top",
-                    duration: 3000,
-                    dangerIcon: err.message.includes("Informações necessárias para agendamento do evento não fornecidas.") 
-                    || err.message.includes("Data de disparo da notificação não fornecida.")
-                        ? <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />
-                        : <FontAwesome6 name="triangle-exclamation" size={20} color="#F44336" />,
-                    style: err.message.includes("Informações necessárias para agendamento do evento não fornecidas.") 
-                    || err.message.includes("Data de disparo da notificação não fornecida.") 
-                        ? { backgroundColor: colors.amber[500] }
-                        : { backgroundColor: colors.red[500] }
-
-                });
-            } finally {
-                setLoading(false)
-            }
-        }
-            if (notification.eventId && toggleButtonSelect) {
-                if (!notification.bodyMessage
-                    || !notification.titleMessage
-                ) {
-                    toast.show("Preencha os dados da notificação por favor.", {
-                        type: 'danger',
-                        placement: "top",
-                        duration: 2000,
-                        icon: <FontAwesome6 name="circle-exclamation" size={20} color="#FFC107" />,
-                        style: { backgroundColor: colors.amber[500] }
-                    })
-                return
-                } else {
-                    notificationEvent(notification)
-                }
-            } else return
-       
-    }, [notification?.eventId])
     
     async function fetch_Categories() {
         if (!user || !user.access_token_prov) {
@@ -207,7 +192,7 @@ export default function CreateEvent() {
 
     async function handle_CreateCategry(name: string) {
         if (!user || !user.access_token_prov) {
-            console.log("Usuário não autenticado") // toast pedindo para fazer login novamente ou chamado do refresh_token
+            console.log("Usuário não autenticado") 
             return
         }
         try {

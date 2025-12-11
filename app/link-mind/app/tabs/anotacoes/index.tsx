@@ -233,7 +233,10 @@ export default function AnotacoesIndex() {
                         modalOptionsVisibility={ChangeModalVisibility}
                         onCreateCategory={ChangeModalVisibilityCategory}
                         navigationPageViewAnnotation={NavigateToPageAnnotation}
-                        onFetchData={fetch_Annotations}
+                        onFetchData={async () => {
+                            fetch_Annotations();
+                            syncCategories_and_fetchCategories();
+                        }}
                     />
                 }
                  <ChooseOptionModal
@@ -248,10 +251,6 @@ export default function AnotacoesIndex() {
                             <ActionSelector nameAction='Editar' icon={"pencil"} onPress={() => {
                                 ChangeModalVisibilityClose()
                                 NavigateToPageAnnotation(annotation!!)
-                                
-                            }}/>
-                            <ActionSelector nameAction='Notificar' icon={"bell"} onPress={() => {
-                                ChangePageNameModal("Notificar Evento")
                                 
                             }}/>
                             <ActionSelector nameAction='Deletar' icon={"trash"} colorBack={colors.red[200]} onPress={() => {

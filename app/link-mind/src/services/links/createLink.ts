@@ -16,7 +16,7 @@ export default async function create_Link(access_token: string, data: CreateLink
         throw new Error("Token não recebido")
     }
     try {
-        const res = await axios.post("http://localhost:3000/api/v1/linkmind/link/create", 
+        const res = await axios.post("https://tcc-link-mind.onrender.com/api/v1/linkmind/link/create", 
         data,
         { 
             headers: {

@@ -23,7 +23,8 @@ const defaultCategories: CategoryPropsItem[] = [
     { id: '4', nome: 'Trabalho' },
     { id: '5', nome: 'Finanças' },
     { id: '6', nome: 'Academia' },
-    { id: '7', nome: 'Progresso' }
+    { id: '7', nome: 'Progresso' },
+    { id: '8', nome: "Expirado" }
 ];
 
 export const STORAGE_KEY = '@categories';

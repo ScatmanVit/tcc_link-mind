@@ -1,29 +1,32 @@
-import { FlatList, View, Text, StyleSheet, Pressable } from 'react-native';
+import { FlatList, View, Text, StyleSheet, Pressable, RefreshControl } from 'react-native';
 import Event, { EventProps, StatusNotificationEvent } from './event'; 
 import Categories from '@/src/components/categories/categories';
 import { colors } from '@/src/styles/colors';
 import { useRouter } from 'expo-router';
 import Input from '../input'; 
+import { useCallback, useState } from 'react';
 export type EventWithId = EventProps & { id: string, categoriaId?: string, 
     scheduleAt?: string;
     statusNotification?: StatusNotificationEvent; }; 
 
 type EventsProps = { 
-    data: EventWithId[];
-    onCreateCategory: () => void;
-    onDelete: (id: string) => void;
-    modalOptionsVisibility: () => void;
-    setEvent: (event: EventWithId) => void; 
-    categories: { id: string; nome: string }[];
-    selectedCategory?: { id: string; nome?: string };
-    modalOptionsVisibilityViewEvent: (title: string) => void; 
-    setSelectCategory: (category: { id: string; nome?: string }) => void;
+    data: EventWithId[],
+    onFetchData: () => Promise<void>,
+    onCreateCategory: () => void,
+    onDelete: (id: string) => void,
+    modalOptionsVisibility: () => void,
+    setEvent: (event: EventWithId) => void,
+    categories: { id: string; nome: string }[],
+    selectedCategory?: { id: string; nome?: string },
+    modalOptionsVisibilityViewEvent: (title: string) => void,
+    setSelectCategory: (category: { id: string; nome?: string }) => void,
 };
 
 export default function Events({
     data,
     setEvent,
     onDelete,
+    onFetchData,
     categories,
     selectedCategory,
     onCreateCategory,
@@ -33,6 +36,18 @@ export default function Events({
 }: EventsProps) {
     const router = useRouter();
 
+    const [refreshing, setRefreshing] = useState(false);
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        try {
+            await onFetchData(); 
+        } catch (error) {
+            console.error("Erro ao atualizar dados:", error);
+        } finally {
+            setRefreshing(false);
+        }
+    }, [onFetchData]);
+
     return (
         <FlatList
             nestedScrollEnabled
@@ -40,6 +55,13 @@ export default function Events({
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             style={{ flex: 1 }}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    progressBackgroundColor={colors.gray[50]}
+                />
+            }
             ListHeaderComponent={
                 <View style={{ flexShrink: 0, flexDirection: 'column', gap: 8, alignItems: 'center', marginBottom: 16 }}>
                     <Pressable style={style.input_search} onPress={() => router.push("/pesquisa")}>
